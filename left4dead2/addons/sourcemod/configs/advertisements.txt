@@ -1,0 +1,104 @@
+// Advertisements 2.0
+// by Tsunami
+//
+// Types
+// -----
+// center: Center message
+// chat: Chat message
+// hint: Hint message
+// menu: Menu message
+// top: Top message
+//
+// Flags (optional)
+// -----
+// Accepts flags of admins that will not see the advertisement.
+// When omitted everyone will see the advertisement.
+// When left empty only admins will see the advertisement.
+
+"Advertisements"
+{
+	"1"
+	{
+		"chat"		"[提示]服务器启用了VAC和SMAC反作弊,禁用了手动闲置,彻底修复多人电击器复活错误以及Witch攻击错误!"
+	}
+    "2"
+    {
+        "chat"		"[提示]按H键打开公告左上方有本服所属QQ群,右下角可以加入本服所属STEAM组!"
+    }
+	"3"
+	{
+		"chat"		"[提示]所有战役终局(最后一关)团灭10次后通关失败自动换图,鼓励大家积极挑战通关!"
+	}
+	"4"
+	{
+		"chat"		"[提示]倒地请不要放弃抵抗,倒地手枪精准度和换弹速度和倒地前一样,并且去除了屏幕摇晃的效果!"
+	}
+	"5"
+	{
+		"chat"		"[提示]不适合新手,需要一定水平的团队配合,所有特感血量和伤害没有任何变化,但反应更快,配合更加好!"
+	}
+	"6"
+	{
+		"chat"		"[提示]Charger在抓到人之前都可以被右键推击,包括冲锋的时候!"
+	}
+	"7"
+	{
+		"chat"		"[提示]被Tank击倒请迅速爬走,否则很有可能被Tank连锤致死!"
+	}
+	"8"
+	{
+		"chat"		"[提示]请不要跑图,特感和Tank计算路程产生,不是计算时间(不包括机关点),跑图会导致整个队伍的覆灭!"
+	}
+	"9"
+	{
+		"chat"		"[提示]所有战役第一张地图Tank血量较少,Witch无法秒杀你!"
+	}
+	"10"
+	{
+		"chat"		"[提示]所有物品都只能拾取一次,请不要轻易放弃队友,尽量保住枪支到下一关!"
+	}
+	"11"
+	{
+		"chat"		"[提示]Tank在场的时候特感不会复活(不包括往前走),在Tank来临前还活着的特感还会存在,打掉就没了!"
+	}
+	"12"
+	{
+		"chat"		"[提示]战斗状态后退(Tank和多数特感存活)视为放弃走过的路程,再次走会重新计算路程!"
+	}	
+	"13"
+	{
+		"chat"		"[提示]后退多少计算多少,重新计算路程后会重新刷新特感,Tank和Witch不会重新刷新!"
+	}
+	"14"
+	{
+		"chat"		"[提示]手持任意非枪支物品对队友按R键可以给队友,有距离要求!"
+	}
+	"15"
+	{
+		"chat"		"[提示]原地60秒无任何动作自动进入闲置!"
+	}
+	"16"
+	{
+		"chat"		"[提示]Tank血量是随机的,终局Tank数量是随机的!"
+	}
+	"17"
+	{
+		"chat"		"[提示]控制台输入smac_status获取所有玩家的SteamID!"
+	}
+	"18"
+	{
+		"chat"		"[提示]聊天台输入!menu可以投票踢出/投票处死/单向静音,用来应对各类特殊情况!"
+	}
+	"19"
+	{
+		"chat"		"[提示]聊天台输入!votekick 玩家名 投票踢出有各种恶劣行为的玩家,需要百分之六十的玩家同意!"
+	}
+	"20"
+	{
+		"chat"		"[提示]聊天台输入!votekill 玩家名 投票处死意外卡住而且闲置无法传送出来的玩家,需要百分之百的玩家同意!"
+	}
+	"21"
+	{
+		"menu"		"地图:{currentmap}日期:{date}时间:{time24}"
+	}
+}

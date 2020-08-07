@@ -1,0 +1,135 @@
+"Phrases"
+{
+	"SMAC_Tag"
+	{
+		"en"		"[SMAC] "
+	}
+	
+	"SMAC_Banned"
+	{
+		"en"		"您由于作弊行为被禁止"
+	}
+	
+	"SMAC_GlobalBanned"
+	{
+		"#format"	"{1:s},{2:s}"
+		"en"		"You are listed on the {1} Global Ban List. See {2} for more information"
+	}
+	
+	"SMAC_CommandSpamKick"
+	{
+		"en"		"您由于违规行为被踢了"
+	}
+	
+	"SMAC_IllegalDefuse"
+	{
+		"en"		"You cannot defuse through walls."
+	}
+	
+	"SMAC_PleaseWait"
+	{
+		"en"		"请过几分钟再尝试连接"
+	}
+	
+	"SMAC_FailedToReply"
+	{
+		"en"		"系统无法得到您的回应,请重新启动游戏再尝试加入."
+	}
+	
+	"SMAC_FailedAuth"
+	{
+		"en"		"系统无法得到您的回应,请重新启动游戏再尝试加入."
+	}
+	
+	"SMAC_Muted"
+	{
+		"#format"	"{1:N}"
+		"en"		"{1} 已经被系统静音."
+	}
+	
+	"SMAC_CvarViolation"
+	{
+		"#format"	"{1:N},{2:s}"
+		"en"		"{1} returned a bad value on {2}."
+	}
+	
+	"SMAC_ShouldEqual"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"en"		"Your convar {1} should equal {2} but it was set to {3}. 请在重新加入之前纠正您的设置"
+	}
+	
+	"SMAC_ShouldBeGreater"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"en"		"Your convar {1} should be greater than or equal to {2} but was set to {3}. 请在重新加入之前纠正您的设置"
+	}
+	
+	"SMAC_ShouldBeLess"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"en"		"Your convar {1} should be less than or equal to {2} but was set to {3}. 请在重新加入之前纠正您的设置"
+	}
+	
+	"SMAC_ShouldBeBetween"
+	{
+		"#format"	"{1:s},{2:s},{3:s},{4:s}"
+		"en"		"Your convar {1} should be between {2} and {3} but was set to {4}. 请在重新加入之前纠正您的设置"
+	}
+	
+	"SMAC_ShouldBeOutside"
+	{
+		"#format"	"{1:s},{2:s},{3:s},{4:s}"
+		"en"		"Your convar {1} should not be between {2} and {3} but was set to {4}. 请在重新加入之前纠正您的设置"
+	}
+	
+	"SMAC_ChangeName"
+	{
+		"en"		"名字中不能有空格以及过长或过短"
+	}
+	
+	"SMAC_CmdBanned"
+	{
+		"en"		"由于您涉嫌滥用指令被禁止进入服务器"
+	}
+	
+	"SMAC_SayBlock"
+	{
+		"en"		"您的信息已被系统阻止."
+	}
+	
+	"SMAC_AimbotDetected"
+	{
+		"#format"	"{1:N},{2:i},{3:.0f},{4:s}"
+		"en"		"{1} 涉嫌作弊. (Detection #{2} | Deviation: {3}° | Weapon: {4})"
+	}
+	
+	"SMAC_AutoTriggerDetected"
+	{
+		"#format"	"{1:N},{2:s}"
+		"en"		"{1} 涉嫌作弊: {2}"
+	}
+	
+	"SMAC_SpinhackDetected"
+	{
+		"#format"	"{1:N}"
+		"en"		"{1} 涉嫌作弊."
+	}
+	
+	"SMAC_SpeedhackDetected"
+	{
+		"#format"	"{1:N}"
+		"en"		"{1} 涉嫌作弊."
+	}
+	
+	"SMAC_EyetestDetected"
+	{
+		"#format"	"{1:N}"
+		"en"		"{1} 涉嫌作弊."
+	}
+	
+	"SMAC_WelcomeMsg"
+	{
+		"en"		"服务器启用了SMAC和VAC反作弊系统."
+	}
+}
