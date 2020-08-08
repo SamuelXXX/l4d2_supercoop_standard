@@ -2,13 +2,13 @@ Msg("Super Coop");
 
 DirectorOptions <-
 {
-	 cm_MaxSpecials = 8
-	 cm_DominatorLimit = 8
+	 cm_MaxSpecials = 10
+	 cm_DominatorLimit = 10
 	 TankLimit = 24
 	 PreferredMobDirection = SPAWN_IN_FRONT_OF_SURVIVORS
 	 PreferredSpecialDirection = SPAWN_SPECIALS_IN_FRONT_OF_SURVIVORS
 	 ProhibitBosses = false
-	 ZombieTankHealth = RandomInt(8000,20000)
+	 ZombieTankHealth = RandomInt(6000,8000)
 	 WitchLimit = 24
 	 TankHitDamageModifierCoop = RandomFloat(1,5)
 }

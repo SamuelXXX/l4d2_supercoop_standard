@@ -20,7 +20,7 @@ DirectorOptions <-
 	 A_CustomFinaleValue4 = "c12m5_on.nut" 
  
 	 A_CustomFinale5 = PANIC
-	 A_CustomFinaleValue5 = RandomInt(1,4)
+	 A_CustomFinaleValue5 = RandomInt(1,3)
 
 	 A_CustomFinale6 = SCRIPTED
 	 A_CustomFinaleValue6 = "off.nut" 
@@ -32,13 +32,13 @@ DirectorOptions <-
 	 A_CustomFinaleValue8 = "c12m5_on.nut"
 
 	 A_CustomFinale9 = PANIC
-	 A_CustomFinaleValue9 = RandomInt(1,5)
+	 A_CustomFinaleValue9 = RandomInt(1,3)
 
 	 A_CustomFinale10 = SCRIPTED
 	 A_CustomFinaleValue10 = "off.nut"
 
 	 A_CustomFinale11 = TANK
-	 A_CustomFinaleValue11 = RandomInt(2,8)
+	 A_CustomFinaleValue11 = RandomInt(4,8)
 	 
 	 A_CustomFinale12 = SCRIPTED
 	 A_CustomFinaleValue12 = "c12m5_on.nut"	 

@@ -12,36 +12,45 @@ DirectorOptions <-
 
 	 A_CustomFinale2 = SCRIPTED
 	 A_CustomFinaleValue2 = "off.nut" 
+	 
+	 A_CustomFinale3 = DELAY
+	 A_CustomFinaleValue3 = RandomInt(10,15)
  
-	 A_CustomFinale3 = TANK
-	 A_CustomFinaleValue3 = RandomInt(2,4)
+	 A_CustomFinale4 = TANK
+	 A_CustomFinaleValue4 = RandomInt(2,4)
  
-	 A_CustomFinale4 = SCRIPTED
-	 A_CustomFinaleValue4 = "c10m5_on.nut" 
+	 A_CustomFinale5 = SCRIPTED
+	 A_CustomFinaleValue5 = "c10m5_on.nut" 
  
-	 A_CustomFinale5 = PANIC
-	 A_CustomFinaleValue5 = RandomInt(1,4)
+	 A_CustomFinale6 = PANIC
+	 A_CustomFinaleValue6 = RandomInt(1,4)
 
-	 A_CustomFinale6 = SCRIPTED
-	 A_CustomFinaleValue6 = "off.nut" 
+	 A_CustomFinale7 = SCRIPTED
+	 A_CustomFinaleValue7 = "off.nut" 
+	 
+	 A_CustomFinale8 = DELAY
+	 A_CustomFinaleValue8 = RandomInt(10,15)
  
-	 A_CustomFinale7 = TANK
-	 A_CustomFinaleValue7 = RandomInt(2,6)  
+	 A_CustomFinale9 = TANK
+	 A_CustomFinaleValue9 = RandomInt(2,6)  
  
-	 A_CustomFinale8 = SCRIPTED
-	 A_CustomFinaleValue8 = "c10m5_on.nut"
-
-	 A_CustomFinale9 = PANIC
-	 A_CustomFinaleValue9 = RandomInt(1,5)
-
 	 A_CustomFinale10 = SCRIPTED
-	 A_CustomFinaleValue10 = "off.nut"
+	 A_CustomFinaleValue10 = "c10m5_on.nut"
 
-	 A_CustomFinale11 = TANK
-	 A_CustomFinaleValue11 = RandomInt(2,8)
+	 A_CustomFinale11 = PANIC
+	 A_CustomFinaleValue11 = RandomInt(1,5)
 
 	 A_CustomFinale12 = SCRIPTED
-	 A_CustomFinaleValue12 = "c10m5_on.nut"
+	 A_CustomFinaleValue12 = "off.nut"
+	 
+	 A_CustomFinale13 = DELAY
+	 A_CustomFinaleValue13 = RandomInt(10,15)
+
+	 A_CustomFinale14 = TANK
+	 A_CustomFinaleValue14 = RandomInt(4,8)
+
+	 A_CustomFinale15 = SCRIPTED
+	 A_CustomFinaleValue15 = "c10m5_on.nut"
 
 	 HordeEscapeCommonLimit = 30
 	 ZombieTankHealth = RandomInt(8000,20000)

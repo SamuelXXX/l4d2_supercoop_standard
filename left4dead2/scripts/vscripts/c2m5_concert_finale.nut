@@ -32,19 +32,19 @@ DirectorOptions <-
 	 A_CustomFinaleValue8 = "c2m5_2.nut" 
 
 	 A_CustomFinale9 = PANIC
-	 A_CustomFinaleValue9 = RandomInt(1,3)
+	 A_CustomFinaleValue9 = RandomInt(1,2)
 
 	 A_CustomFinale10 = SCRIPTED
 	 A_CustomFinaleValue10 = "c2m5_3.nut"
 
 	 A_CustomFinale11 = PANIC
-	 A_CustomFinaleValue11 = RandomInt(1,3)
+	 A_CustomFinaleValue11 = RandomInt(1,2)
 
 	 A_CustomFinale12 = SCRIPTED
 	 A_CustomFinaleValue12 = "off.nut"
 
 	 A_CustomFinale13 = TANK
-	 A_CustomFinaleValue13 = RandomInt(2,8)
+	 A_CustomFinaleValue13 = RandomInt(4,8)
 
 	 HordeEscapeCommonLimit = 30
 	 ZombieTankHealth = RandomInt(8000,20000)

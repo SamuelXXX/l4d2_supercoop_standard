@@ -38,7 +38,7 @@ DirectorOptions <-
 	 A_CustomFinaleValue10 = "off.nut"
 
 	 A_CustomFinale11 = TANK
-	 A_CustomFinaleValue11 = RandomInt(2,6)
+	 A_CustomFinaleValue11 = RandomInt(4,8)
 	 
 	 A_CustomFinale12 = SCRIPTED
 	 A_CustomFinaleValue12 = "c11m5_on.nut"	 	 
@@ -47,8 +47,8 @@ DirectorOptions <-
 	 ZombieTankHealth = RandomInt(8000,20000)
 	 CommonLimit = 30
 	 MegaMobSize = 90
-	 cm_MaxSpecials = 8
-	 cm_DominatorLimit = 8
+	 cm_MaxSpecials = 12
+	 cm_DominatorLimit = 12
 	 TankLimit = 24
 	 PreferredMobDirection = SPAWN_LARGE_VOLUME
 	 PreferredSpecialDirection = SPAWN_LARGE_VOLUME

@@ -11,6 +11,7 @@ DirectorOptions <-
 	 ZombieTankHealth = RandomInt(20000,30000)
 	 WitchLimit = 0
 	 TankHitDamageModifierCoop = 5
+	 RelaxMaxFlowTravel = RandomInt(100,500)
 	 weaponsToConvert =
 	 {
 		weapon_vomitjar = "weapon_pain_pills"

@@ -12,8 +12,8 @@ DirectorOptions <-
 	 WitchLimit = 24
 	 TankHitDamageModifierCoop = RandomFloat(1,5)
 }
-Convars.SetValue("l4d2_spawn_uncommons_autochance","1")
-Convars.SetValue("l4d2_spawn_uncommons_autotypes","1")
+Convars.SetValue("l4d2_spawn_uncommons_autochance","3")
+Convars.SetValue("l4d2_spawn_uncommons_autotypes","31")
 Convars.SetValue("z_witch_always_kills","0")
 Convars.SetValue("director_max_threat_areas","24")
 Convars.SetValue("tongue_victim_max_speed","225")

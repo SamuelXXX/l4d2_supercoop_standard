@@ -14,7 +14,7 @@ DirectorOptions <-
 	 A_CustomFinaleValue2 = "off.nut" 
  
 	 A_CustomFinale3 = TANK
-	 A_CustomFinaleValue3 = RandomInt(2,4)
+	 A_CustomFinaleValue3 = RandomInt(2,3)
  
 	 A_CustomFinale4 = SCRIPTED
 	 A_CustomFinaleValue4 = "c9m2_on.nut" 
@@ -26,29 +26,17 @@ DirectorOptions <-
 	 A_CustomFinaleValue6 = "off.nut"
  
 	 A_CustomFinale7 = TANK
-	 A_CustomFinaleValue7 = RandomInt(2,5)  
+	 A_CustomFinaleValue7 = RandomInt(2,3)  
  
 	 A_CustomFinale8 = SCRIPTED
 	 A_CustomFinaleValue8 = "c9m2_on.nut"
-
-	 A_CustomFinale9 = PANIC
-	 A_CustomFinaleValue9 = RandomInt(1,3)
-
-	 A_CustomFinale10 = SCRIPTED
-	 A_CustomFinaleValue10 = "off.nut"
-
-	 A_CustomFinale11 = TANK
-	 A_CustomFinaleValue11 = RandomInt(2,6)
-
-	 A_CustomFinale12 = SCRIPTED
-	 A_CustomFinaleValue12 = "c9m2_on.nut"
 	 
 	 HordeEscapeCommonLimit = 30
 	 ZombieTankHealth = RandomInt(8000,20000)
 	 CommonLimit = 30
 	 MegaMobSize = 90
-	 cm_MaxSpecials = 10
-	 cm_DominatorLimit = 10
+	 cm_MaxSpecials = 12
+	 cm_DominatorLimit = 12
 	 TankLimit = 24
 	 PreferredMobDirection = SPAWN_LARGE_VOLUME
 	 PreferredSpecialDirection = SPAWN_LARGE_VOLUME

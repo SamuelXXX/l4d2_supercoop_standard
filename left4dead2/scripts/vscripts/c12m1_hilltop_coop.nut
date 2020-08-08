@@ -2,8 +2,8 @@ Msg("Super Coop");
 
 DirectorOptions <-
 {
-	 cm_MaxSpecials = 8
-	 cm_DominatorLimit = 8
+	 cm_MaxSpecials = 6
+	 cm_DominatorLimit = 6
 	 TankLimit = 24
 	 PreferredMobDirection = SPAWN_IN_FRONT_OF_SURVIVORS
 	 PreferredSpecialDirection = SPAWN_SPECIALS_IN_FRONT_OF_SURVIVORS
