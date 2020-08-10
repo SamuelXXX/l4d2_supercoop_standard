@@ -47,8 +47,8 @@ DirectorOptions <-
 	 ZombieTankHealth = RandomInt(8000,20000)
 	 CommonLimit = 30
 	 MegaMobSize = 90
-	 cm_MaxSpecials = 12
-	 cm_DominatorLimit = 12
+	 cm_MaxSpecials = 10
+	 cm_DominatorLimit = 10
 	 TankLimit = 24
 	 ProhibitBosses = false
 	 WitchLimit = 0
