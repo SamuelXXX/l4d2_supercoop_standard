@@ -26,7 +26,7 @@ DirectorOptions <-
 	 A_CustomFinaleValue6 = "off.nut"
  
 	 A_CustomFinale7 = TANK
-	 A_CustomFinaleValue7 = RandomInt(2,6) 
+	 A_CustomFinaleValue7 = RandomInt(4,6) 
  
 	 A_CustomFinale8 = SCRIPTED
 	 A_CustomFinaleValue8 = "c2m5_2.nut" 
@@ -44,7 +44,7 @@ DirectorOptions <-
 	 A_CustomFinaleValue12 = "off.nut"
 
 	 A_CustomFinale13 = TANK
-	 A_CustomFinaleValue13 = RandomInt(4,8)
+	 A_CustomFinaleValue13 = RandomInt(6,10)
 
 	 HordeEscapeCommonLimit = 30
 	 ZombieTankHealth = RandomInt(8000,20000)
