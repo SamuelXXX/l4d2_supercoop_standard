@@ -1,5 +1,9 @@
 DirectorOptions <-
 {
+	//CommonLimit = 0
+	//cm_MaxSpecials = 0
+	//TankLimit = 0
+	//WitchLimit = 0
 	cm_AggressiveSpecials = true
 	cm_ProhibitBosses = false
 	AllowWitchesInCheckpoints = true
