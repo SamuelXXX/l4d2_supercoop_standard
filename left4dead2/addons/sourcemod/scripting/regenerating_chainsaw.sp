@@ -80,8 +80,13 @@ public Action ClientHandleRoutine(Handle timer,int client)
 
 	// 处理副手武器是电锯的情况
 	int activeWeapon = GetEntPropEnt(client, Prop_Data, "m_hActiveWeapon");// 当前使用的武器
+	int mainWeapon = GetPlayerWeaponSlot(client, 0);// 当前的主手武器
 
-	if(activeWeapon == viceWeapon)
+	if(mainWeapon == -1)
+	{
+		FuelChainsaw(viceWeapon, 4 * GetConVarInt(RefuelAmountCVAR));//没有主手武器，四倍恢复
+	}
+	else if(activeWeapon == viceWeapon)
 	{
 		FuelChainsaw(viceWeapon, GetConVarInt(RefuelAmountCVAR));//正使用电锯，一倍恢复
 	}
