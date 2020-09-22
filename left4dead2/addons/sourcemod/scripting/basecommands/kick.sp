@@ -31,6 +31,9 @@
  * Version: $Id$
  */
  
+#include <sourcemod>
+#include <sdktools>
+ 
 void PerformKick(int client, int target, const char[] reason)
 {
 	LogAction(client, target, "\"%L\" kicked \"%L\" (reason \"%s\")", client, target, reason);
@@ -125,11 +128,11 @@ public Action Command_Kick(int client, int args)
 {
 	if (args < 1)
 	{
-		if ((GetCmdReplySource() == SM_REPLY_TO_CHAT) && (client != 0))
-		{
-			DisplayKickMenu(client);
-		}
-		else
+		//if ((GetCmdReplySource() == SM_REPLY_TO_CHAT) && (client != 0))
+		//{
+		//	DisplayKickMenu(client);
+		//}
+		//else
 		{
 			ReplyToCommand(client, "[SM] Usage: sm_kick <#userid|name> [reason]");
 		}
@@ -166,31 +169,9 @@ public Action Command_Kick(int client, int args)
 	{
 		char reason[64];
 		Format(reason, sizeof(reason), Arguments[len]);
-
-		if (tn_is_ml)
-		{
-			if (reason[0] == '\0')
-			{
-				ShowActivity2(client, "[SM] ", "%t", "Kicked target", target_name);
-			}
-			else
-			{
-				ShowActivity2(client, "[SM] ", "%t", "Kicked target reason", target_name, reason);
-			}
-		}
-		else
-		{
-			if (reason[0] == '\0')
-			{
-				ShowActivity2(client, "[SM] ", "%t", "Kicked target", "_s", target_name);            
-			}
-			else
-			{
-				ShowActivity2(client, "[SM] ", "%t", "Kicked target reason", "_s", target_name, reason);
-			}
-		}
 		
 		int kick_self = 0;
+		bool isFake=false;
 		
 		for (int i = 0; i < target_count; i++)
 		{
@@ -201,9 +182,43 @@ public Action Command_Kick(int client, int args)
 			}
 			else
 			{
-				PerformKick(client, target_list[i], reason);
+				if(IsFakeClient(target_list[i]))	
+				{
+					ReplyToCommand(client, "[SM] %t", "Cannot target bot");
+					isFake=true;
+				}									
+				else
+					PerformKick(client, target_list[i], reason);
 			}
 		}
+		
+		if(!isFake)
+		{
+			if (tn_is_ml)
+			{
+				if (reason[0] == '\0')
+				{
+					ShowActivity2(client, "[SM] ", "%t", "Kicked target", target_name);
+				}
+				else
+				{
+					ShowActivity2(client, "[SM] ", "%t", "Kicked target reason", target_name, reason);
+				}
+			}
+			else
+			{
+				if (reason[0] == '\0')
+				{
+					ShowActivity2(client, "[SM] ", "%t", "Kicked target", "_s", target_name);            
+				}
+				else
+				{
+					ShowActivity2(client, "[SM] ", "%t", "Kicked target reason", "_s", target_name, reason);
+				}
+			}
+		}
+		
+		
 		
 		if (kick_self)
 		{

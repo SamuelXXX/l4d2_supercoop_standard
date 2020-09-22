@@ -31,7 +31,7 @@
  * Version: $Id$
  */
 
-void DisplayVoteKickMenu(int client, int target)
+public void DisplayVoteKickMenu(int client, int target)
 {
 	g_voteTarget = GetClientUserId(target);
 
@@ -146,10 +146,35 @@ public Action Command_Votekick(int client, int args)
 	GetCmdArgString(text, sizeof(text));
 	
 	int len = BreakString(text, arg, sizeof(arg));
+		
+	char target_name[MAX_TARGET_LENGTH];
+	int target_list[MAXPLAYERS], target_count;
+	bool tn_is_ml;
 	
-	int target = FindTarget(client, arg);
+	if ((target_count = ProcessTargetString(
+			arg,
+			0,
+			target_list,
+			MAXPLAYERS,
+			COMMAND_FILTER_NO_MULTI,
+			target_name,
+			sizeof(target_name),
+			tn_is_ml)) <= 0)
+	{
+		ReplyToTargetError(client, target_count);
+		return Plugin_Handled;
+	}
+	
+	int target = target_list[0];
+	
 	if (target == -1)
 	{
+		return Plugin_Handled;
+	}
+	
+	if(IsFakeClient(target))
+	{
+		ReplyToCommand(client, "[SM] %t", "Cannot target bot");
 		return Plugin_Handled;
 	}
 	
@@ -165,4 +190,5 @@ public Action Command_Votekick(int client, int args)
 	DisplayVoteKickMenu(client, target);
 	
 	return Plugin_Handled;
+
 }
