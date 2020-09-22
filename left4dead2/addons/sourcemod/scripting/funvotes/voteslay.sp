@@ -136,9 +136,10 @@ public Action Command_VoteSlay(int client, int args)
 {
 	if (args < 1)
 	{
-		ReplyToCommand(client, "[SM] Usage: sm_voteslay <player>");
+		ReplyToCommand(client, "[SM] Usage: sm_votekill <player>");
 		return Plugin_Handled;	
 	}
+	
 	
 	if (IsVoteInProgress())
 	{
@@ -150,7 +151,7 @@ public Action Command_VoteSlay(int client, int args)
 	{
 		return Plugin_Handled;
 	}
-	
+
 	char text[256], arg[64];
 	GetCmdArgString(text, sizeof(text));
 	
@@ -162,7 +163,7 @@ public Action Command_VoteSlay(int client, int args)
 	
 	if ((target_count = ProcessTargetString(
 			arg,
-			client,
+			0,
 			target_list,
 			MAXPLAYERS,
 			COMMAND_FILTER_NO_MULTI,
@@ -171,6 +172,12 @@ public Action Command_VoteSlay(int client, int args)
 			tn_is_ml)) <= 0)
 	{
 		ReplyToTargetError(client, target_count);
+		return Plugin_Handled;
+	}
+	
+	if(IsFakeClient(target_list[0]))
+	{
+		ReplyToCommand(client, "[SM] %t", "Cannot target bot");
 		return Plugin_Handled;
 	}
 

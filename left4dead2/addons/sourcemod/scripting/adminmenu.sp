@@ -211,8 +211,7 @@ stock int UTIL_AddTargetsToMenu2(Menu menu, int source_client, int flags)
 			continue;
 		}
 		
-		if (((flags & COMMAND_FILTER_NO_BOTS) == COMMAND_FILTER_NO_BOTS)
-			&& IsFakeClient(i))
+		if (IsFakeClient(i))
 		{
 			continue;
 		}
