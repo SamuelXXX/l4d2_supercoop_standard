@@ -1,4 +1,4 @@
-Msg("**Delay started**\n")
+Msg("**C1M4 Delay started**\n")
 
 DirectorOptions <-
 {

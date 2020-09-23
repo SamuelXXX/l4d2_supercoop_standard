@@ -1,4 +1,4 @@
-Msg("Super Coop")
+Msg(">>>Loading c1m1 Director Scripts\n");
 
 DirectorOptions <-
 {
