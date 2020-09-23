@@ -89,7 +89,7 @@ public MRESReturn OnShouldStartAction(int pThis, Handle hReturn, Handle hParams)
 			{
 				if(GetClientRealHealth(client) > cvmkp_minhealth.IntValue)
 				{
-					PrintDebugMessage("\x05[AI行为规范] \x04已拦截电脑的自我打包行为");
+					PrintDebugMessage("\x03[AI行为规范] \x01已拦截电脑的自我打包行为");
 					DHookSetReturn(hReturn, false);
 					return MRES_Supercede;
 				}
@@ -97,7 +97,7 @@ public MRESReturn OnShouldStartAction(int pThis, Handle hReturn, Handle hParams)
 			// This only checks normal hp. It does not check for temp health
 			if(GetClientHealth(client) > cvmkp_minhealth.IntValue )
 			{
-				PrintDebugMessage("\x05[AI行为规范] \x04已拦截电脑的自我打包行为");
+				PrintDebugMessage("\x03[AI行为规范] \x01已拦截电脑的自我打包行为");
 				DHookSetReturn(hReturn, false);
 				return MRES_Supercede;
 			}
@@ -108,7 +108,7 @@ public MRESReturn OnShouldStartAction(int pThis, Handle hReturn, Handle hParams)
 			{
 				if(GetClientRealHealth(target) > cvmkp_minhealth.IntValue)
 				{
-					PrintDebugMessage("\x05[AI行为规范] \x04已拦截电脑为玩家打包的行为");
+					PrintDebugMessage("\x03[AI行为规范] \x01已拦截电脑为玩家打包的行为");
 					DHookSetReturn(hReturn, false);
 					return MRES_Supercede;
 				}
@@ -116,7 +116,7 @@ public MRESReturn OnShouldStartAction(int pThis, Handle hReturn, Handle hParams)
 			// This only checks normal hp. It does not check for temp health
 			if(GetClientHealth(target) > cvmkp_minhealth.IntValue )
 			{
-				PrintDebugMessage("\x05[AI行为规范] \x04已拦截电脑为玩家打包的行为");
+				PrintDebugMessage("\x03[AI行为规范] \x01已拦截电脑为玩家打包的行为");
 				DHookSetReturn(hReturn, false);
 				return MRES_Supercede;
 			}
