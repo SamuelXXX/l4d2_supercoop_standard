@@ -179,7 +179,7 @@ public Action Timer_DisplayAd(Handle timer)
                 if (bTeamColor) {
                     CSayText2(i, sChat, i);
                 } else {
-                    PrintToChat(i, "\x05[提示] \x04%s",sChat);
+                    PrintToChat(i, "\x03[提示] \x01%s",sChat);
                 }
             }
         }
