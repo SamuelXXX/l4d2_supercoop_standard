@@ -74,11 +74,9 @@ public MRESReturn OnShouldStartAction(int pThis, Handle hReturn, Handle hParams)
 
 	if(!IsFakeClient(client))
 	{
-		PrintDebugMessage("Use medkit by real player");
 		return MRES_Ignored;
 	}
 
-	PrintDebugMessage("Use medkit by fake player");
 	if(IsValidEntity(client))
 	{
 		// Ignore if we are in Black / White Mode
