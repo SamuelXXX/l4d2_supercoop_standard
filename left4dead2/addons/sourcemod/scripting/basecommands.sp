@@ -319,16 +319,16 @@ public Action Command_Cvar(int client, int args)
 		}
 	}
 
-	if ((hndl.Flags & FCVAR_PROTECTED) != FCVAR_PROTECTED)
-	{
-		ShowActivity2(client, "[SM] ", "%t", "Cvar changed", cvarname, value);
-	}
-	else
-	{
-		ReplyToCommand(client, "[SM] %t", "Cvar changed", cvarname, value);
-	}
-
-	LogAction(client, -1, "\"%L\" changed cvar (cvar \"%s\") (value \"%s\")", client, cvarname, value);
+	// if ((hndl.Flags & FCVAR_PROTECTED) != FCVAR_PROTECTED)
+	// {
+	// 	ShowActivity2(client, "[SM] ", "%t", "Cvar changed", cvarname, value);
+	// }
+	// else
+	// {
+	// 	ReplyToCommand(client, "[SM] %t", "Cvar changed", cvarname, value);
+	// }
+	ReplyToCommand(client, "[SM] %t", "Cvar changed", cvarname, value);
+	//LogAction(client, -1, "\"%L\" changed cvar (cvar \"%s\") (value \"%s\")", client, cvarname, value);
 
 	hndl.SetString(value, true);
 

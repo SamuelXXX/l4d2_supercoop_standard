@@ -3,6 +3,8 @@
 #endif
 #define _dhooks_included
 
+#include <sdktools>
+
 enum ObjectValueType
 {
 	ObjectValueType_Int = 0,
