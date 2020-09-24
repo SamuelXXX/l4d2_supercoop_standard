@@ -1,4 +1,4 @@
-Msg("Super Coop")
+Msg("\n\n\n>>>>>>>>>>>>>>>>>>>>>>>>>>>Load c10 finale scripts<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n")
 ERROR <- -1
 PANIC <- 0
 TANK <- 1
