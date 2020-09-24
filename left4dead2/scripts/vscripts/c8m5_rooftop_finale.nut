@@ -1,4 +1,4 @@
-Msg("Super Coop")
+Msg("\n\n\n>>>>>>>>>>>>>>>>>>>>>>>>>>>Load c8 finale scripts<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n")
 ERROR <- -1
 PANIC <- 0
 TANK <- 1
@@ -52,7 +52,7 @@ DirectorOptions <-
 	 TankLimit = 24
 	 ProhibitBosses = false
 	 WitchLimit = 0
-	 SpecialRespawnInterval = 12
+	 SpecialRespawnInterval = 6
 	 TankHitDamageModifierCoop = RandomFloat(1,5)
 }
 Convars.SetValue("l4d2_spawn_uncommons_autochance","3")

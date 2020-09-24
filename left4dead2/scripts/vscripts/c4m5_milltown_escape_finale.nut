@@ -1,4 +1,4 @@
-Msg("Super Coop")
+Msg("\n\n\n>>>>>>>>>>>>>>>>>>>>>>>>>>>Load c5 finale scripts<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n")
 ERROR <- -1
 PANIC <- 0
 TANK <- 1
@@ -32,7 +32,7 @@ DirectorOptions <-
 	 A_CustomFinaleValue8 = 2 
 
 	 HordeEscapeCommonLimit = 30
-	 ZombieTankHealth = RandomInt(8000,20000)
+	 ZombieTankHealth = RandomInt(12000,20000)
 	 CommonLimit = 30
 	 MegaMobSize = 90
 	 MaxSpecials = 10

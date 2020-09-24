@@ -8,7 +8,7 @@ DirectorOptions <-
 
 	 WitchLimit = 0
 
-	 RelaxMaxFlowTravel = RandomInt(100,500)
+	 RelaxMaxFlowTravel = RandomInt(100,200)
 	 weaponsToConvert =
 	 {
 		weapon_vomitjar = "weapon_pain_pills"

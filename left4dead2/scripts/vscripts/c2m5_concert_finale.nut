@@ -1,4 +1,4 @@
-Msg("Super Coop")
+Msg("\n\n\n>>>>>>>>>>>>>>>>>>>>>>>>>>>Load c2 finale scripts<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n")
 ERROR <- -1
 PANIC <- 0
 TANK <- 1
@@ -47,7 +47,7 @@ DirectorOptions <-
 	 A_CustomFinaleValue13 = RandomInt(6,10)
 
 	 HordeEscapeCommonLimit = 30
-	 ZombieTankHealth = RandomInt(8000,20000)
+	 ZombieTankHealth = RandomInt(15000,20000)
 	 CommonLimit = 30
 	 MegaMobSize = 90
 	 MaxSpecials = 10
@@ -57,8 +57,8 @@ DirectorOptions <-
 	 PreferredSpecialDirection = SPAWN_SPECIALS_ANYWHERE
 	 ProhibitBosses = false
 	 WitchLimit = 0
-	 SpecialRespawnInterval = 7
-	 TankHitDamageModifierCoop = RandomFloat(1,5)
+	 SpecialRespawnInterval = 4
+	 TankHitDamageModifierCoop = RandomFloat(3,5)
 }
 Convars.SetValue("l4d2_spawn_uncommons_autochance","3")
 Convars.SetValue("l4d2_spawn_uncommons_autotypes","59")
@@ -66,3 +66,5 @@ Convars.SetValue("director_relax_min_interval","120")
 Convars.SetValue("director_relax_max_interval","120")
 Convars.SetValue("tongue_victim_max_speed","700")
 Convars.SetValue("tongue_range","2000")
+
+Msg("###Tank Health:"+DirectorOptions.ZombieTankHealth);

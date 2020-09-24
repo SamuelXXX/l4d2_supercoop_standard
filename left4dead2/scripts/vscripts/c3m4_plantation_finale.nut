@@ -1,4 +1,4 @@
-Msg("Super Coop")
+Msg("\n\n\n>>>>>>>>>>>>>>>>>>>>>>>>>>>Load c3 finale scripts<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n")
 ERROR <- -1
 PANIC <- 0
 TANK <- 1
@@ -53,7 +53,7 @@ DirectorOptions <-
 	 A_CustomFinaleValue15 = "c3m4_on.nut"
 
 	 HordeEscapeCommonLimit = 30
-	 ZombieTankHealth = RandomInt(8000,20000)
+	 ZombieTankHealth = RandomInt(12000,20000)
 	 CommonLimit = 30
 	 MegaMobSize = 90
 	 cm_MaxSpecials = 14
@@ -64,7 +64,7 @@ DirectorOptions <-
 	 ProhibitBosses = false
 	 WitchLimit = 0
 	 SpecialRespawnInterval = 7
-	 TankHitDamageModifierCoop = RandomFloat(1,5)
+	 TankHitDamageModifierCoop = RandomFloat(3,5)
 }
 Convars.SetValue("l4d2_spawn_uncommons_autochance","3")
 Convars.SetValue("l4d2_spawn_uncommons_autotypes","59")
