@@ -6,7 +6,7 @@
 
 ConVar MinTimeCVAR,MaxTimeCVAR,ShowMsgCVAR,TankWaveDurationCVAR;
 
-Handle mapTickHandler;
+Handle mapTickHandler,delayStopTickHandler;
 
 public Plugin myinfo =
 {
@@ -36,21 +36,22 @@ public void OnPluginStart()
 
 public void OnMapStart()
 {
-	PrintDebugMessage("Map Start");
+	//PrintDebugMessage("Map Start");
 	CreateTimer(20.0,DelayStart);
 }
 
 public Action DelayStart(Handle timer)
 {
-	PrintDebugMessage("Start Map Tick Routine");
+	//PrintDebugMessage("Start Map Tick Routine");
 	delete mapTickHandler;
 	mapTickHandler = CreateTimer(GenerateRandomTime(),MapTickHandleRoutine,_,TIMER_REPEAT);
 }
 
 public void OnMapEnd()
 {
-	PrintDebugMessage("Map End");
+	//PrintDebugMessage("Map End");
 	delete mapTickHandler;
+	delete delayStopTickHandler;
 }
 
 stock float GenerateRandomTime()
@@ -76,7 +77,13 @@ stock void CloseTankWave()
 
 Action DelayStopTankWave(Handle timer)
 {
-	CloseTankWave();
+	if(IsAliveTankInPlay())
+	{
+		CloseTankWave();
+		return Plugin_Stop;
+	}
+	
+	return Plugin_Continue;
 }
 
 stock bool IsAliveTankInPlay()
@@ -109,12 +116,12 @@ stock bool IsAliveTankInPlay()
 
 public Action MapTickHandleRoutine(Handle timer)
 {
-	PrintDebugMessage("Map Ticking");
+	//PrintDebugMessage("Map Ticking");
 	if(!IsAliveTankInPlay())
 	{
 		PrintDebugMessage("当前无tank，即将解禁tank的生成！");
 		ReleaseTankWave();
-		CreateTimer(GetConVarFloat(TankWaveDurationCVAR),DelayStopTankWave);
+		delayStopTickHandler = CreateTimer(GetConVarFloat(TankWaveDurationCVAR),DelayStopTankWave,_,TIMER_REPEAT);
 	}
 
 	return Plugin_Continue;
