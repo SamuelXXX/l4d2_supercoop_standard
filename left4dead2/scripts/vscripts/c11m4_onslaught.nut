@@ -1,6 +1,7 @@
 Msg("\n\n\n");
 Msg(">>>c11m4_onslaught\n");
 Msg("\n\n\n");
+//c11m4过安检触发
 
 DirectorOptions <-
 {
@@ -15,10 +16,10 @@ DirectorOptions <-
 	MobMaxSize = 25
 	SustainPeakMinTime = 1
 	SustainPeakMaxTime = 3
-	IntensityRelaxThreshold = 0.90
+	IntensityRelaxThreshold = 1.1
 	RelaxMinInterval = 1
-	RelaxMaxInterval = 5
-	RelaxMaxFlowTravel = 200
+	RelaxMaxInterval = 3
+	RelaxMaxFlowTravel = 100
 }
 
 Director.ResetMobTimer()

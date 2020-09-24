@@ -1,6 +1,7 @@
 Msg("\n\n\n");
 Msg(">>>director_c4_storm\n");
 Msg("\n\n\n");
+//在c4m3 m4开局触发
 
 
 DirectorOptions <-

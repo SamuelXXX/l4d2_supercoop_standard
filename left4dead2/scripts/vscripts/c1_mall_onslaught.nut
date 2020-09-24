@@ -1,6 +1,7 @@
 Msg("\n\n\n");
 Msg(">>>c1_mall_onslaught\n");
 Msg("\n\n\n");
+//打开超市门触发
 
 DirectorOptions <-
 {
@@ -8,21 +9,16 @@ DirectorOptions <-
 	ProhibitBosses = true
 
 	MobSpawnMinTime = 1
-	MobSpawnMaxTime = 4
-	MobMinSize = 15
-	MobMaxSize = 20
-	MobMaxPending = 30
-	SustainPeakMinTime = 10
-	SustainPeakMaxTime = 15
+	MobSpawnMaxTime = 2
+	MobMaxPending = 20
+	MobMinSize = 20
+	MobMaxSize = 40
+	SustainPeakMinTime = 1
+	SustainPeakMaxTime = 3
 	IntensityRelaxThreshold = 0.99
-	RelaxMinInterval = 3
-	RelaxMaxInterval = 5
-	RelaxMaxFlowTravel = 200
-	BoomerLimit = 0
-	SmokerLimit = 3
-	HunterLimit = 1
-	ChargerLimit = 2
-	SpecialRespawnInterval = 5.0
+	RelaxMinInterval = 1
+	RelaxMaxInterval = 2
+	RelaxMaxFlowTravel = 50
 	PreferredMobDirection = SPAWN_IN_FRONT_OF_SURVIVORS
 	//ZombieSpawnRange = 1500
 }

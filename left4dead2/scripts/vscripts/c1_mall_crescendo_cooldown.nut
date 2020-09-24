@@ -1,27 +1,21 @@
 Msg("\n\n\n");
 Msg(">>>c1_mall_crescendo_cooldown\n");
 Msg("\n\n\n");
-
+//关闭商场机关后触发
 DirectorOptions <-
 {
 	AlwaysAllowWanderers = true
-	MobSpawnMinTime = 25
-	MobSpawnMaxTime = 60
-	MobMinSize = 10
-	MobMaxSize = 25
-	MobMaxPending = 5
+
+	MobMinSize = 20
+	MobMaxSize = 40
+	MobMaxPending = 20
 	SustainPeakMinTime = 5
 	SustainPeakMaxTime = 8
-	IntensityRelaxThreshold = 0.9
-	RelaxMinInterval = 20
-	RelaxMaxInterval = 35
-	RelaxMaxFlowTravel = 2000
-	SmokerLimit = 2
-	HunterLimit = 2
-	ChargerLimit = 3
-	SpecialRespawnInterval = 20.0
+	IntensityRelaxThreshold = 0.95
+
+	SpecialRespawnInterval = 5
 	ZombieSpawnRange = 2000
-	NumReservedWanderers = 15
+	NumReservedWanderers = 20
 }
 
 Director.ResetMobTimer()

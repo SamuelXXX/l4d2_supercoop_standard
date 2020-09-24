@@ -6,6 +6,7 @@ Msg("\n\n\n");
 Msg(">>>director_base\n");
 printl( "Initializing Director's script" );
 Msg("\n\n\n");
+//紧跟coop xxx_coop之后执行
 
 
 DirectorOptions <-
@@ -22,7 +23,7 @@ DirectorOptions <-
 		}
 	}
 
-	MaxSpecials = 2		
+	MaxSpecials = 8		
 }
 
 // temporarily leaving stage strings as diagnostic for gauntlet mode

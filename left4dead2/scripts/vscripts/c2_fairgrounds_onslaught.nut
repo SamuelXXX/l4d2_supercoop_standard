@@ -1,6 +1,7 @@
 Msg("\n\n\n");
 Msg(">>>c2_fairgrounds_onslaught\n");
 Msg("\n\n\n");
+//开了c2m2的机关触发
 
 DirectorOptions <-
 {
@@ -18,7 +19,9 @@ DirectorOptions <-
 	IntensityRelaxThreshold = 0.90
 	RelaxMinInterval = 1
 	RelaxMaxInterval = 5
-	RelaxMaxFlowTravel = 200
+	RelaxMaxFlowTravel = 100
+
+	MaxSpecials=14
 }
 
 Director.ResetMobTimer()

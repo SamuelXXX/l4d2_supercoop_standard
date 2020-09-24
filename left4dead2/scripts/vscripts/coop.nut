@@ -15,7 +15,7 @@ DirectorOptions <-
 	//SpitterLimit = 0
 	//JockeyLimit = 0
 	//ChargerLimit = 0
-	//WitchLimit = 24
+	//WitchLimit = 0
 	//MaxSpecials = 12
 	//DominatorLimit = 12
 	//TankLimit = 24
@@ -23,6 +23,8 @@ DirectorOptions <-
 	
 
 	TankLimit = 1
+	DominatorLimit = 8 //有控制能力的特要控制在8只,cm_DominatorLimit这个参数貌似不会生效
+
 	ProhibitBosses = false
 	TankHitDamageModifierCoop = RandomFloat(1,5)
 	PreferredMobDirection = SPAWN_IN_FRONT_OF_SURVIVORS

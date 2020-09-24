@@ -1,27 +1,22 @@
 Msg("\n\n\n");
 Msg(">>>c1_mall_ambient\n");
 Msg("\n\n\n");
+//c1m3商场地图开局触发
 
 DirectorOptions <-
 {
 	AlwaysAllowWanderers = true
-	MobSpawnMinTime = 60
-	MobSpawnMaxTime = 90
-	MobMinSize = 10
-	MobMaxSize = 20
+
+	MobMinSize = 20
+	MobMaxSize = 40
 	MobMaxPending = 20
 	SustainPeakMinTime = 5
 	SustainPeakMaxTime = 8
 	IntensityRelaxThreshold = 0.95
-	RelaxMinInterval = 15
-	RelaxMaxInterval = 30
-	RelaxMaxFlowTravel = 2000
-	SmokerLimit = 1
-	HunterLimit = 1
-	ChargerLimit = 1
-	SpecialRespawnInterval = 45.0
+
+	SpecialRespawnInterval = 5
 	ZombieSpawnRange = 2000
-	NumReservedWanderers = 10
+	NumReservedWanderers = 20
 }
 
 Director.ResetMobTimer()

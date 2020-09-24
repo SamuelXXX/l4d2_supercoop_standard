@@ -1,6 +1,7 @@
 Msg("\n\n\n");
 Msg(">>>c10m4_onslaught\n");
 Msg("\n\n\n");
+//c10m4 跑图触发
 
 DirectorOptions <-
 {
@@ -17,8 +18,8 @@ DirectorOptions <-
 	SustainPeakMaxTime = 3
 	IntensityRelaxThreshold = 0.90
 	RelaxMinInterval = 1
-	RelaxMaxInterval = 5
-	RelaxMaxFlowTravel = 200
+	RelaxMaxInterval = 3
+	RelaxMaxFlowTravel = 100
 }
 
 Director.ResetMobTimer()

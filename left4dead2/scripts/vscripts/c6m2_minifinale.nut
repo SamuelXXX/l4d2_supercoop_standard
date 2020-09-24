@@ -3,6 +3,7 @@
 Msg("\n\n\n");
 Msg(">>>c6m2_minifinale\n");
 Msg("\n\n\n");
+//c6m2开完机关后刷
 
 DirectorOptions <-
 {
@@ -18,7 +19,7 @@ DirectorOptions <-
 	IntensityRelaxThreshold = 1.0
 	RelaxMinInterval = 5
 	RelaxMaxInterval = 5
-	RelaxMaxFlowTravel = 600
+	RelaxMaxFlowTravel = 200
 
 	MobMaxPending = 15
 
