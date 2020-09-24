@@ -1,6 +1,7 @@
 Msg("\n\n\n");
 Msg(">>>c11m4_minifinale\n");
 Msg("\n\n\n");
+//c11m4 开车触发
 
 DirectorOptions <-
 {
@@ -19,7 +20,7 @@ DirectorOptions <-
 	RelaxMinInterval = 1
 	RelaxMaxInterval = 5
 	RelaxMaxFlowTravel = 50
-	SpecialRespawnInterval = 1.0
+	SpecialRespawnInterval = 1
 	PreferredMobDirection = SPAWN_NO_PREFERENCE
 	ZombieSpawnRange = 1000
 }

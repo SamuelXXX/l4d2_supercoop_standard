@@ -5,8 +5,9 @@
 Msg("\n\n\n");
 Msg(">>>c7m1_docks\n");
 Msg("\n\n\n");
+//c7m1开局触发w
 
-DocksCommonLimit <- 25	// use a lower common limit to combat pathing related perf issues
+DocksCommonLimit <- 40	// use a lower common limit to combat pathing related perf issues
 DocksMegaMobSize <- 50	
 
 if ( Director.IsPlayingOnConsole() )

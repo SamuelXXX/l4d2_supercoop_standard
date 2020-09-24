@@ -5,10 +5,11 @@
 Msg("\n\n\n");
 Msg(">>>c8m5_rooftop\n");
 Msg("\n\n\n");
+//c8m5 开局触发
 
 DirectorOptions <-
 {
-	ProhibitBosses = true
+	//ProhibitBosses = true
 }
 
 

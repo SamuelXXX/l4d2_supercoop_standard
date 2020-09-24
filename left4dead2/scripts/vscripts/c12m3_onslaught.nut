@@ -1,6 +1,7 @@
 Msg("\n\n\n");
 Msg(">>>c12m3_onslaught\n");
 Msg("\n\n\n");
+//
 
 DirectorOptions <-
 {
@@ -15,10 +16,10 @@ DirectorOptions <-
 	MobMaxSize = 27
 	SustainPeakMinTime = 1
 	SustainPeakMaxTime = 3
-	IntensityRelaxThreshold = 0.90
+	IntensityRelaxThreshold = 1.1
 	RelaxMinInterval = 1
-	RelaxMaxInterval = 5
-	RelaxMaxFlowTravel = 200
+	RelaxMaxInterval = 3
+	RelaxMaxFlowTravel = 100
 }
 
 Director.ResetMobTimer()

@@ -13,13 +13,13 @@ DirectorOptions <-
 	RelaxMaxFlowTravel = 400
 
 	LockTempo = 0
-	SpecialRespawnInterval = 20
+	SpecialRespawnInterval = 8
 	PreTankMobMax = 20
 	ZombieSpawnRange = 3000
 	ZombieSpawnInFog = true
 
 	MobSpawnSize = 5
-	CommonLimit = 5
+	CommonLimit = 30
 
 	GauntletMovementThreshold = 500.0
 	GauntletMovementTimerLength = 5.0
@@ -32,8 +32,8 @@ DirectorOptions <-
 	MobSpawnMinTime = 5
 	MobSpawnMaxTime = 5
 
-	MobSpawnSizeMin = 5
-	MobSpawnSizeMax = 20
+	MobSpawnSizeMin = 15
+	MobSpawnSizeMax = 30
 
 	minSpeed = 50
 	maxSpeed = 200

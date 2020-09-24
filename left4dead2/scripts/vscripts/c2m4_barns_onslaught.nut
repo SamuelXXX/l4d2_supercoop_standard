@@ -1,6 +1,8 @@
 Msg("\n\n\n");
 Msg(">>>c2m4_barns_onslaught\n");
 Msg("\n\n\n");
+//c2m4开机关触发
+
 
 DirectorOptions <-
 {
@@ -8,8 +10,8 @@ DirectorOptions <-
 	ProhibitBosses = false
 	
 	//LockTempo = true
-	MobSpawnMinTime = 1
-	MobSpawnMaxTime = 1
+	MobSpawnMinTime = 3
+	MobSpawnMaxTime = 7
 	MobMinSize = 30
 	MobMaxSize = 30
 	MobMaxPending = 30
@@ -20,15 +22,11 @@ DirectorOptions <-
 	RelaxMaxInterval = 5
 	RelaxMaxFlowTravel = 50
 	SpecialRespawnInterval = 1.0
-        SmokerLimit = 2
-        JockeyLimit = 0
-        BoomerLimit = 0
-        HunterLimit = 2
-        ChargerLimit = 1
-	PreferredMobDirection = SPAWN_NO_PREFERENCE
+	PreferredMobDirection = SPAWN_ANYWHERE
+	PreferredSpecialDirection = SPAWN_LARGE_VOLUME
 	ZombieSpawnRange = 2000
 }
 
 Director.ResetMobTimer()
-Director.PlayMegaMobWarningSounds()
+//Director.PlayMegaMobWarningSounds()
 

@@ -1,6 +1,8 @@
 Msg("\n\n\n");
 Msg(">>>c2m4_barns_onslaught2\n");
 Msg("\n\n\n");
+//c2m4 机关门打开触发
+
 
 DirectorOptions <-
 {
@@ -20,11 +22,6 @@ DirectorOptions <-
 	RelaxMaxInterval = 5
 	RelaxMaxFlowTravel = 50
 	SpecialRespawnInterval = 1.0
-        SmokerLimit = 2
-        JockeyLimit = 0
-        BoomerLimit = 0
-        HunterLimit = 2
-        ChargerLimit = 1
 	PreferredMobDirection = SPAWN_IN_FRONT_OF_SURVIVORS
 	ZombieSpawnRange = 2000
 }

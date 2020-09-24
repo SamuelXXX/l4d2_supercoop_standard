@@ -10,15 +10,15 @@ DirectorOptions <-
 	PreferredMobDirection = SPAWN_BEHIND_SURVIVORS
 	MobSpawnMinTime = 1
 	MobSpawnMaxTime = 2
-	MobMaxPending = 10
-	MobMinSize = 10
-	MobMaxSize = 20
+	MobMaxPending = 20
+	MobMinSize = 20
+	MobMaxSize = 40
 	SustainPeakMinTime = 1
 	SustainPeakMaxTime = 3
-	IntensityRelaxThreshold = 0.90
-	RelaxMinInterval = 5
-	RelaxMaxInterval = 10
-	RelaxMaxFlowTravel = 200
+	IntensityRelaxThreshold = 0.99
+	RelaxMinInterval = 1
+	RelaxMaxInterval = 2
+	RelaxMaxFlowTravel = 50
 
 }
 

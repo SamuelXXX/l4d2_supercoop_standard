@@ -1,6 +1,7 @@
 Msg("\n\n\n");
 Msg(">>>c3m1_minifinale\n");
 Msg("\n\n\n");
+//c3m1来了叫船后触发
 
 //-----------------------------------------------------
 local PANIC = 0
@@ -12,7 +13,7 @@ local DELAY = 2
 DirectorOptions <-
 {
 	A_CustomFinale1 = PANIC
-	A_CustomFinaleValue1 = 2
+	A_CustomFinaleValue1 = 3
 }
 
 

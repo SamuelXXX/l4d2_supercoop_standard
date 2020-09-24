@@ -7,6 +7,7 @@
 Msg("\n\n\n");
 Msg(">>>c5m2_mob_from_front\n");
 Msg("\n\n\n");
+//c5m3 过停车场触发
 
 DirectorOptions <-
 {
@@ -20,7 +21,7 @@ DirectorOptions <-
 	AlwaysAllowWanderers = 1
 
 	// Set the number of infected that cannot be absorbed
-	NumReservedWanderers = 10
+	NumReservedWanderers = 20
 
 	// More generous range for spawning infected makes it more
 	// likely that we'll actually get our mob from the front
