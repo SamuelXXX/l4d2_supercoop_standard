@@ -16,8 +16,9 @@
 !/left4dead2/host.txt
 !/left4dead2/scripts/
 
-# addons文件目录忽略文件配置，主要是忽略logs由程序运行生成的部分
+# addons文件目录忽略文件配置，主要是忽略logs和data可以由程序运行生成的部分
 /left4dead2/addons/sourcemod/logs
+/left4dead2/addons/sourcemod/data
 #忽略所有带有-ignore标记的vpk格式的mod,比如三方图的vpk
 /left4dead2/addons/*-ignore.vpk
 
