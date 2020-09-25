@@ -5,9 +5,9 @@ Msg("\n\n\n>>>>>>>>>>>>>>>>>>>>>>Common Coop Director Scripts Start Load<<<<<<<<
 DirectorOptions <-
 {
 	//这部分字段用于调试，其它时候请注释掉
-	//CommonLimit = 0
-	//ZombieTankHealth = 1
-	//cm_MaxSpecials = 1
+	CommonLimit = 0
+	ZombieTankHealth = 1
+	cm_MaxSpecials = 1
 	//cm_DominatorLimit = 0
 	//BoomerLimit = 0
 	//SmokerLimit = 0
