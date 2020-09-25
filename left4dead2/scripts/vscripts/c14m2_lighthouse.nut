@@ -1,0 +1,56 @@
+Msg("\n\n\n");
+Msg(">>>c14m2_lighthouse\n");
+Msg("\n\n\n");
+
+// number of cans needed to escape.
+NumCansNeeded <- 8;
+
+switch( Convars.GetStr( "z_difficulty" ).tolower() )
+{
+	case "easy":
+	{
+		if ( Director.IsSinglePlayerGame() )
+			NumCansNeeded = 4
+		else
+			NumCansNeeded = 6
+		break;
+	}
+	case "normal":
+	{
+		if ( Director.IsSinglePlayerGame() )
+			NumCansNeeded = 6
+		else
+			NumCansNeeded = 8
+		break;
+	}
+	case "hard":
+	{
+		if ( Director.IsSinglePlayerGame() )
+			NumCansNeeded = 8
+		else
+			NumCansNeeded = 10
+		break;
+	}
+	case "impossible":
+	{
+		if ( Director.IsSinglePlayerGame() )
+			NumCansNeeded = 10
+		else
+			NumCansNeeded = 12
+		break;
+	}
+	default:
+		break;
+}
+
+DirectorOptions <-
+{
+	CommonLimit = 30
+}
+
+//NavMesh.UnblockRescueVehicleNav()
+
+EntFire( "progress_display", "SetTotalItems", NumCansNeeded )
+
+function GasCanTouched(){}
+function GasCanPoured(){}
