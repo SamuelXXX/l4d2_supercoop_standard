@@ -26,6 +26,8 @@
 /left4dead2/cfg/*
 !/left4dead2/cfg/sourcemod/
 !/left4dead2/cfg/server*.cfg
+!/left4dead2/cfg/server*.cfg
+!/left4dead2/cfg/banned_user.cfg
 #注意server_debug只是本地调试使用，用来设置各种僵尸血量，不要同步
 /left4dead2/cfg/server_debug.cfg
 
