@@ -136,7 +136,7 @@ public Action Command_VoteSlay(int client, int args)
 {
 	if (args < 1)
 	{
-		ReplyToCommand(client, "[SM] Usage: sm_votekill <player>");
+		ReplyToCommand(client, "[SM] Usage: sm_voteslay <player>");
 		return Plugin_Handled;	
 	}
 	
