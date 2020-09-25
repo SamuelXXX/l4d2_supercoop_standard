@@ -28,7 +28,7 @@ public void OnPluginStart()
 
 	RefuelAmountCVAR=CreateConVar("refuel_rate","1","Refueling amount each timer",FCVAR_NOTIFY);
 	RefuelTimerCVAR=CreateConVar("refuel_timer","1","Refueling timer",FCVAR_NOTIFY);
-	ExtraFuelConsumePerFireCVAR=CreateConVar("extra_fuel_consume_pre_fire","0","Extra fuel consumes per fire",FCVAR_NOTIFY);
+	ExtraFuelConsumePerFireCVAR=CreateConVar("extra_fuel_consume_per_fire","0","Extra fuel consumes per fire",FCVAR_NOTIFY);
 
 
 	HookEvent("weapon_fire", eWeaponFire);

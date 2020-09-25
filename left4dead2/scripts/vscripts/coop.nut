@@ -66,7 +66,7 @@ Convars.SetValue("min_time_spawn_tank",360)
 Convars.SetValue("max_time_spawn_tank",600)
 
 //隐藏武器插件，有些三方图关卡不关闭隐藏武器会造成服务器闪退
-Convars.SetValue("l4d2_wu_enable",1)
+//Convars.SetValue("l4d2_wu_enable",1)
 
 
 Msg("##################Relax Max Flow Travel:"+RelaxMaxFlowTravel+"\n");

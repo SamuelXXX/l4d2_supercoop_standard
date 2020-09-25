@@ -21,6 +21,7 @@
 /left4dead2/addons/sourcemod/data
 #忽略所有带有-ignore标记的vpk格式的mod,比如三方图的vpk
 /left4dead2/addons/*-ignore.vpk
+/left4dead2/addons/sourcemod/configs/missioncycle.*.txt
 
 
 # cfg文件目录配置，只需要sourcemod的配置目录和server_*.cfg类型的服务器参数配置
