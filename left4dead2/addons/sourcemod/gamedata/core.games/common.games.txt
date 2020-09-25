@@ -96,7 +96,6 @@
 			"engine"			"alienswarm"
 			"engine"			"blade"
 			"engine"			"insurgency"
-			"engine"			"doi"
 			"engine"			"csgo"
 			"engine"			"sdk2013"
 			"engine"			"contagion"
@@ -126,9 +125,9 @@
 		{
 			"GetDataDescMap"
 			{
-				"windows"		"13"
-				"linux"			"14"
-				"mac"			"14"
+				"windows"		"12"
+				"linux"			"13"
+				"mac"			"13"
 			}
 		}
 	}
@@ -292,7 +291,6 @@
 			"game"					"kz"
 			"game"					"csgo"
 			"game"					"reactivedrop"
-			"game"					"FortressForever"
 		}
 		
 		"Keys"
