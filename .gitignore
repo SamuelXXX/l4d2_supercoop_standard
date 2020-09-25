@@ -1,0 +1,33 @@
+#先忽略所有子目录及文件
+/* 
+!/.gitignore
+!/.gitattributes
+
+# 不忽略left4dead2
+!/left4dead2
+
+# 忽略left4dead2所有子目录及文件
+/left4dead2/*
+
+# 设置left4dead中所有的不忽略的子目录及文件
+!/left4dead2/addons/
+!/left4dead2/cfg/
+!/left4dead2/motd.txt
+!/left4dead2/host.txt
+!/left4dead2/scripts/
+
+# addons文件目录忽略文件配置，主要是忽略logs由程序运行生成的部分
+/left4dead2/addons/sourcemod/logs
+
+
+# cfg文件目录配置，只需要sourcemod的配置目录和server_*.cfg类型的服务器参数配置
+/left4dead2/cfg/*
+!/left4dead2/cfg/sourcemod/
+!/left4dead2/cfg/server*.cfg
+#注意server_debug只是本地调试使用，用来设置各种僵尸血量，不要同步
+/left4dead2/cfg/server_debug.cfg
+
+
+# vscripts文件目录
+/left4dead2/scripts/*
+!/left4dead2/scripts/vscripts/
