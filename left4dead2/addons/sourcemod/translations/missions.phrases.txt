@@ -164,4 +164,28 @@
 	{
 		"en" "Undead Zone"
 	}
+	"bts"
+	{
+		"en" "Back To School"
+	}
+	"fallindeath"
+	{
+		"en" "Fall In Death"
+	}
+	"warcelona"
+	{
+		"en" "Warcelona"
+	}
+	"hometown"
+	{
+		"en" "Hometown"
+	}
+	"heavencanwait2"
+	{
+		"en" "Heaven Can Wait 2"
+	}
+	"DayBreak"
+	{
+		"en" "Day Break"
+	}
 }

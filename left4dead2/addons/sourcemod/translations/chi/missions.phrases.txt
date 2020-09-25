@@ -164,4 +164,28 @@
 	{
 		"chi" "亡灵区"
 	}
+	"bts"
+	{
+		"chi" "重返校园"
+	}
+	"fallindeath"
+	{
+		"chi" "坠入死亡"
+	}
+	"warcelona"
+	{
+		"chi" "巴塞罗那"
+	}
+	"hometown"
+	{
+		"chi" "故乡"
+	}
+	"heavencanwait2"
+	{
+		"chi" "天堂可待2"
+	}
+	"DayBreak"
+	{
+		"chi" "破晓"
+	}
 }
