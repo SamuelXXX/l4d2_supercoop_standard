@@ -18,6 +18,8 @@
 
 # addons文件目录忽略文件配置，主要是忽略logs由程序运行生成的部分
 /left4dead2/addons/sourcemod/logs
+#忽略所有带有-ignore标记的vpk格式的mod,比如三方图的vpk
+/left4dead2/addons/*-ignore.vpk
 
 
 # cfg文件目录配置，只需要sourcemod的配置目录和server_*.cfg类型的服务器参数配置
