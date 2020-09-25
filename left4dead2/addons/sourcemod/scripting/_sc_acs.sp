@@ -262,6 +262,7 @@ void PopulateDefaultMissionCycle(LMM_GAMEMODE gamemode, File missionCycleFile) {
 			missionCycleFile.WriteLine("L4D2C11");
 			missionCycleFile.WriteLine("L4D2C12");
 			missionCycleFile.WriteLine("L4D2C13");
+			missionCycleFile.WriteLine("L4D2C14");
 		}
 		case LMM_GAMEMODE_SCAVENGE: {
 			missionCycleFile.WriteLine("L4D2C1");
@@ -275,6 +276,7 @@ void PopulateDefaultMissionCycle(LMM_GAMEMODE gamemode, File missionCycleFile) {
 			missionCycleFile.WriteLine("L4D2C10");
 			missionCycleFile.WriteLine("L4D2C11");
 			missionCycleFile.WriteLine("L4D2C12");
+			missionCycleFile.WriteLine("L4D2C14");
 		}
 		case LMM_GAMEMODE_SURVIVAL: {
 			missionCycleFile.WriteLine("L4D2C1");
@@ -285,6 +287,7 @@ void PopulateDefaultMissionCycle(LMM_GAMEMODE gamemode, File missionCycleFile) {
 			missionCycleFile.WriteLine("L4D2C6");
 			missionCycleFile.WriteLine("L4D2C7");
 			missionCycleFile.WriteLine("L4D2C8");
+			missionCycleFile.WriteLine("L4D2C14");
 		}
 	}
 }
