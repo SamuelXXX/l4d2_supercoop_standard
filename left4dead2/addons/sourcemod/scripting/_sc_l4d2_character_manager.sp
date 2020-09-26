@@ -63,6 +63,18 @@ static char sSurvivorModels[9][] =
 	"models/survivors/survivor_manager.mdl",
 	"models/survivors/survivor_adawong.mdl"
 };
+static char sSurvivorModelsAnotherSet[9][] =
+{
+	"models/survivors/survivor_gambler.mdl",
+	"models/survivors/survivor_producer.mdl",
+	"models/survivors/survivor_coach.mdl",
+	"models/survivors/survivor_mechanic.mdl",
+	"models/survivors/survivor_namvet.mdl",
+	"models/survivors/survivor_teenangst_light.mdl",
+	"models/survivors/survivor_biker_light.mdl",
+	"models/survivors/survivor_manager.mdl",
+	"models/survivors/survivor_adawong.mdl"
+};
 
 static Handle hCvar_IdentityFix = null;
 static bool bIdentityFix = false;
@@ -160,7 +172,11 @@ public void eRoundStart(Handle hEvent, const char[] sName, bool bDontBroadcast)
 public void OnMapStart()
 {
 	for(int i = 0; i < 8; i++)
+	{
 		PrecacheModel(sSurvivorModels[i], true);
+		PrecacheModel(sSurvivorModelsAnotherSet[i], true);
+	}
+		
 }
 
 
@@ -211,12 +227,25 @@ public void ePlayerToBot(Handle hEvent, const char[] sName, bool bDontBroadcast)
 	SetEntProp(iBot, Prop_Send, "m_survivorCharacter", iSurvivorChar);
 	SetEntityModel(iBot, sModelTracking[iClient]);
 	
-	if(iSurvivorChar == 2 && StrContains(sModelTracking[iClient], sSurvivorModels[8], false))
+	if(iSurvivorChar == 2 && StrEqual(sModelTracking[iClient], sSurvivorModels[8], false))
 		SetClientInfo(iBot, "name", sSurvivorNames[8]);
 	else
+	{
 		for (int i = 0; i < 8; i++)
-			if (StrContains(sModelTracking[iClient], sSurvivorModels[i])) 
+		{		
+			if (StrEqual(sModelTracking[iClient], sSurvivorModels[i]))
+			{	
 				SetClientInfo(iBot, "name", sSurvivorNames[i]);
+			} 
+			else if (StrEqual(sModelTracking[iClient], sSurvivorModelsAnotherSet[i]))
+			{	
+				SetClientInfo(iBot, "name", sSurvivorNames[i]);
+			} 
+		}
+	}
+		
+			
+				
 	
 	bShouldIgnoreOnce[iBot] = true;
 	RequestFrame(ResetVar, iBot);
