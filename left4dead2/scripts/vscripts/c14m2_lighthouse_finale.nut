@@ -14,7 +14,7 @@ ONSLAUGHT <- 3
 
 DirectorOptions <-
 {
-	A_CustomFinale_StageCount = 11
+	A_CustomFinale_StageCount = 8
 	
 	A_CustomFinale1 		= PANIC
 	A_CustomFinaleValue1 	= RandomInt(1,3)
@@ -30,20 +30,11 @@ DirectorOptions <-
 	A_CustomFinale6 		= DELAY
 	A_CustomFinaleValue6 	= StageDelay
 	A_CustomFinale7			= TANK
-	A_CustomFinaleValue7	= RandomInt(4,6)
-	
+	A_CustomFinaleValue7	= RandomInt(6,10)
+	A_CustomFinaleMusic7	= "Event.TankMidpoint_Metal"
 
-	A_CustomFinale8			= ONSLAUGHT
-	A_CustomFinaleValue8 	= "c14m2_gauntlet"
-	A_CustomFinale9 		= DELAY
-	A_CustomFinaleValue9 	= StageDelay
-	A_CustomFinale10		= TANK
-	A_CustomFinaleValue10	= RandomInt(6,8)
-	A_CustomFinaleMusic10	= "Event.TankMidpoint_Metal"
-
-
-	A_CustomFinale11 		= DELAY
-	A_CustomFinaleValue11 	= PreEscapeDelay
+	A_CustomFinale8		= DELAY
+	A_CustomFinaleValue8 	= PreEscapeDelay
 	//-----------------------------------------------------
 
 	HordeEscapeCommonLimit = 30
@@ -58,7 +49,7 @@ DirectorOptions <-
 	WitchLimit = 0
 	SpecialRespawnInterval = 4
 	TankHitDamageModifierCoop = RandomFloat(3,5)
-	ZombieSpawnRange = 2000
+	ZombieSpawnRange = 1500
 }
 
 local difficulty = Convars.GetStr( "z_difficulty" ).tolower();
