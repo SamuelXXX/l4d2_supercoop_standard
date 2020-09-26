@@ -14,7 +14,7 @@ ONSLAUGHT <- 3
 
 DirectorOptions <-
 {
-	A_CustomFinale_StageCount = 8
+	A_CustomFinale_StageCount = 11
 	
 	A_CustomFinale1 		= PANIC
 	A_CustomFinaleValue1 	= RandomInt(1,3)
@@ -46,9 +46,19 @@ DirectorOptions <-
 	A_CustomFinaleValue11 	= PreEscapeDelay
 	//-----------------------------------------------------
 
-	ProhibitBosses = true
 	HordeEscapeCommonLimit = 30
-	EscapeSpawnTanks = false
+	EscapeSpawnTanks = true
+	HordeEscapeCommonLimit = 30
+	ZombieTankHealth = RandomInt(15000,20000)
+	CommonLimit = 30
+	MegaMobSize = 90
+	MaxSpecials = 12
+	DominatorLimit = 8
+	ProhibitBosses = false
+	WitchLimit = 0
+	SpecialRespawnInterval = 4
+	TankHitDamageModifierCoop = RandomFloat(3,5)
+	ZombieSpawnRange = 2000
 }
 
 local difficulty = Convars.GetStr( "z_difficulty" ).tolower();
