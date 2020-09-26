@@ -61,9 +61,9 @@ Convars.SetValue("tongue_victim_max_speed",225)
 Convars.SetValue("tongue_range",1500)
 
 //插件配置参数修改
-//tank生成插件，默认在6-10分钟刷一只克，有些关卡第一关可能不希望刷这么多（把刷克时间改的尽可能长就行），有些关卡则希望能多点
-Convars.SetValue("min_time_spawn_tank",360)
-Convars.SetValue("max_time_spawn_tank",600)
+//tank生成插件，默认在10-15分钟刷一只克，有些关卡第一关可能不希望刷这么多（把刷克时间改的尽可能长就行），有些关卡则希望能多点
+Convars.SetValue("min_time_spawn_tank",600)
+Convars.SetValue("max_time_spawn_tank",900)
 
 //隐藏武器插件，有些三方图关卡不关闭隐藏武器会造成服务器闪退
 //Convars.SetValue("l4d2_wu_enable",1)
