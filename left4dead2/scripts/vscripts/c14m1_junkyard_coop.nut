@@ -5,6 +5,7 @@ DirectorOptions <-
 {
 	 cm_MaxSpecials = 8
 	 cm_DominatorLimit = 8
+	 SmokerLimit = 1
 	 ZombieTankHealth = RandomInt(6000,12000)
 }
 
