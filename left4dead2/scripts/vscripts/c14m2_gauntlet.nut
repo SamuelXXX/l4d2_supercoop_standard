@@ -6,10 +6,10 @@ Msg("\n\n\n");
 DirectorOptions <-
 {
 	CommonLimit = 30
-	MobSpawnMinTime = 20
-	MobSpawnMaxTime = 30
-	MobSpawnSize = 20
-	MobMaxPending = 15
+	MobSpawnMinTime = 8
+	MobSpawnMaxTime = 12
+	MobSpawnSize = 30
+	MobMaxPending = 20
 	IntensityRelaxThreshold = 0.99
 	RelaxMinInterval = 1
 	RelaxMaxInterval = 1
