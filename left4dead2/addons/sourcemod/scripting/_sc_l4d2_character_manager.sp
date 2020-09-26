@@ -211,11 +211,11 @@ public void ePlayerToBot(Handle hEvent, const char[] sName, bool bDontBroadcast)
 	SetEntProp(iBot, Prop_Send, "m_survivorCharacter", iSurvivorChar);
 	SetEntityModel(iBot, sModelTracking[iClient]);
 	
-	if(iSurvivorChar == 2 && StrEqual(sModelTracking[iClient], sSurvivorModels[8], false))
+	if(iSurvivorChar == 2 && StrContains(sModelTracking[iClient], sSurvivorModels[8], false))
 		SetClientInfo(iBot, "name", sSurvivorNames[8]);
 	else
 		for (int i = 0; i < 8; i++)
-			if (StrEqual(sModelTracking[iClient], sSurvivorModels[i])) 
+			if (StrContains(sModelTracking[iClient], sSurvivorModels[i])) 
 				SetClientInfo(iBot, "name", sSurvivorNames[i]);
 	
 	bShouldIgnoreOnce[iBot] = true;
