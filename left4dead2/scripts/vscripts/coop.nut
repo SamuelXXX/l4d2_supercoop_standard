@@ -23,7 +23,7 @@ DirectorOptions <-
 	
 
 	TankLimit = 1
-	DominatorLimit = 8 //有控制能力的特要控制在8只,cm_DominatorLimit这个参数貌似不会生效
+	DominatorLimit = 7 //有控制能力的特要控制在7只,cm_DominatorLimit这个参数貌似不会生效
 
 	ProhibitBosses = false
 	TankHitDamageModifierCoop = RandomFloat(1,5)
@@ -40,7 +40,7 @@ IntensityRelaxThreshold <- 0.99
 RelaxMaxFlowTravel <- RandomInt(700,1200)
 RelaxMinInterval <- 99999
 RelaxMaxInterval <- 99999
-SpecialRespawnInterval <- 3
+SpecialRespawnInterval <- 5
 Convars.SetValue("director_intensity_relax_threshold",IntensityRelaxThreshold)
 Convars.SetValue("director_relax_max_flow_travel",RelaxMaxFlowTravel)
 Convars.SetValue("director_relax_min_interval",RelaxMinInterval)
@@ -66,7 +66,7 @@ Convars.SetValue("min_time_spawn_tank",600)
 Convars.SetValue("max_time_spawn_tank",900)
 
 //隐藏武器插件，有些三方图关卡不关闭隐藏武器会造成服务器闪退
-//Convars.SetValue("l4d2_wu_enable",1)
+Convars.SetValue("l4d2_wu_enable",1)
 
 
 Msg("##################Relax Max Flow Travel:"+RelaxMaxFlowTravel+"\n");
