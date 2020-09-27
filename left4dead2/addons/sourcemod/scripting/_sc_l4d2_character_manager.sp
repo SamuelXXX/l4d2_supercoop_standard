@@ -471,6 +471,7 @@ public MRESReturn Detour_OnGetSurvivorSet(Handle hReturn)
 	{
 		iCurrentSet = L4D2_SurvivorSet_L4D2;
 		DHookSetReturn(hReturn, L4D2_SurvivorSet_L4D2);
+		PrintDebugMessage("GetSurvivorSet:","Using L4D2 Set");
 		return MRES_Supercede;
 	}
 	iCurrentSet = L4D2_SurvivorSet_L4D1;
@@ -480,5 +481,5 @@ public MRESReturn Detour_OnGetSurvivorSet(Handle hReturn)
 
 stock void PrintDebugMessage(const char[] msg_header, const char[] msg)
 {
-	PrintToServer(">>>>>>>%s:%s",msg_header,msg);
+	PrintToServer(">>>>>>> [CharacterManager] %s:%s",msg_header,msg);
 }
