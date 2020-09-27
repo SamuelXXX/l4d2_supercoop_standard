@@ -135,12 +135,20 @@ public void OnPluginStart()
 	// Create a hook from config.
 	Handle hDetour_OnGetSurvivorSet = DHookCreateFromConf(hGameData, "CTerrorGameRules::GetSurvivorSet");
 	if( !hDetour_OnGetSurvivorSet )
-		SetFailState("Failed to setup detour for CTerrorGameRules::GetSurvivorSet");
+	{
+		PrintDebugMessage("[CM] ERROR","Failed to setup detour for CTerrorGameRules::GetSurvivorSet");
+		SetFailState("Failed to setup detour for CTerrorGameRules::GetSurvivorSet");		
+	}
+		
 	delete hGameData;
 	
 	// Add a pre hook on the function.
 	if (!DHookEnableDetour(hDetour_OnGetSurvivorSet, true, Detour_OnGetSurvivorSet))
-		SetFailState("Failed to detour OnGetSurvivorSet.");
+	{
+		PrintDebugMessage("[CM] ERROR","Failed to setup detour for CTerrorGameRules::GetSurvivorSet");
+		SetFailState("Failed to detour OnGetSurvivorSet.");	
+	}
+		
 }
 
 public void eConvarChanged(Handle hCvar, const char[] sOldVal, const char[] sNewVal)
