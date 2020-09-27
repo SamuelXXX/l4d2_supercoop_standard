@@ -231,14 +231,17 @@ public void ePlayerToBot(Handle hEvent, const char[] sName, bool bDontBroadcast)
 		SetClientInfo(iBot, "name", sSurvivorNames[8]);
 	else
 	{
+		PrintDebugMessage("Original Model Name:",sModelTracking[iClient]);
 		for (int i = 0; i < 8; i++)
 		{		
 			if (StrEqual(sModelTracking[iClient], sSurvivorModels[i]))
 			{	
+				PrintDebugMessage("Set Bot Name To:",sSurvivorNames[i]);
 				SetClientInfo(iBot, "name", sSurvivorNames[i]);
 			} 
 			else if (StrEqual(sModelTracking[iClient], sSurvivorModelsAnotherSet[i]))
 			{	
+				PrintDebugMessage("Set Bot Name To:",sSurvivorNames[i]);
 				SetClientInfo(iBot, "name", sSurvivorNames[i]);
 			} 
 		}
@@ -286,12 +289,15 @@ public void OnEntityCreated(int iEntity, const char[] sClassname)
 
 public void SpawnPost(int iEntity)// before events!
 {
+	//在新的Entity创建完成后触发这个回调
+	//主要是针对新创建的幸存者电脑设置角色名和角色模型
 	if(!IsValidEntity(iEntity) || !IsFakeClient(iEntity))
 		return;	
 	
 	if(GetClientTeam(iEntity) == 4)
 		return;
 	
+	PrintDebugMessage("Spawn Post:","Spawn a new Survivor Bot");
 	SetCharacter(iEntity);
 	RequestFrame(NextFrame, GetClientUserId(iEntity));
 }
@@ -321,6 +327,7 @@ public void ResetVar(int iBot)// this is special called after NextFrame
 //set iclient to 0 to not ignore, for anyone using this function
 int CheckLeastUsedSurvivor(int iClient)
 {
+	//防重复分配角色id的算法
 	int iLeastChar[8];
 	int iCharBuffer;
 	int i;
@@ -383,6 +390,8 @@ int CheckLeastUsedSurvivor(int iClient)
 
 void SetCharacter(int iClient)
 {
+	//为新的客户端设置模型的Character ID
+	//设置id和模型的准则是找一个没人用的角色进行分配
 	L4D2_SurvivorSet iSetCheck;
 	if(iSurvivorSet == L4D2_SurvivorSet_Default)
 		iSetCheck = iCurrentSet;
@@ -433,11 +442,18 @@ void SetCharacter(int iClient)
 
 void SetCharacterInfo(int iClient, int iCharIndex, int iModelIndex)
 {
+	//为一个Client设定角色id和角色的模型，原来client也是entity的一种
 	SetEntProp(iClient, Prop_Send, "m_survivorCharacter", iCharIndex, 2);
 	SetEntityModel(iClient, sSurvivorModels[iModelIndex]);
 	
 	if(IsFakeClient(iClient))
+	{
+		//对于电脑操控的客户端，需要重新设置电脑客户端的名字为默认的名字
+		PrintDebugMessage("New Bot Survior Name:",sSurvivorNames[iModelIndex]);
+		PrintDebugMessage("New Bot Model Name:",sSurvivorModels[iModelIndex]);
 		SetClientInfo(iClient, "name", sSurvivorNames[iModelIndex]);
+	}
+		
 }
 
 public MRESReturn Detour_OnGetSurvivorSet(Handle hReturn)
@@ -459,7 +475,7 @@ public MRESReturn Detour_OnGetSurvivorSet(Handle hReturn)
 	return MRES_Supercede;
 }
 
-public PrintDebugMessage(const char[] msg_header,const char[] msg)
+stock void PrintDebugMessage(const char[] msg_header, const char[] msg)
 {
 	PrintToServer(msg_header);
 	PrintToServer(msg);
