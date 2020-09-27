@@ -14,5 +14,6 @@ Msg("\n\n\n");
 
 Convars.SetValue("z_witch_always_kills","0")
 
-Convars.SetValue("min_time_spawn_tank",1200)
-Convars.SetValue("max_time_spawn_tank",1500)
+//第一关太难，就不刷第二只tank了
+Convars.SetValue("min_time_spawn_tank",9900)
+Convars.SetValue("max_time_spawn_tank",9900)
