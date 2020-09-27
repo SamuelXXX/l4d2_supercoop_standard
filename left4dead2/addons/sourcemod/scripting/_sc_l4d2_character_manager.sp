@@ -197,6 +197,7 @@ public void eBotToPlayer(Handle hEvent, const char[] sName, bool bDontBroadcast)
 		char sModel[PLATFORM_MAX_PATH];
 		GetEntPropString(iBot, Prop_Data, "m_ModelName", sModel, sizeof(sModel));
 		SetEntityModel(iClient, sModel);
+		PrintDebugMessage("BotToPlayer Model:",sModel);
 	}
 	else
 		SetCharacter(iClient);
