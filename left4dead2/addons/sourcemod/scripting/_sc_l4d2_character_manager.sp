@@ -50,8 +50,8 @@ enum L4D2_SurvivorSet
 
 
 //credit for some of meurdo identity fix code
-static char sSurvivorNames[9][] = { "Nick", "Rochelle", "Coach", "Ellis", "Bill", "Zoey", "Francis", "Louis", "AdaWong"};
-static char sSurvivorModels[9][] =
+static char sSurvivorNames[8][] = { "Nick", "Rochelle", "Coach", "Ellis", "Bill", "Zoey", "Francis", "Louis"};
+static char sSurvivorModels[8][] =
 {
 	"models/survivors/survivor_gambler.mdl",
 	"models/survivors/survivor_producer.mdl",
@@ -60,10 +60,9 @@ static char sSurvivorModels[9][] =
 	"models/survivors/survivor_namvet.mdl",
 	"models/survivors/survivor_teenangst.mdl",
 	"models/survivors/survivor_biker.mdl",
-	"models/survivors/survivor_manager.mdl",
-	"models/survivors/survivor_adawong.mdl"
+	"models/survivors/survivor_manager.mdl"
 };
-static char sSurvivorModelsAnotherSet[9][] =
+static char sSurvivorModelsAnotherSet[8][] =
 {
 	"models/survivors/survivor_gambler.mdl",
 	"models/survivors/survivor_producer.mdl",
@@ -72,8 +71,7 @@ static char sSurvivorModelsAnotherSet[9][] =
 	"models/survivors/survivor_namvet.mdl",
 	"models/survivors/survivor_teenangst_light.mdl",
 	"models/survivors/survivor_biker_light.mdl",
-	"models/survivors/survivor_manager.mdl",
-	"models/survivors/survivor_adawong.mdl"
+	"models/survivors/survivor_manager.mdl"
 };
 
 static Handle hCvar_IdentityFix = null;
@@ -224,30 +222,27 @@ public void ePlayerToBot(Handle hEvent, const char[] sName, bool bDontBroadcast)
 	}
 	
 	int iSurvivorChar = GetEntProp(iClient, Prop_Send, "m_survivorCharacter");
+	
 	SetEntProp(iBot, Prop_Send, "m_survivorCharacter", iSurvivorChar);
 	SetEntityModel(iBot, sModelTracking[iClient]);
+
+	PrintDebugMessage("PlayerToBot Model",sModelTracking[iClient]);
 	
-	if(iSurvivorChar == 2 && StrEqual(sModelTracking[iClient], sSurvivorModels[8], false))
-		SetClientInfo(iBot, "name", sSurvivorNames[8]);
-	else
-	{
-		PrintDebugMessage("Original Model Name:",sModelTracking[iClient]);
-		for (int i = 0; i < 8; i++)
-		{		
-			if (StrEqual(sModelTracking[iClient], sSurvivorModels[i]))
-			{	
-				PrintDebugMessage("Set Bot Name To:",sSurvivorNames[i]);
-				SetClientInfo(iBot, "name", sSurvivorNames[i]);
-			} 
-			else if (StrEqual(sModelTracking[iClient], sSurvivorModelsAnotherSet[i]))
-			{	
-				PrintDebugMessage("Set Bot Name To:",sSurvivorNames[i]);
-				SetClientInfo(iBot, "name", sSurvivorNames[i]);
-			} 
-		}
+	
+	for (int i = 0; i < 8; i++)
+	{		
+		if (StrEqual(sModelTracking[iClient], sSurvivorModels[i]))
+		{	
+			SetClientInfo(iBot, "name", sSurvivorNames[i]);
+			PrintDebugMessage("PlayerToBot Name",sSurvivorNames[i]);
+		} 
+		else if (StrEqual(sModelTracking[iClient], sSurvivorModelsAnotherSet[i]))
+		{	
+			SetClientInfo(iBot, "name", sSurvivorNames[i]);
+			PrintDebugMessage("PlayerToBot Name",sSurvivorNames[i]);
+		} 
 	}
-		
-			
+				
 	bShouldIgnoreOnce[iBot] = true;
 	RequestFrame(ResetVar, iBot);
 }
@@ -297,7 +292,6 @@ public void SpawnPost(int iEntity)// before events!
 	if(GetClientTeam(iEntity) == 4)
 		return;
 	
-	PrintDebugMessage("Spawn Post:","Spawn a new Survivor Bot");
 	SetCharacter(iEntity);
 	RequestFrame(NextFrame, GetClientUserId(iEntity));
 }
@@ -449,8 +443,8 @@ void SetCharacterInfo(int iClient, int iCharIndex, int iModelIndex)
 	if(IsFakeClient(iClient))
 	{
 		//对于电脑操控的客户端，需要重新设置电脑客户端的名字为默认的名字
-		PrintDebugMessage("New Bot Survior Name:",sSurvivorNames[iModelIndex]);
-		PrintDebugMessage("New Bot Model Name:",sSurvivorModels[iModelIndex]);
+		PrintDebugMessage("SetCharInfo Model:",sSurvivorModels[iModelIndex]);
+		PrintDebugMessage("SetCharInfo Name:",sSurvivorNames[iModelIndex]);	
 		SetClientInfo(iClient, "name", sSurvivorNames[iModelIndex]);
 	}
 		
@@ -477,8 +471,5 @@ public MRESReturn Detour_OnGetSurvivorSet(Handle hReturn)
 
 stock void PrintDebugMessage(const char[] msg_header, const char[] msg)
 {
-	PrintToServer("\n\n");
-	PrintToServer(msg_header);
-	PrintToServer(msg);
-	PrintToServer("\n\n");
+	PrintToServer(">>>>>>>%s:%s",msg_header,msg);
 }
