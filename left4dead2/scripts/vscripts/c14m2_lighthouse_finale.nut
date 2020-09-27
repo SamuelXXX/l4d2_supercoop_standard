@@ -48,7 +48,7 @@ DirectorOptions <-
 	ProhibitBosses = false
 	WitchLimit = 0
 	SpecialRespawnInterval = 4
-	TankHitDamageModifierCoop = RandomFloat(3,5)
+	TankHitDamageModifierCoop = RandomFloat(1,5)
 	ZombieSpawnRange = 1500
 }
 
