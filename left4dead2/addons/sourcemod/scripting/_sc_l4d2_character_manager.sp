@@ -477,6 +477,8 @@ public MRESReturn Detour_OnGetSurvivorSet(Handle hReturn)
 
 stock void PrintDebugMessage(const char[] msg_header, const char[] msg)
 {
+	PrintToServer("\n\n");
 	PrintToServer(msg_header);
 	PrintToServer(msg);
+	PrintToServer("\n\n");
 }
