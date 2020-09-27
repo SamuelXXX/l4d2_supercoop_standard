@@ -50,8 +50,8 @@ enum L4D2_SurvivorSet
 
 
 //credit for some of meurdo identity fix code
-static char sSurvivorNames[9][] = { "Nick", "Rochelle", "Coach", "Ellis", "Bill", "Zoey", "Francis", "Louis", "AdaWong"};
-static char sSurvivorModels[9][] =
+static char sSurvivorNames[8][] = { "Nick", "Rochelle", "Coach", "Ellis", "Bill", "Zoey", "Francis", "Louis"};
+static char sSurvivorModels[8][] =
 {
 	"models/survivors/survivor_gambler.mdl",
 	"models/survivors/survivor_producer.mdl",
@@ -60,10 +60,9 @@ static char sSurvivorModels[9][] =
 	"models/survivors/survivor_namvet.mdl",
 	"models/survivors/survivor_teenangst.mdl",
 	"models/survivors/survivor_biker.mdl",
-	"models/survivors/survivor_manager.mdl",
-	"models/survivors/survivor_adawong.mdl"
+	"models/survivors/survivor_manager.mdl"
 };
-static char sSurvivorModelsAnotherSet[9][] =
+static char sSurvivorModelsAnotherSet[8][] =
 {
 	"models/survivors/survivor_gambler.mdl",
 	"models/survivors/survivor_producer.mdl",
@@ -72,8 +71,7 @@ static char sSurvivorModelsAnotherSet[9][] =
 	"models/survivors/survivor_namvet.mdl",
 	"models/survivors/survivor_teenangst_light.mdl",
 	"models/survivors/survivor_biker_light.mdl",
-	"models/survivors/survivor_manager.mdl",
-	"models/survivors/survivor_adawong.mdl"
+	"models/survivors/survivor_manager.mdl"
 };
 
 static Handle hCvar_IdentityFix = null;
@@ -137,12 +135,20 @@ public void OnPluginStart()
 	// Create a hook from config.
 	Handle hDetour_OnGetSurvivorSet = DHookCreateFromConf(hGameData, "CTerrorGameRules::GetSurvivorSet");
 	if( !hDetour_OnGetSurvivorSet )
-		SetFailState("Failed to setup detour for CTerrorGameRules::GetSurvivorSet");
+	{
+		PrintDebugMessage("[CM] ERROR","Failed to setup detour for CTerrorGameRules::GetSurvivorSet");
+		SetFailState("Failed to setup detour for CTerrorGameRules::GetSurvivorSet");		
+	}
+		
 	delete hGameData;
 	
 	// Add a pre hook on the function.
 	if (!DHookEnableDetour(hDetour_OnGetSurvivorSet, true, Detour_OnGetSurvivorSet))
-		SetFailState("Failed to detour OnGetSurvivorSet.");
+	{
+		PrintDebugMessage("[CM] ERROR","Failed to setup detour for CTerrorGameRules::GetSurvivorSet");
+		SetFailState("Failed to detour OnGetSurvivorSet.");	
+	}
+		
 }
 
 public void eConvarChanged(Handle hCvar, const char[] sOldVal, const char[] sNewVal)
@@ -199,6 +205,7 @@ public void eBotToPlayer(Handle hEvent, const char[] sName, bool bDontBroadcast)
 		char sModel[PLATFORM_MAX_PATH];
 		GetEntPropString(iBot, Prop_Data, "m_ModelName", sModel, sizeof(sModel));
 		SetEntityModel(iClient, sModel);
+		PrintDebugMessage("BotToPlayer Model:",sModel);
 	}
 	else
 		SetCharacter(iClient);
@@ -224,29 +231,27 @@ public void ePlayerToBot(Handle hEvent, const char[] sName, bool bDontBroadcast)
 	}
 	
 	int iSurvivorChar = GetEntProp(iClient, Prop_Send, "m_survivorCharacter");
+	
 	SetEntProp(iBot, Prop_Send, "m_survivorCharacter", iSurvivorChar);
 	SetEntityModel(iBot, sModelTracking[iClient]);
+
+	PrintDebugMessage("PlayerToBot Model",sModelTracking[iClient]);
 	
-	if(iSurvivorChar == 2 && StrEqual(sModelTracking[iClient], sSurvivorModels[8], false))
-		SetClientInfo(iBot, "name", sSurvivorNames[8]);
-	else
-	{
-		for (int i = 0; i < 8; i++)
-		{		
-			if (StrEqual(sModelTracking[iClient], sSurvivorModels[i]))
-			{	
-				SetClientInfo(iBot, "name", sSurvivorNames[i]);
-			} 
-			else if (StrEqual(sModelTracking[iClient], sSurvivorModelsAnotherSet[i]))
-			{	
-				SetClientInfo(iBot, "name", sSurvivorNames[i]);
-			} 
-		}
+	
+	for (int i = 0; i < 8; i++)
+	{		
+		if (StrEqual(sModelTracking[iClient], sSurvivorModels[i]))
+		{	
+			SetClientInfo(iBot, "name", sSurvivorNames[i]);
+			PrintDebugMessage("PlayerToBot Name",sSurvivorNames[i]);
+		} 
+		else if (StrEqual(sModelTracking[iClient], sSurvivorModelsAnotherSet[i]))
+		{	
+			SetClientInfo(iBot, "name", sSurvivorNames[i]);
+			PrintDebugMessage("PlayerToBot Name",sSurvivorNames[i]);
+		} 
 	}
-		
-			
 				
-	
 	bShouldIgnoreOnce[iBot] = true;
 	RequestFrame(ResetVar, iBot);
 }
@@ -288,6 +293,8 @@ public void OnEntityCreated(int iEntity, const char[] sClassname)
 
 public void SpawnPost(int iEntity)// before events!
 {
+	//在新的Entity创建完成后触发这个回调
+	//主要是针对新创建的幸存者电脑设置角色名和角色模型
 	if(!IsValidEntity(iEntity) || !IsFakeClient(iEntity))
 		return;	
 	
@@ -323,6 +330,7 @@ public void ResetVar(int iBot)// this is special called after NextFrame
 //set iclient to 0 to not ignore, for anyone using this function
 int CheckLeastUsedSurvivor(int iClient)
 {
+	//防重复分配角色id的算法
 	int iLeastChar[8];
 	int iCharBuffer;
 	int i;
@@ -385,6 +393,8 @@ int CheckLeastUsedSurvivor(int iClient)
 
 void SetCharacter(int iClient)
 {
+	//为新的客户端设置模型的Character ID
+	//设置id和模型的准则是找一个没人用的角色进行分配
 	L4D2_SurvivorSet iSetCheck;
 	if(iSurvivorSet == L4D2_SurvivorSet_Default)
 		iSetCheck = iCurrentSet;
@@ -435,11 +445,18 @@ void SetCharacter(int iClient)
 
 void SetCharacterInfo(int iClient, int iCharIndex, int iModelIndex)
 {
+	//为一个Client设定角色id和角色的模型，原来client也是entity的一种
 	SetEntProp(iClient, Prop_Send, "m_survivorCharacter", iCharIndex, 2);
 	SetEntityModel(iClient, sSurvivorModels[iModelIndex]);
 	
 	if(IsFakeClient(iClient))
+	{
+		//对于电脑操控的客户端，需要重新设置电脑客户端的名字为默认的名字
+		PrintDebugMessage("SetCharInfo Model:",sSurvivorModels[iModelIndex]);
+		PrintDebugMessage("SetCharInfo Name:",sSurvivorNames[iModelIndex]);	
 		SetClientInfo(iClient, "name", sSurvivorNames[iModelIndex]);
+	}
+		
 }
 
 public MRESReturn Detour_OnGetSurvivorSet(Handle hReturn)
@@ -454,9 +471,15 @@ public MRESReturn Detour_OnGetSurvivorSet(Handle hReturn)
 	{
 		iCurrentSet = L4D2_SurvivorSet_L4D2;
 		DHookSetReturn(hReturn, L4D2_SurvivorSet_L4D2);
+		PrintDebugMessage("GetSurvivorSet:","Using L4D2 Set");
 		return MRES_Supercede;
 	}
 	iCurrentSet = L4D2_SurvivorSet_L4D1;
 	DHookSetReturn(hReturn, L4D2_SurvivorSet_L4D1);
 	return MRES_Supercede;
+}
+
+stock void PrintDebugMessage(const char[] msg_header, const char[] msg)
+{
+	PrintToServer(">>>>>>> [CharacterManager] %s:%s",msg_header,msg);
 }
