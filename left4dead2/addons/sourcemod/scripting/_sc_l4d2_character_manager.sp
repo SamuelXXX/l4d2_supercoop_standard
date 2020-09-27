@@ -245,8 +245,6 @@ public void ePlayerToBot(Handle hEvent, const char[] sName, bool bDontBroadcast)
 	}
 		
 			
-				
-	
 	bShouldIgnoreOnce[iBot] = true;
 	RequestFrame(ResetVar, iBot);
 }
@@ -459,4 +457,10 @@ public MRESReturn Detour_OnGetSurvivorSet(Handle hReturn)
 	iCurrentSet = L4D2_SurvivorSet_L4D1;
 	DHookSetReturn(hReturn, L4D2_SurvivorSet_L4D1);
 	return MRES_Supercede;
+}
+
+public PrintDebugMessage(const char[] msg_header,const char[] msg)
+{
+	PrintToServer(msg_header);
+	PrintToServer(msg);
 }
