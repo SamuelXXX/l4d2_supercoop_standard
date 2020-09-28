@@ -77,7 +77,7 @@ public void Event_PlayerSpawn(Handle event, const char[] name, bool dontBroadcas
 			SteamIDs.SetValue(SteamID, 2, true);
 			Handle datapack = CreateDataPack(); WritePackString(datapack,SteamID); WritePackCell(datapack,userid);
 			CreateTimer(Cvar_TimeBot.FloatValue, Timer_RecordSteamID, datapack, TIMER_FLAG_NO_MAPCHANGE);		
-			if (Cvar_TimeBot.FloatValue > 2 && Cvar_PickBot.BoolValue) PrintToChat(client, "\x04[SBS]\x01 You have %d seconds to takeover another bot using !pickbot", Cvar_TimeBot.IntValue);
+			if (Cvar_TimeBot.FloatValue > 2 && Cvar_PickBot.BoolValue) PrintToChat(client, "\x04[电脑接管]\x01 您还剩%d秒来选择接管一个电脑玩家！", Cvar_TimeBot.IntValue);
 		}
 	}
 }
@@ -114,25 +114,25 @@ public Action Timer_RecordSteamID(Handle hTimer, Handle datapack)
 	SteamIDs.SetValue(SteamID, 0, true);
 	
 	int client = GetClientOfUserId(ReadPackCell(datapack));	
-	if (client && Cvar_TimeBot.FloatValue > 2 && Cvar_PickBot.BoolValue) PrintToChat(client, "\x04[SBS]\x01 You may no longer takeover a bot.", Cvar_TimeBot.FloatValue);
+	if (client && Cvar_TimeBot.FloatValue > 2 && Cvar_PickBot.BoolValue) PrintToChat(client, "\x04[电脑接管]\x01 选择接管电脑时限已到，您已无法选择电脑进行接管.", Cvar_TimeBot.FloatValue);
 }
 
 bool VerifyCommand(int client)
 {
 	//Verifiy is command is appropriate
-	if (client == 0)  {  ReplyToCommand(client, "[SBS] Command is in-game only.");  return false;} 
+	if (client == 0)  {  ReplyToCommand(client, "\x04[电脑接管]\x01 只能在游戏中使用该命令.");  return false;} 
 	if (!IsClientInGame(client) || IsFakeClient(client)) return false;
-	if (GetClientTeam(client) != TEAM_SURVIVOR)  {  ReplyToCommand(client, "[SBS] Only survivors may use this command.");  return false;} 	
+	if (GetClientTeam(client) != TEAM_SURVIVOR)  {  ReplyToCommand(client, "\x04[电脑接管]\x01 只有幸存者才能使用该命令.");  return false;} 	
 	if (!Cvar_DeadBot.BoolValue || IsPlayerAlive(client) ) // Skip this if dead & l4d_sbs_dead is 1
 	{
-		if (!Cvar_PickBot.BoolValue) {ReplyToCommand(client, "[SBS] Command is disabled.");  return false;  }
-		if (Cvar_TimeBot.FloatValue >= 0 && !PickAllowed(client)) {  ReplyToCommand(client, "[SBS] You may no longer use this command this round.");  return false;}	
+		if (!Cvar_PickBot.BoolValue) {ReplyToCommand(client, "\x04[电脑接管]\x01 接管命令未启用.");  return false;  }
+		if (Cvar_TimeBot.FloatValue >= 0 && !PickAllowed(client)) {  ReplyToCommand(client, "\x04[电脑接管]\x01 在该轮比赛中您无法再使用该命令.");  return false;}	
 	}
 	
 	int AvailableBots = CountAvailableSurvivorBots();
 	if (AvailableBots == 0)
 	{
-		ReplyToCommand(client, "[SBS] No survivor bot available."); return false;
+		ReplyToCommand(client, "\x04[电脑接管]\x01 找不到幸存的电脑玩家."); return false;
 	}
 	return true;
 }
@@ -161,7 +161,7 @@ public Action Event_PlayerDeath(Handle event, const char[] name, bool dontBroadc
 	int AvailableBots = CountAvailableSurvivorBots();
 	if (AvailableBots == 0) return;
 	
-	PrintToChat(client, "\x04[SBS]\x01 You may takeover another bot by using the !pickbot command");
+	PrintToChat(client, "\x04[电脑接管]\x01 你可以使用!menu接管电脑！");
 }
 
 // *********************************************************************************
@@ -303,7 +303,7 @@ public int MenuHandler1(Menu menu, MenuAction action, int param1, int param2)
 			int PickedBot = StringToInt(number);
 
 			if (!VerifyCommand(client)) return;
-			if (!PickedBot || !IsSurvivorBotValid(PickedBot) || GetIdlePlayer(PickedBot)) { PrintToChat(client, "[SBS] This survivor bot is no longer available.");  return;}
+			if (!PickedBot || !IsSurvivorBotValid(PickedBot) || GetIdlePlayer(PickedBot)) { PrintToChat(client, "\x04[电脑接管]\x01 该幸存者电脑已经无法接管.");  return;}
 
 			ChangeClientTeam(client, TEAM_SPECTATOR);
 			SetHumanIdle(PickedBot, client);

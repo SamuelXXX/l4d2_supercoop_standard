@@ -244,7 +244,7 @@ public int HandlerVoteKill(Menu menu,MenuAction action,int client,int param2)
 			{
 				int target = GetClientOfUserId(StringToInt(info));
 				GetClientName(target, name, sizeof(name));
-				ClientCommand(client,"sm_votekill %s",name);
+				ClientCommand(client,"sm_voteslay %s",name);
 			}
 		}
 	}
