@@ -251,7 +251,7 @@ void ShowMenu(int client)
 
 	char number[10]; char text_client[32];
 	Menu menu = new Menu(MenuHandler1);
-	menu.SetTitle("Select a bot:");
+	menu.SetTitle("选择要接管的电脑:");
 
 	for (int i = 1; i <= MaxClients; i++) 
 	{
