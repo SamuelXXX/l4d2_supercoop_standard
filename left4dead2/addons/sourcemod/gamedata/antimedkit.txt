@@ -6,8 +6,33 @@
 		{
 			"CFirstAidKit::ShouldStartAction"
 			{
-				"linux"		"448"
-				"windows"	"446"
+				"linux"		"449"
+				"windows"	"447"
+			}
+		}
+		"Functions"
+		{
+			"ShouldStartAction"
+			{
+				"offset" 	"CFirstAidKit::ShouldStartAction"
+				"hooktype"	"entity"
+				"return"	"bool"
+				"this"		"entity"
+				"arguments"
+				{
+					"BackpackItemActionType"
+					{
+						"type"	"int"
+					}
+					"player"
+					{
+						"type" "cbaseentity"
+					}
+					"target"
+					{
+						"type" "cbaseentity"
+					}
+				}
 			}
 		}
 	}
