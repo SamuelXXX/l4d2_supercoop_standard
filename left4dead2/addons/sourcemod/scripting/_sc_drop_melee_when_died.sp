@@ -92,6 +92,8 @@ stock void DropViceWeapon(int client)
 	newWeapon = CreateEntityByName(sViceWeaponTracking[client]);
 	if( newWeapon == -1 )
 		return;
+
+	PrintToServer(">>>[DropMeleeWhenDied] Drop %s",sViceWeaponTracking[client]);
 	
 	float position[3];
 	GetEntPropVector(client, Prop_Send, "m_vecOrigin", position);	
