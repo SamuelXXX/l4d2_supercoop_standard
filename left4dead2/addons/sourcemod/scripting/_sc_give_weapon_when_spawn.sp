@@ -22,19 +22,16 @@ public void OnPluginStart()
 	AutoExecConfig(true,"give_weapon_when_spawn");		
 }
 
-bool should_assign_magnum=false;
-public void OnMapStart(){
-	should_assign_magnum=true;
-}
-
 public void Event_PlayerSpawn(Handle event, const char[] name, bool dontBroadcast)
 {
-	if(!should_assign_magnum)
-		return;
-	
-	if(should_assign_magnum && SurvivorCount()>=8)//All survivors are ready
+	int userid =  GetEventInt(event, "userid")
+	int client =  GetClientOfUserId(userid);
+	if(!IsSurvivor(client))
 	{
-		should_assign_magnum=false;
+		return;
+	}
+	if(SurvivorCount()>=8)//All survivors are ready
+	{
 		TryGiveMagnumsToTeam();
 	}	
 }
@@ -94,7 +91,7 @@ stock bool SurvivorTeamTooWeak()
 		GetEntityClassname(viceWeapon, viceName, sizeof(viceName));
 		if(!StrEqual(viceName,"weapon_pistol"))
 		{
-			PrintToServer(viceName);
+			//PrintToServer(viceName);
 			return false;
 		}
 	}

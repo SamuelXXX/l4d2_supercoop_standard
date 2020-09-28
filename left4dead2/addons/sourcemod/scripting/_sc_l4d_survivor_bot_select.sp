@@ -126,7 +126,7 @@ bool VerifyCommand(int client)
 	if (!Cvar_DeadBot.BoolValue || IsPlayerAlive(client) ) // Skip this if dead & l4d_sbs_dead is 1
 	{
 		if (!Cvar_PickBot.BoolValue) {ReplyToCommand(client, "\x04[电脑接管]\x01 接管命令未启用.");  return false;  }
-		if (Cvar_TimeBot.FloatValue >= 0 && !PickAllowed(client)) {  ReplyToCommand(client, "\x04[电脑接管]\x01 在该轮比赛中您无法再使用该命令.");  return false;}	
+		if (Cvar_TimeBot.FloatValue >= 0 && !PickAllowed(client)) {  ReplyToCommand(client, "\x04[电脑接管]\x01 在该轮战役中您无法再使用该命令.");  return false;}	
 	}
 	
 	int AvailableBots = CountAvailableSurvivorBots();
@@ -161,7 +161,7 @@ public Action Event_PlayerDeath(Handle event, const char[] name, bool dontBroadc
 	int AvailableBots = CountAvailableSurvivorBots();
 	if (AvailableBots == 0) return;
 	
-	PrintToChat(client, "\x04[电脑接管]\x01 你可以使用!menu接管电脑！");
+	PrintToChat(client, "\x04[电脑接管]\x01 您已死亡，现在您可以使用!menu接管电脑！");
 }
 
 // *********************************************************************************
