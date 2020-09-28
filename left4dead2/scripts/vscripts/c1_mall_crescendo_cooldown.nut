@@ -17,7 +17,7 @@ DirectorOptions <-
 	RelaxMaxInterval = 9999
 	RelaxMaxFlowTravel = 900
 
-	SpecialRespawnInterval = 5
+	SpecialRespawnInterval = 8
 	ZombieSpawnRange = 2000
 	NumReservedWanderers = 20
 }

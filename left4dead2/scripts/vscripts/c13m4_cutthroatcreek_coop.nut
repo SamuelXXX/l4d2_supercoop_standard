@@ -4,7 +4,7 @@ DirectorOptions <-
 {
 	 cm_SpecialRespawnInterval = 8
 	 cm_MaxSpecials = 10
-	 cm_DominatorLimit = 10
+	 DominatorLimit = 8
 
 	 WitchLimit = 0
 

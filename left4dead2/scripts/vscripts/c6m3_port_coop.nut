@@ -3,7 +3,7 @@ Msg(">>>Loading c6m3 Director Scripts\n");
 DirectorOptions <-
 {
 	 cm_MaxSpecials = 12
-	 cm_DominatorLimit = 12
+	 DominatorLimit = 7
 
 	 WitchLimit = 0
 	 weaponsToConvert =

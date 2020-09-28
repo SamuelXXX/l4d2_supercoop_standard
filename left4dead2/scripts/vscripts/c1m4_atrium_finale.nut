@@ -113,7 +113,7 @@ SharedOptions <-
 //	JockeyLimit = 4
 //	ChargerLimit = 4
 	cm_MaxSpecials = 14
-	cm_DominatorLimit = 14
+	DominatorLimit = 8
 
 	ProhibitBosses = true
 	ZombieSpawnRange = 3000

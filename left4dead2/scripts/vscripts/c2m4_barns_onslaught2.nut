@@ -21,7 +21,7 @@ DirectorOptions <-
 	RelaxMinInterval = 1
 	RelaxMaxInterval = 5
 	RelaxMaxFlowTravel = 50
-	SpecialRespawnInterval = 1.0
+	SpecialRespawnInterval = 5
 	PreferredMobDirection = SPAWN_IN_FRONT_OF_SURVIVORS
 	ZombieSpawnRange = 2000
 }

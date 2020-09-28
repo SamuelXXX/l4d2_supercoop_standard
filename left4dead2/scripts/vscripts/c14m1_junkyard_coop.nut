@@ -3,9 +3,9 @@ Msg(">>>Loading c14m1 Director Scripts\n");
 
 DirectorOptions <-
 {
-	 cm_MaxSpecials = 7
-	 cm_DominatorLimit = 8
-	 SmokerLimit = 0
+	 cm_MaxSpecials = 8
+	 DominatorLimit = 4
+	 SmokerLimit = 1
 	 ZombieTankHealth = RandomInt(6000,12000)
 }
 

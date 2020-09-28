@@ -3,7 +3,7 @@ Msg(">>>Loading c10m5 Director Scripts\n");
 DirectorOptions <-
 {
 	 cm_MaxSpecials = 14
-	 cm_DominatorLimit = 14
+	 DominatorLimit = 8
 
 	 weaponsToConvert =
 	 {
