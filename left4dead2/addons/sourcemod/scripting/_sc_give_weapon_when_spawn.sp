@@ -24,12 +24,6 @@ public void OnPluginStart()
 
 public void Event_PlayerSpawn(Handle event, const char[] name, bool dontBroadcast)
 {
-	int userid =  GetEventInt(event, "userid")
-	int client =  GetClientOfUserId(userid);
-	if(!IsSurvivor(client))
-	{
-		return;
-	}
 	if(SurvivorCount()>=8)//All survivors are ready
 	{
 		TryGiveMagnumsToTeam();
@@ -62,7 +56,6 @@ stock void TryGiveMagnumsToTeam()
 		{
 			continue;
 		}
-
 		TryAssignMagnum(i);
 	}
 }
@@ -110,7 +103,7 @@ stock void TryAssignMagnum(client)
 	if( newWeapon == -1 )
 		ThrowError("Failed to create entity 'weapon_pistol_magnum'.");
 	
-	RemovePlayerItem(client,GetPlayerWeaponSlot(client,1));
+	//RemovePlayerItem(client,GetPlayerWeaponSlot(client,1));
 
 	if(DispatchSpawn(newWeapon))
 	{

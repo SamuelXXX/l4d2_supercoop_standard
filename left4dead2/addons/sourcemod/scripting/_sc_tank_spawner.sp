@@ -6,7 +6,7 @@
 
 ConVar MinTimeCVAR,MaxTimeCVAR,ShowMsgCVAR;
 
-Handle mapTickHandler,delayStopTickHandler;
+Handle mapTickHandler,delayStopTickHandler,delayStart;
 
 public Plugin myinfo =
 {
@@ -25,25 +25,27 @@ public void OnPluginStart()
 	if (!StrEqual(sGame, "left4dead2", false))
 		SetFailState("Plugin supports Left 4 Dead 2 only.");
 
+
 	MinTimeCVAR=CreateConVar("min_time_spawn_tank","300","Min time trigger tank spawn",FCVAR_NOTIFY);
 	MaxTimeCVAR=CreateConVar("max_time_spawn_tank","500","Max time trigger tank spawn",FCVAR_NOTIFY);
-	ShowMsgCVAR=CreateConVar("tank_spawner_show_msg","1","Should Log out Message",FCVAR_NOTIFY);
-
-	AutoExecConfig(true, "tank_spawner");
+	ShowMsgCVAR=CreateConVar("tank_spawner_show_msg","0","Should Log out Message",FCVAR_NOTIFY);
 }
+
 
 
 public void OnMapStart()
 {
 	//PrintDebugMessage("Map Start");
-	CreateTimer(20.0,DelayStart);
+	delayStart=CreateTimer(20.0,DelayStart);
 }
 
 public Action DelayStart(Handle timer)
 {
 	//PrintDebugMessage("Start Map Tick Routine");
-	delete mapTickHandler;
-	mapTickHandler = CreateTimer(GenerateRandomTime(),MapTickHandleRoutine,_,TIMER_REPEAT);
+	delete mapTickHandler;//保证一次只有一个tick timer
+	float random_time=GenerateRandomTime();
+	PrintToServer(">>>[TankSpawner] Spawn Time:%f",random_time);
+	mapTickHandler = CreateTimer(random_time,MapTickHandleRoutine,_,TIMER_REPEAT);
 }
 
 public void OnMapEnd()
@@ -55,8 +57,10 @@ public void OnMapEnd()
 
 stock float GenerateRandomTime()
 {
-	float minTime=GetConVarFloat(MinTimeCVAR);
-	float maxTime=GetConVarFloat(MaxTimeCVAR);
+	float minTime=MinTimeCVAR.FloatValue;
+	float maxTime=MaxTimeCVAR.FloatValue;
+	PrintToServer(">>>[TankSpawner] Min Time:%f",minTime);
+	PrintToServer(">>>[TankSpawner] Max Time:%f",maxTime);
 
 	float r=GetURandomFloat();
 	return minTime+(maxTime-minTime)*r;
