@@ -103,7 +103,9 @@ stock void TryAssignMagnum(client)
 	if( newWeapon == -1 )
 		ThrowError("Failed to create entity 'weapon_pistol_magnum'.");
 	
-	//RemovePlayerItem(client,GetPlayerWeaponSlot(client,1));
+	int old_weapon=GetPlayerWeaponSlot(client,1);
+	if(old_weapon!=-1)
+		RemovePlayerItem(client,old_weapon);
 
 	if(DispatchSpawn(newWeapon))
 	{
