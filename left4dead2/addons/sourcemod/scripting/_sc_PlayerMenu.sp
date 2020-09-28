@@ -28,8 +28,8 @@ enum MainMenuItem
 	PMVoteKick=1,
 	PMVoteKill=2,
 	PMVoiceMute=3,
-	PMKick=4,
-	PMWeaponSpawn=5
+	PMTakeOverBot=4,
+	PMKick=5
 }
 
 bool menuOn=false;
@@ -40,8 +40,9 @@ void CreateMainMenu(int client)
 	AddMenuItem(menu,"1","发起踢人投票");
 	AddMenuItem(menu,"2","发起处死投票");
 	AddMenuItem(menu,"3","静音玩家");
+	AddMenuItem(menu,"4","接管电脑玩家");
 	if(CheckCommandAccess(client,"sm_kick",ADMFLAG_KICK,false))
-		AddMenuItem(menu,"4","踢出玩家（管理员）");
+		AddMenuItem(menu,"5","踢出玩家（管理员）");
 	SetMenuExitButton(menu, true);
 	DisplayMenu(menu, client, MENU_TIME_FOREVER);
 	menuOn=true;
@@ -79,6 +80,10 @@ public int MainMenuHandler(Menu menu,MenuAction action,int param1,int param2)
 					case PMVoiceMute:
 					{
 						CreatePlayerListMuteMenu(param1,"切换静音状态",8,HandlerVoiceMute,false);
+					}
+					case PMTakeOverBot:
+					{
+						ClientCommand(param1,"sm_pickbot");
 					}
 					
 					case PMKick:
