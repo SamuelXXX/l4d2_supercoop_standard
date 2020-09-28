@@ -21,11 +21,12 @@ DirectorOptions <-
 	//TankLimit = 24
 	//WitchLimit = 24
 	
-
+	cm_MaxSpecials = 8 //先锁死刷特数量，熟悉后在改回来
+	CommonLimit = 30
 	TankLimit = 1
 	//DominatorLimit = 7 //有控制能力的特要控制在7只,DominatorLimit这个参数貌似不会生效
 
-	SpecialRespawnInterval = 5
+	SpecialRespawnInterval = 10
 	ProhibitBosses = false
 	TankHitDamageModifierCoop = RandomFloat(1,5)
 	PreferredMobDirection = SPAWN_IN_FRONT_OF_SURVIVORS
@@ -37,8 +38,8 @@ DirectorOptions <-
 }
 
 
-IntensityRelaxThreshold <- 0.99
-RelaxMaxFlowTravel <- RandomInt(700,1200)
+IntensityRelaxThreshold <- 0.80
+RelaxMaxFlowTravel <- RandomInt(1200,1500)
 RelaxMinInterval <- 99999
 RelaxMaxInterval <- 99999
 Convars.SetValue("director_intensity_relax_threshold",IntensityRelaxThreshold)
@@ -60,8 +61,8 @@ Convars.SetValue("tongue_victim_max_speed",225)
 Convars.SetValue("tongue_range",1500)
 
 //插件配置参数修改
-//tank生成插件，默认在10-20分钟刷一只克，有些关卡第一关可能不希望刷这么多（把刷克时间改的尽可能长就行），有些关卡则希望能多点
-Convars.SetValue("min_time_spawn_tank",600)
+//tank生成插件，默认在15-20分钟刷一只克，有些关卡第一关可能不希望刷这么多（把刷克时间改的尽可能长就行），有些关卡则希望能多点
+Convars.SetValue("min_time_spawn_tank",900)
 Convars.SetValue("max_time_spawn_tank",1200)
 
 //隐藏武器插件，有些三方图关卡不关闭隐藏武器会造成服务器闪退
