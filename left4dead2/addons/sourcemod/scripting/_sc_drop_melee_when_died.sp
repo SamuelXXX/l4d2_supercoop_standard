@@ -109,7 +109,7 @@ stock void ReplaceWithPistol(client)
 	int newWeapon = -1;
 	newWeapon = CreateEntityByName("weapon_pistol");
 	if( newWeapon == -1 )
-		ThrowError("Failed to create entity 'weapon_melee'.");
+		ThrowError("Failed to create entity 'weapon_pistol'.");
 	
 	RemovePlayerItem(client,GetPlayerWeaponSlot(client,1));
 
