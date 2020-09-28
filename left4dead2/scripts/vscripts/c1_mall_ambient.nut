@@ -14,7 +14,6 @@ DirectorOptions <-
 	SustainPeakMaxTime = 8
 	IntensityRelaxThreshold = 0.95
 
-	SpecialRespawnInterval = 5
 	ZombieSpawnRange = 2000
 	NumReservedWanderers = 20
 }

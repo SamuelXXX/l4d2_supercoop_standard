@@ -8,7 +8,7 @@ DirectorOptions <-
 	//CommonLimit = 0
 	//ZombieTankHealth = 1
 	//cm_MaxSpecials = 1
-	//cm_DominatorLimit = 0
+	//DominatorLimit = 0
 	//BoomerLimit = 0
 	//SmokerLimit = 0
 	//HunterLimit = 0
@@ -23,8 +23,9 @@ DirectorOptions <-
 	
 
 	TankLimit = 1
-	DominatorLimit = 7 //有控制能力的特要控制在7只,cm_DominatorLimit这个参数貌似不会生效
+	//DominatorLimit = 7 //有控制能力的特要控制在7只,DominatorLimit这个参数貌似不会生效
 
+	SpecialRespawnInterval = 5
 	ProhibitBosses = false
 	TankHitDamageModifierCoop = RandomFloat(1,5)
 	PreferredMobDirection = SPAWN_IN_FRONT_OF_SURVIVORS
@@ -40,12 +41,10 @@ IntensityRelaxThreshold <- 0.99
 RelaxMaxFlowTravel <- RandomInt(700,1200)
 RelaxMinInterval <- 99999
 RelaxMaxInterval <- 99999
-SpecialRespawnInterval <- 5
 Convars.SetValue("director_intensity_relax_threshold",IntensityRelaxThreshold)
 Convars.SetValue("director_relax_max_flow_travel",RelaxMaxFlowTravel)
 Convars.SetValue("director_relax_min_interval",RelaxMinInterval)
 Convars.SetValue("director_relax_max_interval",RelaxMaxInterval)
-Convars.SetValue("director_special_respawn_interval",SpecialRespawnInterval)
 
 ZombieTankHealth <- RandomInt(8000,20000)
 Convars.SetValue("z_tank_health",ZombieTankHealth)

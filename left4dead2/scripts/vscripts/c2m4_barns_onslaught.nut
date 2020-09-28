@@ -21,7 +21,7 @@ DirectorOptions <-
 	RelaxMinInterval = 1
 	RelaxMaxInterval = 5
 	RelaxMaxFlowTravel = 50
-	SpecialRespawnInterval = 1.0
+	SpecialRespawnInterval = 5
 	PreferredMobDirection = SPAWN_ANYWHERE
 	PreferredSpecialDirection = SPAWN_LARGE_VOLUME
 	ZombieSpawnRange = 2000

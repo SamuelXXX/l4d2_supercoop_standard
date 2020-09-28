@@ -48,7 +48,7 @@ DirectorOptions <-
 	 CommonLimit = 30
 	 MegaMobSize = 90
 	 cm_MaxSpecials = 12
-	 cm_DominatorLimit = 12
+	 DominatorLimit = 8
 	 TankLimit = 24
 	 PreferredMobDirection = SPAWN_LARGE_VOLUME
 	 PreferredSpecialDirection = SPAWN_LARGE_VOLUME

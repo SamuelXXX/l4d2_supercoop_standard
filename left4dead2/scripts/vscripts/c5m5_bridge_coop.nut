@@ -3,7 +3,7 @@ Msg(">>>Loading c5m5 Director Scripts\n");
 DirectorOptions <-
 {
 	 cm_MaxSpecials = 14
-	 cm_DominatorLimit = 14
+	 DominatorLimit = 8
 	 ZombieTankHealth = RandomInt(20000,30000)
 	 WitchLimit = 0
 	 TankHitDamageModifierCoop = 5

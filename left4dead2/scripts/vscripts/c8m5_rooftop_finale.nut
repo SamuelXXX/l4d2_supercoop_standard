@@ -48,7 +48,7 @@ DirectorOptions <-
 	 CommonLimit = 30
 	 MegaMobSize = 90
 	 cm_MaxSpecials = 10
-	 cm_DominatorLimit = 10
+	 DominatorLimit = 7
 	 TankLimit = 24
 	 ProhibitBosses = false
 	 WitchLimit = 0
