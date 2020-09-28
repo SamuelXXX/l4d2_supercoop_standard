@@ -80,13 +80,20 @@ stock bool:NeedsTeammateHelp(client)
 	|| (IsL4D2
 		&& HasValidEnt(client, "m_jockeyAttacker")) // Ridden
 	|| (IsL4D2
-		&& HasValidEnt(client, "m_pummelAttacker"))) // Charged
+		&& HasValidEnt(client, "m_pummelAttacker"))// Charged
+		) 
 	{
 		return true;
 	}
-	
+
 	return false;
 }
+
+stock bool:TeamMateIncapacitated(client)
+{
+	return GetEntProp(client, Prop_Send, "m_isIncapacitated")// Incapacitated
+}
+
 
 stock bool:HasValidEnt(client, const String:entprop[])
 {
