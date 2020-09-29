@@ -5,6 +5,7 @@
 #define TEAM_SURVIVOR	2
 
 ConVar Cvar_MagnumPossibility;
+Handle roundTickHandler;
 
 public Plugin myinfo =
 {
@@ -18,19 +19,33 @@ public Plugin myinfo =
 public void OnPluginStart()
 {
 	Cvar_MagnumPossibility = CreateConVar("spawn_with_magnum_prob",  "1.0", "Probability of spawn with magnum", FCVAR_NOTIFY);
-	HookEvent("player_spawn", Event_PlayerSpawn, EventHookMode_Post);
+	HookEvent("round_start",Event_RoundStart,EventHookMode_Post);	
+	HookEvent("round_end",Event_RoundEnd,EventHookMode_Post);
 	AutoExecConfig(true,"give_weapon_when_spawn");		
 }
 
-public void Event_PlayerSpawn(Handle event, const char[] name, bool dontBroadcast)
+public void Event_RoundStart(Handle event, const char[] name, bool dontBroadcast)
 {
-	if(SurvivorCount()>=8)//All survivors are ready
-	{
-		TryGiveMagnumsToTeam();
-	}	
+	PrintToServer(">>>[GiveMagnumWhenSpawn] Round Start!!!");
+	roundTickHandler = CreateTimer(0.5,roundTickHandlerRoutine,_,TIMER_REPEAT);
 }
 
-stock int SurvivorCount()
+public Action roundTickHandlerRoutine(Handle timer)
+{
+	if(CurrentSurvivorCount()>=8)//All survivors are ready
+	{
+		TryGiveMagnumsToTeam();
+		return Plugin_Stop;
+	}
+	return Plugin_Continue;
+}
+
+public void Event_RoundEnd(Handle event, const char[] name, bool dontBroadcast)
+{
+	PrintToServer(">>>[GiveMagnumWhenSpawn] Round End!!!");	
+}
+
+stock int CurrentSurvivorCount()
 {
 	int count=0;
 	for(int i=0;i<MaxClients+1;i++)
@@ -48,7 +63,7 @@ stock void TryGiveMagnumsToTeam()
 	if(!SurvivorTeamTooWeak())	
 		return;
 
-	PrintToServer("[Give Magnum When Spawn]Team Too Weak, Will Give Magnum!!!");
+	PrintToServer(">>>[GiveMagnumWhenSpawn]Team Too Weak, Will Give Magnum!!!");
 
 	for(int i=0;i<MaxClients+1;i++)
 	{

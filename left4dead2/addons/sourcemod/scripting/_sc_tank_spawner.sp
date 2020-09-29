@@ -6,7 +6,7 @@
 
 ConVar MinTimeCVAR,MaxTimeCVAR,ShowMsgCVAR;
 
-Handle mapTickHandler,delayStopTickHandler,delayStart;
+Handle roundTickHandler,delayStopTickHandler;
 
 public Plugin myinfo =
 {
@@ -29,29 +29,25 @@ public void OnPluginStart()
 	MinTimeCVAR=CreateConVar("min_time_spawn_tank","300","Min time trigger tank spawn",FCVAR_NOTIFY);
 	MaxTimeCVAR=CreateConVar("max_time_spawn_tank","500","Max time trigger tank spawn",FCVAR_NOTIFY);
 	ShowMsgCVAR=CreateConVar("tank_spawner_show_msg","0","Should Log out Message",FCVAR_NOTIFY);
+
+	HookEvent("round_start",Event_RoundStart,EventHookMode_Post);	
+	HookEvent("round_end",Event_RoundEnd,EventHookMode_Post);
 }
 
-
-
-public void OnMapStart()
-{
-	//PrintDebugMessage("Map Start");
-	delayStart=CreateTimer(20.0,DelayStart);
-}
-
-public Action DelayStart(Handle timer)
+public void Event_RoundStart(Handle event, const char[] name, bool dontBroadcast)
 {
 	//PrintDebugMessage("Start Map Tick Routine");
-	delete mapTickHandler;//保证一次只有一个tick timer
+	PrintToServer(">>>[TankSpawner] Round Start!");
+	delete roundTickHandler;//保证一次只有一个tick timer
 	float random_time=GenerateRandomTime();
 	PrintToServer(">>>[TankSpawner] Spawn Time:%f",random_time);
-	mapTickHandler = CreateTimer(random_time,MapTickHandleRoutine,_,TIMER_REPEAT);
+	roundTickHandler = CreateTimer(random_time,roundTickHandlerRoutine,_,TIMER_REPEAT);
 }
 
-public void OnMapEnd()
+public void Event_RoundEnd(Handle event, const char[] name, bool dontBroadcast)
 {
-	//PrintDebugMessage("Map End");
-	delete mapTickHandler;
+	PrintToServer(">>>[TankSpawner] Round End!");
+	delete roundTickHandler;
 	delete delayStopTickHandler;
 }
 
@@ -117,9 +113,8 @@ stock bool IsAliveTankInPlay()
 }
 
 
-public Action MapTickHandleRoutine(Handle timer)
+public Action roundTickHandlerRoutine(Handle timer)
 {
-	//PrintDebugMessage("Map Ticking");
 	if(!IsAliveTankInPlay())
 	{
 		PrintDebugMessage("当前无tank，即将解禁tank的生成！");
