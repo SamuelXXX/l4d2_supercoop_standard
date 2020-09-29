@@ -7,6 +7,7 @@
 #define TEAM_SURVIVOR	2
 
 static int sViceWeaponEntityTracking[MAXPLAYERS+1];
+static bool printedSinceRoundStart=false;
 
 static char MeleesInCurrentMap[16][16];
 static int MeleeClassCountInCurrentMap;
@@ -44,6 +45,7 @@ public Action Event_RoundStart(Handle event, const char[] name, bool dontBroadca
 	PrintToServer(">>>>[DropMeleeWhenDied] Round Start");
 	delete roundTickHandler;
 	roundTickHandler=CreateTimer(1,RoundTickHandleRoutine,_,TIMER_REPEAT);
+	printedSinceRoundStart=false;
 }
 
 public Action Event_RoundEnd(Handle event, const char[] name, bool dontBroadcast)
@@ -185,11 +187,16 @@ public void onMissionSettingParsed(int pThis)
 	//提取本轮战役的近战字符串列表
 	char temp[256];
 	InfoEditor_GetString(pThis, "meleeweapons", temp, sizeof(temp));
-	
 	MeleeClassCountInCurrentMap=ExplodeString(temp,";",MeleesInCurrentMap,16,16,true);
-	PrintToServer(">>>>[DropMeleeWhenDied] Melee Weapon List In This Campaign: %s",temp);
-	for(int i=0;i<MeleeClassCountInCurrentMap;i++)
-	{
-		PrintToServer(">>>>[DropMeleeWhenDied] Melee Weapon %d : %s",i,MeleesInCurrentMap[i]);
+
+	if(!printedSinceRoundStart)
+	{	
+		PrintToServer(">>>>[DropMeleeWhenDied] Melee Weapon List In This Campaign: %s",temp);
+		for(int i=0;i<MeleeClassCountInCurrentMap;i++)
+		{
+			PrintToServer(">>>>[DropMeleeWhenDied] Melee Weapon %d : %s",i,MeleesInCurrentMap[i]);
+		}
+		printedSinceRoundStart=true;
 	}
+	
 }
