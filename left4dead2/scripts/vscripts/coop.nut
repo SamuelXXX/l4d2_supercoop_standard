@@ -26,7 +26,6 @@ DirectorOptions <-
 	TankLimit = 1
 	//DominatorLimit = 7 //有控制能力的特要控制在7只,DominatorLimit这个参数貌似不会生效
 
-	SpecialRespawnInterval = 10
 	ProhibitBosses = false
 	TankHitDamageModifierCoop = RandomFloat(1,5)
 	PreferredMobDirection = SPAWN_IN_FRONT_OF_SURVIVORS
