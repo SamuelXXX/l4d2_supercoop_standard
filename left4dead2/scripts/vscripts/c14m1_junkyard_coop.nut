@@ -7,6 +7,9 @@ DirectorOptions <-
 	 DominatorLimit = 4
 	 SmokerLimit = 1
 	 ZombieTankHealth = RandomInt(6000,12000)
+	 RelaxMaxFlowTravel = RandomInt(700,1200)
+	 RelaxMinInterval = 99999
+	 RelaxMaxInterval = 99999
 }
 
 Msg("###Tank Health:"+DirectorOptions.ZombieTankHealth);
