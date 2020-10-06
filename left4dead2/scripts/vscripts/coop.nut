@@ -31,14 +31,16 @@ DirectorOptions <-
 	PreferredMobDirection = SPAWN_IN_FRONT_OF_SURVIVORS
 	PreferredSpecialDirection = SPAWN_SPECIALS_IN_FRONT_OF_SURVIVORS
 
+	SpecialRespawnInterval=7
+
 	cm_AggressiveSpecials = true
 	cm_ProhibitBosses = false
 	AllowWitchesInCheckpoints = true
 }
 
 
-IntensityRelaxThreshold <- 0.80
-RelaxMaxFlowTravel <- RandomInt(1200,1500)
+IntensityRelaxThreshold <- 0.95
+RelaxMaxFlowTravel <- RandomInt(1000,1500)
 RelaxMinInterval <- 99999
 RelaxMaxInterval <- 99999
 Convars.SetValue("director_intensity_relax_threshold",IntensityRelaxThreshold)
