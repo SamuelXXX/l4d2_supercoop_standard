@@ -20,36 +20,25 @@ DirectorOptions <-
 	//DominatorLimit = 12
 	//TankLimit = 24
 	//WitchLimit = 24
-	
-	cm_MaxSpecials = 8 //先锁死刷特数量，熟悉后在改回来
-	CommonLimit = 30
-	TankLimit = 1
-	//DominatorLimit = 7 //有控制能力的特要控制在7只,DominatorLimit这个参数貌似不会生效
 
-	ProhibitBosses = false
-	TankHitDamageModifierCoop = RandomFloat(1,5)
-	PreferredMobDirection = SPAWN_IN_FRONT_OF_SURVIVORS
-	PreferredSpecialDirection = SPAWN_SPECIALS_IN_FRONT_OF_SURVIVORS
 
-	SpecialRespawnInterval=7
+	//以下几个字段千万不要去掉，否则会带来无限刷特的问题
+	//不要在这里设置cm_MaxSpecials，也会引起无限刷特问题
+	//TankHitDamageModifierCoop貌似已经过时，千万不要再使用了，否则也会带来无限刷特的问题
+	//在这里设置CommonLimit=30，也会造成无限刷特的问题哦；不过设置为0就不会，真让人头大！
+	//如果server.cfg中的参数和DirectorOptions中的参数重复的话，也会出现无限刷特的问题
+	ActiveChallenge = 1
+	cm_ShouldHurry = 1
+	SustainPeakMinTime = 10
+	SustainPeakMaxTime = 15
+	IntensityRelaxThreshold = 0.95
 
+	cm_SpecialRespawnInterval=7 
 	cm_AggressiveSpecials = true
-	cm_ProhibitBosses = false
-	AllowWitchesInCheckpoints = true
 }
 
 
-IntensityRelaxThreshold <- 0.95
-RelaxMaxFlowTravel <- RandomInt(1000,1500)
-RelaxMinInterval <- 99999
-RelaxMaxInterval <- 99999
-Convars.SetValue("director_intensity_relax_threshold",IntensityRelaxThreshold)
-Convars.SetValue("director_relax_max_flow_travel",RelaxMaxFlowTravel)
-Convars.SetValue("director_relax_min_interval",RelaxMinInterval)
-Convars.SetValue("director_relax_max_interval",RelaxMaxInterval)
-
-ZombieTankHealth <- RandomInt(8000,20000)
-Convars.SetValue("z_tank_health",ZombieTankHealth)
+Convars.SetValue("z_tank_health",RandomInt(8000,20000))
 Convars.SetValue("director_force_tank",0) //是否走两步就刷tank
 Convars.SetValue("director_force_witch",0)
 
@@ -62,16 +51,9 @@ Convars.SetValue("tongue_victim_max_speed",225)
 Convars.SetValue("tongue_range",1500)
 
 //插件配置参数修改
-//tank生成插件，默认在15-20分钟刷一只克，有些关卡第一关可能不希望刷这么多（把刷克时间改的尽可能长就行），有些关卡则希望能多点
-Convars.SetValue("min_time_spawn_tank",900)
-Convars.SetValue("max_time_spawn_tank",1200)
+//tank生成插件，默认在10-15分钟刷一只克，有些关卡第一关可能不希望刷这么多（把刷克时间改的尽可能长就行），有些关卡则希望能多点
+Convars.SetValue("min_time_spawn_tank",600)
+Convars.SetValue("max_time_spawn_tank",900)
 
-//隐藏武器插件，有些三方图关卡不关闭隐藏武器会造成服务器闪退
-Convars.SetValue("l4d2_wu_enable",1)
-
-
-Msg("##################Relax Max Flow Travel:"+RelaxMaxFlowTravel+"\n");
-Msg("##################Tank Health:"+ZombieTankHealth+"\n");
-Msg("##################Tank Hit Damage Modifier Coop:"+DirectorOptions.TankHitDamageModifierCoop+"\n");
 
 Msg(">>>>>>>>>>>>>>>>>>>>>>Common Coop Director Scripts Load Succeed<<<<<<<<<<<<<<<<<<<<<<<<\n\n\n\n");
