@@ -2,7 +2,7 @@ Msg(">>>Loading c1m3 Director Scripts\n");
 
 DirectorOptions <-
 {
-	cm_MaxSpecials = 14
+	cm_MaxSpecials = 8
 	DominatorLimit = 8
 	
 	PreferredMobDirection = SPAWN_IN_FRONT_OF_SURVIVORS

@@ -22,12 +22,13 @@ DirectorOptions <-
 	//WitchLimit = 24
 
 	
-	//以下字段用于限制一些丧尸数量
-	CommonLimit = 30
 	TankLimit = 1
 
-	//以下几个字段千万不要去掉，否则会带来无限刷特的问题，不要在这里设置cm_MaxSpecials，也会引起无限刷特问题
+	//以下几个字段千万不要去掉，否则会带来无限刷特的问题
+	//不要在这里设置cm_MaxSpecials，也会引起无限刷特问题
 	//TankHitDamageModifierCoop貌似已经过时，千万不要再使用了，否则也会带来无限刷特的问题
+	//在这里设置CommonLimit=30，也会造成无限刷特的问题哦；不过设置为0就不会，真让人头大！
+	//如果server.cfg中的参数和DirectorOptions中的参数重复的话，也会出现无限刷特的问题
 	ActiveChallenge = 1
 	cm_ShouldHurry = 1
 	SustainPeakMinTime = 10

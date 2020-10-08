@@ -2,9 +2,9 @@ Msg(">>>Loading c1m2 Director Scripts\n");
 
 DirectorOptions <-
 {
-	cm_MaxSpecials = 10
+	cm_MaxSpecials = 8
 	DominatorLimit = 7
-	
+
 	PreferredMobDirection = SPAWN_IN_FRONT_OF_SURVIVORS
 	PreferredSpecialDirection = SPAWN_SPECIALS_IN_FRONT_OF_SURVIVORS
 	RelaxMaxFlowTravel = RandomInt(1000,1500)
