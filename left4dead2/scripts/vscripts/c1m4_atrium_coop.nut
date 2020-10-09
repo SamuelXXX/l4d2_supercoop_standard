@@ -11,14 +11,4 @@ DirectorOptions <-
 	 {
 		weapon_vomitjar = "weapon_pain_pills"
 	 }
-	 function ConvertWeaponSpawn( classname )
-	 {
-		if ( classname in weaponsToConvert )
-		{
-			return weaponsToConvert[classname];
-		}
-		return 0;
-	 }
 }
-Convars.SetValue("l4d2_spawn_uncommons_autochance","3")
-Convars.SetValue("l4d2_spawn_uncommons_autotypes","59")
