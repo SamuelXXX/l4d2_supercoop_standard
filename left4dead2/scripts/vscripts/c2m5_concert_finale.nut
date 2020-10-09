@@ -53,7 +53,7 @@ DirectorOptions <-
 	 MaxSpecials = 10
 	 DominatorLimit = 10
 	 TankLimit = 24
-	 PreferredMobDirection = SPAWN_ANYWHERE
+	 PreferredMobDirection = SPAWN_ABOVE_SURVIVORS
 	 PreferredSpecialDirection = SPAWN_SPECIALS_ANYWHERE
 	 ProhibitBosses = false
 	 WitchLimit = 0

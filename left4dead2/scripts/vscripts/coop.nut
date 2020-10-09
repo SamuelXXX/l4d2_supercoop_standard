@@ -6,9 +6,9 @@ DirectorOptions <-
 {
 	//导演系统四大状态跳转条件参数配置
 	BuildUpMinInterval = 1
-	SustainPeakMinTime = 10
-	SustainPeakMaxTime = 15
-	IntensityRelaxThreshold = 0.95
+	SustainPeakMinTime = 15
+	SustainPeakMaxTime = 40
+	IntensityRelaxThreshold = 0.90
 	RelaxMaxFlowTravel = RandomInt(1000,1500)
 	RelaxMinInterval = 99999
 	RelaxMaxInterval = 99999
@@ -39,7 +39,7 @@ DirectorOptions <-
 	SpitterLimit = 4
 
 	//Tank相关设置
-	ZombieTankHealth = ZombieTankHealth=RandomInt(12000,20000)
+	ZombieTankHealth=RandomInt(12000,20000)
 	TankHitDamageModifierCoop = RandomInt(1,5)
 
 	//其它设置
@@ -66,6 +66,13 @@ Convars.SetValue("director_special_battlefield_respawn_interval",4) //防守时�
 Convars.SetValue("director_custom_finale_tank_spacing",5) //终局tank出现的时间间隔
 Convars.SetValue("director_tank_checkpoint_interval",120)//允许tank出生的时间，自生还者离开安全屋开始计算
 
+//决定Witch的刷新数量，可能吧，未验证
+Convars.SetValue("director_threat_max_separation",1) 
+Convars.SetValue("director_threat_min_separation",0) 
+Convars.SetValue("director_threat_radius",0)
+Convars.SetValue("director_max_threat_areas",40)
+
+
 Convars.SetValue("director_force_tank",0) //是否走两步就刷tank
 Convars.SetValue("director_force_witch",0)
 
@@ -73,7 +80,7 @@ Convars.SetValue("director_force_witch",0)
 Convars.SetValue("l4d2_spawn_uncommons_autochance",3)
 Convars.SetValue("l4d2_spawn_uncommons_autotypes",31)
 Convars.SetValue("z_witch_always_kills",1)
-Convars.SetValue("director_max_threat_areas",40)
+
 Convars.SetValue("tongue_victim_max_speed",225)
 Convars.SetValue("tongue_range",1500)
 

@@ -2,6 +2,7 @@ Msg(">>>Loading c5m4 Director Scripts\n");
 
 DirectorOptions <-
 {
+	//CommonLimit=0
 	cm_MaxSpecials = 8
 	DominatorLimit = 8
 
