@@ -4,41 +4,75 @@ Msg("\n\n\n>>>>>>>>>>>>>>>>>>>>>>Common Coop Director Scripts Start Load<<<<<<<<
 //可以被后面脚本覆写的参数写在ConVar中
 DirectorOptions <-
 {
-	//这部分字段用于调试，其它时候请注释掉
-	//CommonLimit = 0
-	//ZombieTankHealth = 1
-	//cm_MaxSpecials = 1
-	//DominatorLimit = 0
-	//BoomerLimit = 0
-	//SmokerLimit = 0
-	//HunterLimit = 0
-	//SpitterLimit = 0
-	//JockeyLimit = 0
-	//ChargerLimit = 0
-	//WitchLimit = 0
-	//MaxSpecials = 12
-	//DominatorLimit = 12
-	//TankLimit = 24
-	//WitchLimit = 24
+	//导演系统四大状态跳转条件参数配置
+	BuildUpMinInterval = 1
+	SustainPeakMinTime = 15
+	SustainPeakMaxTime = 40
+	IntensityRelaxThreshold = 0.90
+	RelaxMaxFlowTravel = RandomInt(1000,1500)
+	RelaxMinInterval = 99999
+	RelaxMaxInterval = 99999
 
-
-	//以下几个字段千万不要去掉，否则会带来无限刷特的问题
-	//不要在这里设置cm_MaxSpecials，也会引起无限刷特问题
-	//TankHitDamageModifierCoop貌似已经过时，千万不要再使用了，否则也会带来无限刷特的问题
-	//在这里设置CommonLimit=30，也会造成无限刷特的问题哦；不过设置为0就不会，真让人头大！
-	//如果server.cfg中的参数和DirectorOptions中的参数重复的话，也会出现无限刷特的问题
-	ActiveChallenge = 1
-	cm_ShouldHurry = 1
-	SustainPeakMinTime = 10
-	SustainPeakMaxTime = 15
-	IntensityRelaxThreshold = 0.95
-
-	cm_SpecialRespawnInterval=7 
+	//特感刷新参数配置
+	SpecialInitialSpawnDelayMin = 10
+	SpecialInitialSpawnDelayMax = 20 //离开安全屋后第一波特感的刷新时间
+	cm_SpecialRespawnInterval=7  //特感通道冷却时间，该通道特感死亡后开始冷却，冷却时间见底后会从特感池中刷新一个新的特感
 	cm_AggressiveSpecials = true
+
+	//尸潮刷新参数配置
+	MobRechargeRate=0.015 	//待机尸潮的小僵尸增加速度
+	MobMinSize=10		//待机尸潮的下限数目（充能基底值），其实还是从0开始充能，只是充能结果如果小于这个值，就以该值为准刷尸潮
+	MobMaxSize=40		//待机尸潮的上限数目（充能上限值）
+	MobMaxPending = 10 	//当刷出来的小僵尸超过CommonLimit后，超出的小僵尸数目会保留在一个池子里等待刷新
+	MobSpawnMinTime=10	//待机尸潮冷却时间下限
+	MobSpawnMaxTime=30	//待机尸潮冷却时间上限，在下限与上限之间随机取值，当冷却时间见底时就会刷尸潮（前提还是处于Build_Up或者Sustain_Peak状态）
+	
+	//各类丧尸数量限制
+	CommonLimit=30
+	cm_MaxSpecials = 8
+	DominatorLimit = 4
+	BoomerLimit = 4
+	ChargerLimit = 2
+	HunterLimit = 4
+	JockeyLimit = 2
+	SmokerLimit = 2
+	SpitterLimit = 4
+
+	//Tank相关设置
+	ZombieTankHealth=RandomInt(12000,20000)
+	TankHitDamageModifierCoop = RandomInt(1,5)
+
+	//其它设置
+	PreferredMobDirection = SPAWN_IN_FRONT_OF_SURVIVORS
+	PreferredSpecialDirection = SPAWN_SPECIALS_IN_FRONT_OF_SURVIVORS
+
+	//道具转换
+	weaponsToConvert =
+	{
+		weapon_vomitjar = "weapon_defibrillator"
+	}
+
+	function ConvertWeaponSpawn( classname )
+	{
+		if ( classname in weaponsToConvert )
+		{
+			return weaponsToConvert[classname];
+		}
+		return 0;
+	}
 }
 
+Convars.SetValue("director_special_battlefield_respawn_interval",4) //防守时特感刷新的速度
+Convars.SetValue("director_custom_finale_tank_spacing",5) //终局tank出现的时间间隔
+Convars.SetValue("director_tank_checkpoint_interval",120)//允许tank出生的时间，自生还者离开安全屋开始计算
 
-Convars.SetValue("z_tank_health",RandomInt(8000,20000))
+//决定Witch的刷新数量，可能吧，未验证
+Convars.SetValue("director_threat_max_separation",1) 
+Convars.SetValue("director_threat_min_separation",0) 
+Convars.SetValue("director_threat_radius",0)
+Convars.SetValue("director_max_threat_areas",40)
+
+
 Convars.SetValue("director_force_tank",0) //是否走两步就刷tank
 Convars.SetValue("director_force_witch",0)
 
@@ -46,14 +80,14 @@ Convars.SetValue("director_force_witch",0)
 Convars.SetValue("l4d2_spawn_uncommons_autochance",3)
 Convars.SetValue("l4d2_spawn_uncommons_autotypes",31)
 Convars.SetValue("z_witch_always_kills",1)
-Convars.SetValue("director_max_threat_areas",40)
+
 Convars.SetValue("tongue_victim_max_speed",225)
 Convars.SetValue("tongue_range",1500)
 
 //插件配置参数修改
-//tank生成插件，默认在10-15分钟刷一只克，有些关卡第一关可能不希望刷这么多（把刷克时间改的尽可能长就行），有些关卡则希望能多点
-Convars.SetValue("min_time_spawn_tank",600)
-Convars.SetValue("max_time_spawn_tank",900)
+//tank生成插件，默认在8-10分钟刷一只克，有些关卡第一关可能不希望刷这么多（把刷克时间改的尽可能长就行），有些关卡则希望能多点
+Convars.SetValue("min_time_spawn_tank",480)
+Convars.SetValue("max_time_spawn_tank",600)
 
 
 Msg(">>>>>>>>>>>>>>>>>>>>>>Common Coop Director Scripts Load Succeed<<<<<<<<<<<<<<<<<<<<<<<<\n\n\n\n");

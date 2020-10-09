@@ -11,22 +11,6 @@ DirectorOptions <-
 	RelaxMaxFlowTravel = RandomInt(100,200)
 	weaponsToConvert =
 	{
-	weapon_vomitjar = "weapon_pain_pills"
+		weapon_vomitjar = "weapon_pain_pills"
 	}
-
-	function ConvertWeaponSpawn( classname )
-	{
-	if ( classname in weaponsToConvert )
-	{
-		return weaponsToConvert[classname];
-	}
-	return 0;
-	}
-	PreferredMobDirection = SPAWN_IN_FRONT_OF_SURVIVORS
-	PreferredSpecialDirection = SPAWN_SPECIALS_IN_FRONT_OF_SURVIVORS
-	RelaxMinInterval = 99999
-	RelaxMaxInterval = 99999
 }
-
-Msg("###Relax Max Flow Travel:"+DirectorOptions.RelaxMaxFlowTravel);
-Msg("\n\n\n");

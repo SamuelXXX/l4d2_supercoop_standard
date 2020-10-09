@@ -49,12 +49,23 @@ DirectorOptions.finaleStageList.insert( FINALE_GAUNTLET_ESCAPE, "" );
 
 function GetDirectorOptions()
 {
+	//这里改动了DirectorOptions的生效顺序
+	//MapScript的东西可以覆写ModeScript的内容，而非相反
 	local result;
 	if ( "DirectorOptions" in DirectorScript )
 	{
 		result = DirectorScript.DirectorOptions;
 	}
 	
+	if ( DirectorScript.MapScript.ChallengeScript.rawin( "DirectorOptions" ) )
+	{
+		if ( result != null )
+		{
+			DirectorScript.MapScript.ChallengeScript.DirectorOptions.setdelegate( result );
+		}
+		result = DirectorScript.MapScript.ChallengeScript.DirectorOptions;
+	}
+
 	if ( DirectorScript.MapScript.rawin( "DirectorOptions") )
 	{
 		if ( result != null )
@@ -72,16 +83,6 @@ function GetDirectorOptions()
 		}
 		result = DirectorScript.MapScript.LocalScript.DirectorOptions;
 	}
-
-	if ( DirectorScript.MapScript.ChallengeScript.rawin( "DirectorOptions" ) )
-	{
-		if ( result != null )
-		{
-			DirectorScript.MapScript.ChallengeScript.DirectorOptions.setdelegate( result );
-		}
-		result = DirectorScript.MapScript.ChallengeScript.DirectorOptions;
-	}
-	
 	return result;
 }
 

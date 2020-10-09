@@ -5,12 +5,7 @@ DirectorOptions <-
 	cm_MaxSpecials = 8
 	DominatorLimit = 6
 
-	PreferredMobDirection = SPAWN_IN_FRONT_OF_SURVIVORS
-	PreferredSpecialDirection = SPAWN_SPECIALS_IN_FRONT_OF_SURVIVORS
-	RelaxMaxFlowTravel = RandomInt(1000,1500)
-	RelaxMinInterval = 99999
-	RelaxMaxInterval = 99999
+	//中途存在机关，防止Build Up时间沿用RelaxInterval
+	RelaxMinInterval = 120
+	RelaxMaxInterval = 120
 }
-
-Msg("###Relax Max Flow Travel:"+DirectorOptions.RelaxMaxFlowTravel);
-Msg("\n\n\n");

@@ -12,7 +12,7 @@ DirectorOptions <-
 	//LockTempo = true
 	MobSpawnMinTime = 3
 	MobSpawnMaxTime = 7
-	MobMinSize = 30
+	MobMinSize = 20
 	MobMaxSize = 30
 	MobMaxPending = 30
 	SustainPeakMinTime = 5
