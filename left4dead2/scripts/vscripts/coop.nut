@@ -1,7 +1,5 @@
 Msg("\n\n\n>>>>>>>>>>>>>>>>>>>>>>Common Coop Director Scripts Start Load<<<<<<<<<<<<<<<<<<<<<<<<\n");
 
-//在coop.nut文件中的DirectorOptions是写死的，无法被其它脚本修改的内容，所以其中的内容的更改一定要谨慎
-//可以被后面脚本覆写的参数写在ConVar中
 DirectorOptions <-
 {
 	//导演系统四大状态跳转条件参数配置
