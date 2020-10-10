@@ -4,9 +4,9 @@ DirectorOptions <-
 {
 	//导演系统四大状态跳转条件参数配置
 	BuildUpMinInterval = 1
-	SustainPeakMinTime = 15
-	SustainPeakMaxTime = 40
-	IntensityRelaxThreshold = 0.90
+	SustainPeakMinTime = 5
+	SustainPeakMaxTime = 25
+	IntensityRelaxThreshold = 0.80
 	RelaxMaxFlowTravel = RandomInt(1000,1500)
 	RelaxMinInterval = 99999
 	RelaxMaxInterval = 99999
