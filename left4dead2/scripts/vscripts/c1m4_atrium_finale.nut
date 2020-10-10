@@ -124,6 +124,7 @@ SharedOptions <-
 	MusicDynamicMobSpawnSize = 8
 	MusicDynamicMobStopSize = 2
 	MusicDynamicMobScanStopSize = 1
+	TankLimit=24
 } 
 
 InitialOnslaughtOptions <-

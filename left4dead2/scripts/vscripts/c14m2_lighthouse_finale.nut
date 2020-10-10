@@ -50,6 +50,7 @@ DirectorOptions <-
 	SpecialRespawnInterval = 4
 	TankHitDamageModifierCoop = RandomFloat(1,5)
 	ZombieSpawnRange = 1500
+	TankLimit = 24
 }
 
 local difficulty = Convars.GetStr( "z_difficulty" ).tolower();
