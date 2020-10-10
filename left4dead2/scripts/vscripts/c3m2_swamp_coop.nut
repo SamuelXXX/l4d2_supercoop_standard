@@ -9,3 +9,5 @@ DirectorOptions <-
 	RelaxMinInterval = 120
 	RelaxMaxInterval = 120
 }
+
+Convars.SetValue("tongue_range",1000)//Forever Dark, Need to weakening tones

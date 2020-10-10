@@ -5,3 +5,5 @@ DirectorOptions <-
 	cm_MaxSpecials = 8
 	DominatorLimit = 7
 }
+
+Convars.SetValue("tongue_range",1000)//Forever Dark, Need to weakening tones
