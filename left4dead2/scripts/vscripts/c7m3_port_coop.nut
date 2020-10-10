@@ -8,15 +8,6 @@ DirectorOptions <-
 	WitchLimit = 0
 	weaponsToConvert =
 	{
-		weapon_vomitjar = "weapon_pain_pills"
-	}
-
-	function ConvertWeaponSpawn( classname )
-	{
-		if ( classname in weaponsToConvert )
-		{
-			return weaponsToConvert[classname];
-		}
-		return 0;
+		weapon_vomitjar = "random_supply"
 	}
 }

@@ -8,6 +8,6 @@ DirectorOptions <-
 	WitchLimit = 0
 	weaponsToConvert =
 	{
-		weapon_vomitjar = "weapon_pain_pills"
+		weapon_vomitjar = "random_supply"
 	}
 }

@@ -9,7 +9,7 @@ DirectorOptions <-
 	
 	weaponsToConvert =
 	{
-	weapon_vomitjar = "weapon_pain_pills"
+		weapon_vomitjar = "random_supply"
 	}
 
 	PreferredMobDirection = SPAWN_IN_FRONT_OF_SURVIVORS
