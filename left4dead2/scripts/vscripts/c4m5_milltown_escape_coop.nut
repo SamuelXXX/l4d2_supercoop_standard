@@ -5,6 +5,11 @@ DirectorOptions <-
 	cm_MaxSpecials = 8
 	DominatorLimit = 8
 	WitchLimit = 0
+
+	weaponsToConvert =
+	{
+		weapon_vomitjar = "random_supply"
+	}
 }
 Convars.SetValue("z_witch_always_kills","0")
 

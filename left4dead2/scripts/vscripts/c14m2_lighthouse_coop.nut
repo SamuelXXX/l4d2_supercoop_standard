@@ -4,4 +4,9 @@ DirectorOptions <-
 {
 	cm_MaxSpecials = 8
 	DominatorLimit = 7
+
+	weaponsToConvert =
+	{
+		weapon_vomitjar = "random_supply"
+	}
 }

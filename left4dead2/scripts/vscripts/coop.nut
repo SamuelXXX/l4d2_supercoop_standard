@@ -47,14 +47,50 @@ DirectorOptions <-
 	//道具转换
 	weaponsToConvert =
 	{
-		weapon_vomitjar = "weapon_defibrillator"
+		weapon_vomitjar = "random_throwable"
 	}
 
 	function ConvertWeaponSpawn( classname )
 	{
 		if ( classname in weaponsToConvert )
 		{
-			return weaponsToConvert[classname];
+			local realConvertWeapon = weaponsToConvert[classname];
+			local rv = RandomFloat(0,1)
+			switch(weaponsToConvert[classname])
+			{
+				case "random_throwable":
+					if(rv < 0.5)
+					{
+						realConvertWeapon="weapon_pipebomb"
+					}
+					else
+					{
+						realConvertWeapon="weapon_molotov"
+					}
+					break;
+				case "random_supply":
+					if(rv < 0.25)
+					{
+						realConvertWeapon="weapon_defibrillator"
+					}
+					else if(rv < 0.5)
+					{
+						realConvertWeapon="weapon_first_aid_kit"
+					}
+					else if(rv < 0.75)
+					{
+						realConvertWeapon="weapon_pain_pills"
+					}
+					else
+					{
+						realConvertWeapon="weapon_adrenaline"
+					}
+					break;
+				default:
+					break;
+			}
+			Msg(">>>Convert "+classname+" to "+realConvertWeapon+"\n");
+			return realConvertWeapon;
 		}
 		return 0;
 	}

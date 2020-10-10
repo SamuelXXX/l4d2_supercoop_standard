@@ -7,6 +7,6 @@ DirectorOptions <-
 
 	weaponsToConvert =
 	{
-		weapon_vomitjar = "weapon_first_aid_kit"
+		weapon_vomitjar = "random_supply"
 	}
 }
