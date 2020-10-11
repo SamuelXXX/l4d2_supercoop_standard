@@ -48,6 +48,9 @@ DirectorOptions <-
 	//道具转换
 	weaponsToConvert =
 	{
+		weapon_rifle_desert="random_superweapon"
+		weapon_sniper_military = "random_superweapon"
+		weapon_hunting_rifle = "random_superweapon"
 		weapon_vomitjar = "random_throwable"
 	}
 
@@ -85,6 +88,28 @@ DirectorOptions <-
 					else
 					{
 						realConvertWeapon="weapon_adrenaline"
+					}
+					break;
+				case "random_superweapon":
+					if(rv < 0.1)
+					{
+						realConvertWeapon="weapon_sniper_awp"
+					}
+					else if(rv < 0.2)
+					{
+						realConvertWeapon="weapon_sniper_scout"
+					}
+					else if(rv < 0.3)
+					{
+						realConvertWeapon="weapon_rifle_m60"
+					}
+					else if(rv < 0.4)
+					{
+						realConvertWeapon="weapon_grenade_launcher"
+					}
+					else
+					{
+						realConvertWeapon=classname
 					}
 					break;
 				default:
