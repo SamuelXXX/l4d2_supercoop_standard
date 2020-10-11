@@ -13,9 +13,9 @@ DirectorOptions <-
 	SustainPeakMaxTime = 8
 	IntensityRelaxThreshold = 0.95
 
-	RelaxMinInterval = 9999
-	RelaxMaxInterval = 9999
-	RelaxMaxFlowTravel = 900
+	RelaxMinInterval = 120
+	RelaxMaxInterval = 120
+	RelaxMaxFlowTravel = 1200
 
 	SpecialRespawnInterval = 5
 	ZombieSpawnRange = 2000
