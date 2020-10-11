@@ -4,9 +4,9 @@ DirectorOptions <-
 {
 	//导演系统四大状态跳转条件参数配置
 	BuildUpMinInterval = 1
-	SustainPeakMinTime = 5
+	SustainPeakMinTime = 10
 	SustainPeakMaxTime = 25
-	IntensityRelaxThreshold = 0.80
+	IntensityRelaxThreshold = 1.0
 	RelaxMaxFlowTravel = RandomInt(1000,1500)
 	RelaxMinInterval = 99999
 	RelaxMaxInterval = 99999
@@ -25,7 +25,7 @@ DirectorOptions <-
 	MobSpawnMinTime=5	//待机尸潮冷却时间下限
 	MobSpawnMaxTime=20	//待机尸潮冷却时间上限，在下限与上限之间随机取值，当冷却时间见底时就会刷尸潮（前提还是处于Build_Up或者Sustain_Peak状态）
 	
-	//各类丧尸数量限制
+	//各类丧尸数量限制，不要删除这些字段，因为有些插件依赖这些字段
 	CommonLimit=30
 	cm_MaxSpecials = 8
 	DominatorLimit = 4
@@ -91,19 +91,19 @@ DirectorOptions <-
 					}
 					break;
 				case "random_superweapon":
-					if(rv < 0.1)
+					if(rv < 0.05)
 					{
 						realConvertWeapon="weapon_sniper_awp"
 					}
-					else if(rv < 0.2)
+					else if(rv < 0.1)
 					{
 						realConvertWeapon="weapon_sniper_scout"
 					}
-					else if(rv < 0.3)
+					else if(rv < 0.15)
 					{
 						realConvertWeapon="weapon_rifle_m60"
 					}
-					else if(rv < 0.4)
+					else if(rv < 0.2)
 					{
 						realConvertWeapon="weapon_grenade_launcher"
 					}
@@ -123,7 +123,7 @@ DirectorOptions <-
 }
 
 Convars.SetValue("director_special_battlefield_respawn_interval",4) //防守时特感刷新的速度
-Convars.SetValue("director_custom_finale_tank_spacing",5) //终局tank出现的时间间隔
+Convars.SetValue("director_custom_finale_tank_spacing",2) //终局tank出现的时间间隔
 Convars.SetValue("director_tank_checkpoint_interval",120)//允许tank出生的时间，自生还者离开安全屋开始计算
 
 //决定Witch的刷新数量，可能吧，未验证
@@ -148,6 +148,18 @@ Convars.SetValue("tongue_range",1500)
 //tank生成插件，默认在8-15分钟刷一只克，有些关卡第一关可能不希望刷这么多（把刷克时间改的尽可能长就行），有些关卡则希望能多点
 Convars.SetValue("min_time_spawn_tank",480)
 Convars.SetValue("max_time_spawn_tank",900)
+
+function Update()
+{
+	//随机均分刷特插件需要读取convar，但是convar和DirectorOptions里的设置有不一样，所以在这里强行做绑定
+	local result=GetDirectorOptions();
+	Convars.SetValue("z_spitter_limit",result.SpitterLimit)
+	Convars.SetValue("z_boomer_limit",result.BoomerLimit)
+	Convars.SetValue("z_hunter_limit",result.HunterLimit)
+	Convars.SetValue("z_smoker_limit",result.SmokerLimit)
+	Convars.SetValue("z_charger_limit",result.ChargerLimit)
+	Convars.SetValue("z_jockey_limit",result.JockeyLimit)
+}
 
 
 Msg(">>>>>>>>>>>>>>>>>>>>>>Common Coop Director Scripts Load Succeed<<<<<<<<<<<<<<<<<<<<<<<<\n\n\n\n");
