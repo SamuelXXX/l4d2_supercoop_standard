@@ -4,7 +4,7 @@
 #define PLUGIN_NAME "[L4D1/2] Survivor Identity Fix for 5+ Survivors"
 #define PLUGIN_AUTHOR "Merudo, Shadowysn"
 #define PLUGIN_DESC "Fix bug where a survivor will change identity when a player connects/disconnects if there are 5+ survivors"
-#define PLUGIN_VERSION "1.4"
+#define PLUGIN_VERSION "1.6"
 #define PLUGIN_URL "https://forums.alliedmods.net/showthread.php?p=2403731#post2403731"
 #define PLUGIN_NAME_SHORT "5+ Survivor Identity Fix"
 #define PLUGIN_NAME_TECH "survivor_identity_fix"
@@ -25,7 +25,7 @@ Handle hConf = null;
 static Handle hDHookSetModel = null;
 
 #define SIG_SetModel_LINUX "@_ZN11CBasePlayer8SetModelEPKc"
-#define SIG_SetModel_WINDOWS "\\x55\\x8B\\x2A\\x8B\\x2A\\x2A\\x56\\x57\\x50\\x8B\\x2A\\xE8\\xC0\\x7B"
+#define SIG_SetModel_WINDOWS "\\x55\\x8B\\x2A\\x8B\\x2A\\x2A\\x56\\x57\\x50\\x8B\\x2A\\xE8\\x2A\\x2A\\x2A\\x2A\\x8B\\x2A\\x2A\\x2A\\x2A\\x2A\\x8B\\x2A\\x8B\\x2A\\x2A\\x8B"
 
 #define SIG_L4D1SetModel_WINDOWS "\\x8B\\x2A\\x2A\\x2A\\x56\\x57\\x50\\x8B\\x2A\\xE8\\x2A\\x2A\\x2A\\x2A\\x8B\\x3D"
 
@@ -57,10 +57,10 @@ public MRESReturn SetModel_Pre(int client, Handle hParams)
 
 public MRESReturn SetModel(int client, Handle hParams)
 {
-	if (!IsValidClient(client) || !IsSurvivor(client)) 
+	if (!IsValidClient(client)) return;
+	if (!IsSurvivor(client)) 
 	{
-		if(client != -1)
-			g_Models[client][0] = '\0';
+		g_Models[client][0] = '\0';
 		return;
 	}
 	

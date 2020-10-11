@@ -306,11 +306,11 @@ stock Action ContinousSaveRoutine(Handle timer,DataPack pack)
 
 	if(!IsFreeSurvivorBot(bot))//不在是行动自由的电脑，或者被玩家控制
 	{
-		char botName[32];
-		char saveTargetName[32];
+		// char botName[32];
+		// char saveTargetName[32];
 
-		GetClientName(bot,botName,32);
-		GetClientName(saveTarget,saveTargetName,32);
+		// GetClientName(bot,botName,32);
+		// GetClientName(saveTarget,saveTargetName,32);
 		//PrintToServer(">>>[SaviourAI] %s stop saving %s because it is no longer a free survivor bot!!!",botName,saveTargetName);
 		botInSavingTask[bot]=-1;
 		return Plugin_Stop;
@@ -318,11 +318,11 @@ stock Action ContinousSaveRoutine(Handle timer,DataPack pack)
 		
 	if(!DoSaveTeamMate(bot,saveTarget))//目标队友已经解控
 	{
-		char botName[32];
-		char saveTargetName[32];
+		// char botName[32];
+		// char saveTargetName[32];
 
-		GetClientName(bot,botName,32);
-		GetClientName(saveTarget,saveTargetName,32);
+		// GetClientName(bot,botName,32);
+		// GetClientName(saveTarget,saveTargetName,32);
 		//PrintToServer(">>>[SaviourAI] %s stop saving %s because target is successfully saved!!!",botName,saveTargetName);
 		botInSavingTask[bot]=-1;
 		return Plugin_Stop;
