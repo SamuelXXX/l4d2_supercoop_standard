@@ -65,47 +65,47 @@ DirectorOptions <-
 				case "random_throwable":
 					if(rv < 0.5)
 					{
-						realConvertWeapon="weapon_pipebomb"
+						realConvertWeapon="weapon_pipebomb_spawn"
 					}
 					else
 					{
-						realConvertWeapon="weapon_molotov"
+						realConvertWeapon="weapon_molotov_spawn"
 					}
 					break;
 				case "random_supply":
 					if(rv < 0.25)
 					{
-						realConvertWeapon="weapon_defibrillator"
+						realConvertWeapon="weapon_defibrillator_spawn"
 					}
 					else if(rv < 0.5)
 					{
-						realConvertWeapon="weapon_first_aid_kit"
+						realConvertWeapon="weapon_first_aid_kit_spawn"
 					}
 					else if(rv < 0.75)
 					{
-						realConvertWeapon="weapon_pain_pills"
+						realConvertWeapon="weapon_pain_pills_spawn"
 					}
 					else
 					{
-						realConvertWeapon="weapon_adrenaline"
+						realConvertWeapon="weapon_adrenaline_spawn"
 					}
 					break;
 				case "random_superweapon":
 					if(rv < 0.05)
 					{
-						realConvertWeapon="weapon_sniper_awp"
+						realConvertWeapon="weapon_sniper_awp_spawn"
 					}
 					else if(rv < 0.1)
 					{
-						realConvertWeapon="weapon_sniper_scout"
+						realConvertWeapon="weapon_sniper_scout_spawn"
 					}
 					else if(rv < 0.15)
 					{
-						realConvertWeapon="weapon_rifle_m60"
+						realConvertWeapon="weapon_rifle_m60_spawn"
 					}
 					else if(rv < 0.2)
 					{
-						realConvertWeapon="weapon_grenade_launcher"
+						realConvertWeapon="weapon_grenade_launcher_spawn"
 					}
 					else
 					{
