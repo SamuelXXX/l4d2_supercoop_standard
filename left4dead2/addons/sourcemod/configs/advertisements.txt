@@ -119,6 +119,6 @@
 	}
 	"26"
 	{
-		"chat"		"聊天框输入!nightvision即可开关夜视仪，也可以在控制台绑定指令bind n "say /nightvision"!"
+		"chat"		"聊天框输入!nightvision即可开关夜视仪，也可以使用控制台绑定指令bind快速开关夜视仪"
 	}
 }
