@@ -28,6 +28,9 @@ public void OnPluginStart()
 	HookEvent("player_death", Event_PlayerDeath,EventHookMode_Post);
 	HookEvent("round_start", Event_RoundStart,EventHookMode_Post);
 
+	//HookEvent("tank_spawn", Event_TankSpawn,EventHookMode_Post);
+	//HookEvent("tank_killed", Event_TankKilled,EventHookMode_Post);
+
 	HookEvent("player_use",Event_PlayerUse,EventHookMode_Post);	
 	HookEvent("finale_start",Event_FinaleStart,EventHookMode_Post);	
 	HookEvent("gauntlet_finale_start",Event_GauntletFinaleStart,EventHookMode_Post);	
@@ -120,6 +123,43 @@ public void Event_PlayerUse(Handle event, const char[] name, bool dontBroadcast)
 	{
 		display_event(user_name,"触发了终局开关！")
 	}
+}
+
+public void Event_TankSpawn(Handle event, const char[] name, bool dontBroadcast)
+{
+	int tank_count=TankCount();
+	PrintToChatAll("\x03[系统提示] \x01新Tank出现，当前在场Tank数量：\x05%d！",tank_count);
+}
+
+stock bool IsAliveTank(int client)
+{
+	if(IsClientInGame(client) && IsPlayerAlive(client) && (GetClientTeam(client) == 3))
+	{
+		char client_name[32];
+		GetClientName(client,client_name,32);
+		if(StrContains(client_name, "Tank", false) > 0) 
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+stock int TankCount()
+{
+	int tank_count=0;
+	for(int i=1;i<=MaxClients;i++)
+	{
+		if(IsAliveTank(i))
+			tank_count++;
+	}
+	return tank_count;
+}	
+
+public void Event_TankKilled(Handle event, const char[] name, bool dontBroadcast)
+{
+	int tank_count=TankCount();
+	PrintToChatAll("\x03[系统提示] \x01Tank死亡，当前在场Tank数量：\x05%d！",tank_count);
 }
 
 int revive_count[8];
