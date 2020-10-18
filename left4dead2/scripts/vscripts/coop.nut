@@ -109,7 +109,7 @@ DirectorOptions <-
 					}
 					else
 					{
-						realConvertWeapon=classname
+						return 0;
 					}
 					break;
 				default:

@@ -102,25 +102,25 @@ public MRESReturn OnShouldStartAction(int pThis, Handle hReturn, Handle hParams)
 				return MRES_Supercede;
 			}
 		}
-		else if(useAction == UseAction_TargetHeal && IsValidEntity(target))
-		{
-			if(cvmkp_usetemphealth.BoolValue)
-			{
-				if(GetClientRealHealth(target) > cvmkp_minhealth.IntValue)
-				{
-					PrintDebugMessage("\x03[AI行为规范] \x01已拦截电脑为玩家打包的行为");
-					DHookSetReturn(hReturn, false);
-					return MRES_Supercede;
-				}
-			}
-			// This only checks normal hp. It does not check for temp health
-			if(GetClientHealth(target) > cvmkp_minhealth.IntValue )
-			{
-				PrintDebugMessage("\x03[AI行为规范] \x01已拦截电脑为玩家打包的行为");
-				DHookSetReturn(hReturn, false);
-				return MRES_Supercede;
-			}
-		}	
+		// else if(useAction == UseAction_TargetHeal && IsValidEntity(target))
+		// {
+		// 	if(cvmkp_usetemphealth.BoolValue)
+		// 	{
+		// 		if(GetClientRealHealth(target) > cvmkp_minhealth.IntValue)
+		// 		{
+		// 			PrintDebugMessage("\x03[AI行为规范] \x01已拦截电脑为玩家打包的行为");
+		// 			DHookSetReturn(hReturn, false);
+		// 			return MRES_Supercede;
+		// 		}
+		// 	}
+		// 	// This only checks normal hp. It does not check for temp health
+		// 	if(GetClientHealth(target) > cvmkp_minhealth.IntValue )
+		// 	{
+		// 		PrintDebugMessage("\x03[AI行为规范] \x01已拦截电脑为玩家打包的行为");
+		// 		DHookSetReturn(hReturn, false);
+		// 		return MRES_Supercede;
+		// 	}
+		// }	
 	}
 	return MRES_Ignored;
 }
