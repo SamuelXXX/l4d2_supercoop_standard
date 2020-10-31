@@ -1,5 +1,5 @@
 Msg("l4d2 yama 4 onslaught initiating------------------------------------------------------------\n");
-
+//摩耶山危机
 DirectorOptions <-
 {
     CommonLimit = 40

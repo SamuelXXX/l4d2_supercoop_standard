@@ -8,7 +8,7 @@ SCRIPTED <- 3
 DirectorOptions <-
 {
 	 A_CustomFinale1 = PANIC
-	 A_CustomFinaleValue1 = RandomInt(1,3)
+	 A_CustomFinaleValue1 = RandomInt(1,1)
 
 	 A_CustomFinale2 = SCRIPTED
 	 A_CustomFinaleValue2 = "off.nut"
@@ -47,7 +47,7 @@ DirectorOptions <-
 	 A_CustomFinaleValue13 = RandomInt(6,10)
 
 	 HordeEscapeCommonLimit = 30
-	 ZombieTankHealth = RandomInt(15000,20000)
+	 ZombieTankHealth = 1000
 	 CommonLimit = 30
 	 MegaMobSize = 90
 	 MaxSpecials = 10
@@ -59,6 +59,8 @@ DirectorOptions <-
 	 WitchLimit = 0
 	 SpecialRespawnInterval = 4
 	 TankHitDamageModifierCoop = RandomFloat(3,5)
+	 SustainPeakMinTime = 1
+	 SustainPeakMaxTime = 2
 }
 Convars.SetValue("l4d2_spawn_uncommons_autochance","3")
 Convars.SetValue("l4d2_spawn_uncommons_autotypes","59")

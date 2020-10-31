@@ -1,0 +1,12 @@
+//巴塞罗那
+Msg("Preparing to own the Survivors");
+local Dopts = DirectorScript.DirectorOptions; // get a reference to the options
+Dopts.MaxSpecials <- 20;
+Dopts.BoomerLimit <- 5;
+Dopts.SmokerLimit <- 5;
+Dopts.HunterLimit <- 5;
+Dopts.ChargerLimit <- 5;
+Dopts.SpitterLimit <- 5;
+Dopts.JockeyLimit <- 5;
+Dopts.CommonLimit <- 2;
+Dopts.SpecialRespawnInterval <- 1.0;

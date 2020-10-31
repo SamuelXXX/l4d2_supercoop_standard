@@ -1,27 +1,17 @@
-Msg("Super Coop");
-
+//破晓
 DirectorOptions <-
 {
-	 cm_MaxSpecials = 4
-	 cm_DominatorLimit = 4
-	 TankLimit = 24
-	 PreferredMobDirection = SPAWN_IN_FRONT_OF_SURVIVORS
-	 PreferredSpecialDirection = SPAWN_SPECIALS_IN_FRONT_OF_SURVIVORS
-	 ProhibitBosses = false
-	 ZombieTankHealth = RandomInt(6000,12000)
-	 WitchLimit = 24
-	 TankHitDamageModifierCoop = RandomFloat(1,5)
-	 RelaxMaxFlowTravel = RandomInt(1500,1700)
-}
-Convars.SetValue("l4d2_spawn_uncommons_autochance","3")
-Convars.SetValue("l4d2_spawn_uncommons_autotypes","31")
-Convars.SetValue("z_witch_always_kills","0")
-Convars.SetValue("director_max_threat_areas","24")
-Convars.SetValue("tongue_victim_max_speed","225")
-Convars.SetValue("tongue_range","1500")
-Convars.SetValue("director_relax_min_interval","99999")
-Convars.SetValue("director_relax_max_interval","99999")
-Convars.SetValue("director_force_tank","0")
-Convars.SetValue("director_force_witch","0")
+	cm_MaxSpecials = 8
+	DominatorLimit = 5
+	
+	ZombieTankHealth=RandomInt(6000,12000)
 
-Convars.SetValue("l4d2_wu_enable","0")
+	RelaxMinInterval = 120
+	RelaxMaxInterval = 120 //Relax时间设置为2min，因为中间有个机关需要开启
+}
+
+
+Convars.SetValue("z_witch_always_kills","0")
+
+Convars.SetValue("min_time_spawn_tank",9999)
+Convars.SetValue("max_time_spawn_tank",9999)
