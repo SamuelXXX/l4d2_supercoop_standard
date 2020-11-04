@@ -47,7 +47,7 @@ DirectorOptions <-
 	 A_CustomFinaleValue13 = RandomInt(6,10)
 
 	 HordeEscapeCommonLimit = 30
-	 ZombieTankHealth = 1000
+	 ZombieTankHealth = RandomInt(15000,20000)
 	 CommonLimit = 30
 	 MegaMobSize = 90
 	 MaxSpecials = 10
