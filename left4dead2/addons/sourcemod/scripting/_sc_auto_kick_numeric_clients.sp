@@ -32,7 +32,7 @@ public bool IsNumericName(const char[] name)
 			return false;
 		i++;
 	}
-	if(i<3)
+	if(i<=3)
 		return false;
 	return true;
 }
