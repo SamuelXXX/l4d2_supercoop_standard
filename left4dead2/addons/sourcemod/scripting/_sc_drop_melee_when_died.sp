@@ -65,7 +65,7 @@ public Action RoundTickHandleRoutine(Handle timer)
 		{
 			sViceWeaponEntityTracking[i]=-1;
 		} 
-		else 
+		else if(GetEntProp(i, Prop_Send, "m_isIncapacitated", 1) == 0) //未倒地状态才会记录武器
 		{
 			sViceWeaponEntityTracking[i] = GetPlayerWeaponSlot(i, 1);// 当前的副手武器
 		}

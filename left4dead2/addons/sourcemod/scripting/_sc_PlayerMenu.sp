@@ -27,9 +27,10 @@ enum MainMenuItem
 {
 	PMVoteKick=1,
 	PMVoteKill=2,
-	PMVoiceMute=3,
-	PMTakeOverBot=4,
-	PMKick=5
+	PMVoteMap=3,
+	PMVoiceMute=4,
+	PMTakeOverBot=5,
+	PMKick=6
 }
 
 bool menuOn=false;
@@ -37,12 +38,13 @@ void CreateMainMenu(int client)
 {	
 	Menu menu=CreateMenu(MainMenuHandler,MENU_ACTIONS_DEFAULT);
 	SetMenuTitle(menu,"主菜单");
-	AddMenuItem(menu,"1","发起踢人投票");
-	AddMenuItem(menu,"2","发起处死投票");
-	AddMenuItem(menu,"3","静音玩家");
-	AddMenuItem(menu,"4","接管电脑玩家");
+	AddMenuItem(menu,"1","踢人投票");
+	AddMenuItem(menu,"2","处死投票");
+	AddMenuItem(menu,"3","换图投票(限首关)");
+	AddMenuItem(menu,"4","静音玩家");
+	AddMenuItem(menu,"5","接管电脑");
 	if(CheckCommandAccess(client,"sm_kick",ADMFLAG_KICK,false))
-		AddMenuItem(menu,"5","踢出玩家（管理员）");
+		AddMenuItem(menu,"6","踢出玩家（管理员）");
 	SetMenuExitButton(menu, true);
 	DisplayMenu(menu, client, MENU_TIME_FOREVER);
 	menuOn=true;
@@ -77,13 +79,17 @@ public int MainMenuHandler(Menu menu,MenuAction action,int param1,int param2)
 					{
 						CreatePlayerListMenu(param1,"选择处死目标",8,HandlerVoteKill,true);
 					}
+					case PMVoteMap:
+					{
+						FakeClientCommand(param1,"sm_chmap");
+					}
 					case PMVoiceMute:
 					{
 						CreatePlayerListMuteMenu(param1,"切换静音状态",8,HandlerVoiceMute,false);
 					}
 					case PMTakeOverBot:
 					{
-						ClientCommand(param1,"sm_pickbot");
+						FakeClientCommand(param1,"sm_pickbot");
 					}
 					
 					case PMKick:
@@ -192,7 +198,7 @@ public int HandlerVoteKick(Menu menu,MenuAction action,int client,int param2)
 			{
 				int target = GetClientOfUserId(StringToInt(info));
 				GetClientName(target, name, sizeof(name));
-				ClientCommand(client,"sm_votekick %s",name);
+				FakeClientCommand(client,"sm_votekick %s",name);
 			}
 		}
 	}
@@ -218,7 +224,7 @@ public int HandlerKick(Menu menu,MenuAction action,int client,int param2)
 			{
 				int target = GetClientOfUserId(StringToInt(info));
 				GetClientName(target, name, sizeof(name));
-				ClientCommand(client,"sm_kick %s",name);
+				FakeClientCommand(client,"sm_kick %s",name);
 			}
 		}
 	}
@@ -244,7 +250,7 @@ public int HandlerVoteKill(Menu menu,MenuAction action,int client,int param2)
 			{
 				int target = GetClientOfUserId(StringToInt(info));
 				GetClientName(target, name, sizeof(name));
-				ClientCommand(client,"sm_voteslay %s",name);
+				FakeClientCommand(client,"sm_voteslay %s",name);
 			}
 		}
 	}
