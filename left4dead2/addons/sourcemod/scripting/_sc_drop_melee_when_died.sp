@@ -60,12 +60,11 @@ public Action RoundTickHandleRoutine(Handle timer)
 	//在角色死亡时无法获取装备信息，只能提前获取了
 	for(int i=0;i<MaxClients+1;i++)
 	{
-		sViceWeaponEntityTracking[i]=-1;
 		if (!IsSurvivor(i))
 		{
 			sViceWeaponEntityTracking[i]=-1;
 		} 
-		else if(GetEntProp(i, Prop_Send, "m_isIncapacitated", 1) == 0) //未倒地状态才会记录武器
+		else if(GetEntProp(i, Prop_Send, "m_isIncapacitated", 1) <= 0) //未倒地状态才会记录武器
 		{
 			sViceWeaponEntityTracking[i] = GetPlayerWeaponSlot(i, 1);// 当前的副手武器
 		}
