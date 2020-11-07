@@ -77,14 +77,14 @@ public void Event_Healing(Handle event, const char[] name, bool dontBroadcast)
 		{
 			PrintToChatAll("\x03[虾皮行为检测器] \x04%s\x01绿血恰包-回复血量：\x05%d，\x01您是魔鬼吗！！！",user_name,health_restored);
 		}
-		else if(revive_count==0)
+		else if(health_restored<99)
 		{
 			PrintToChatAll("\x03[虾皮行为检测器] \x04%s\x01尚未倒地就打包-回复血量：\x05%d，\x01医疗包很珍贵，且打且珍惜！",user_name,health_restored);
 		}	
-		else if(!in_black_white)
-		{
-			PrintToChatAll("\x03[虾皮行为检测器] \x04%s\x01尚未黑白就打包-倒地次数累计：\x05%d，\x01医疗包的正确用法是黑白再使用哦！",user_name,revive_count);
-		}	
+		// else if(!in_black_white)
+		// {
+		// 	PrintToChatAll("\x03[虾皮行为检测器] \x04%s\x01尚未黑白就打包-倒地次数累计：\x05%d，\x01医疗包的正确用法是黑白再使用哦！",user_name,revive_count);
+		// }	
 	}
 	ClearReviveCount(client);
 }

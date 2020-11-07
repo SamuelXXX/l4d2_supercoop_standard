@@ -856,13 +856,19 @@ public void OnPluginStart() {
 	RegConsoleCmd("mapvote", MapVote);
 	RegConsoleCmd("mapvotes", DisplayCurrentVotes);
 	RegConsoleCmd("sm_chmap", Command_ChangeMapVote);
-	RegConsoleCmd("sm_chmap2", Command_ChangeMapVote2);
+	//RegConsoleCmd("sm_chmap2", Command_ChangeMapVote2);
 	//RegConsoleCmd("sm_acs_maps", Command_MapList);
 }
 
 public Action Command_ChangeMapVote(int iClient, int args) {
 	if (g_hCVar_ChMapPolicy.IntValue < 1)
 		return Plugin_Handled;	// Disabled
+	
+	if(!OnFirstMap())
+	{
+		ReplyToCommand(iClient,"选图投票仅仅在第一关可用！");
+		return Plugin_Handled;	// Not In First Map
+	}
 
 	ShowMissionChooser(iClient, (g_iGameMode == GAMEMODE_SCAVENGE || g_iGameMode == GAMEMODE_SURVIVAL), false);
 	
@@ -1661,7 +1667,9 @@ public void VoteMenuDraw(int iClient) {
 //Handle the menu selection the client chose for voting
 public void VoteMenuHandler(int iClient, bool dontCare, int missionIndex, int mapIndex) {
 	g_bClientVoted[iClient] = true;
-	
+	char clientName[128];
+	GetClientName(iClient,clientName,128);
+
 	//Set the players current vote
 	if(dontCare) {
 		g_iClientVote[iClient] = -1;
@@ -1680,13 +1688,20 @@ public void VoteMenuHandler(int iClient, bool dontCare, int missionIndex, int ma
 	char localizedName[LEN_MISSION_NAME];
 	if(dontCare) {
 		PrintHintText(iClient, "%t", "You did not vote", "!mapvote");
+		display_vote(clientName,"弃票");
 	} else if(g_iGameMode == GAMEMODE_SCAVENGE) {
 		LMM_GetMapLocalizedName(g_iGameMode, missionIndex, mapIndex, localizedName, sizeof(localizedName), iClient);
 		PrintHintText(iClient, "%t", "You voted for", localizedName, "!mapvote", "!mapvotes");
 	} else {
 		LMM_GetMissionLocalizedName(g_iGameMode, missionIndex, localizedName, sizeof(localizedName), iClient);
 		PrintHintText(iClient, "%t", "You voted for", localizedName, "!mapvote", "!mapvotes");
+		display_vote(clientName,localizedName);
 	}
+}
+
+stock void display_vote(const char[] name,const char[] map)
+{
+	PrintToChatAll("\x03[选图投票] \x04%s\x01选择了\x04%s",name,map);
 }
 
 /*======================================================================================
@@ -1806,6 +1821,29 @@ bool OnFinaleOrScavengeMap() {
 	for(int cycleIndex = 0; cycleIndex < ACS_GetMissionCount(g_iGameMode); cycleIndex++) {
 		ACS_GetLastMapName(g_iGameMode, cycleIndex, lastMap, sizeof(lastMap));
 		if(StrEqual(strCurrentMap, lastMap, false))
+			return true;
+	}
+	
+	return false;
+}
+
+bool OnFirstMap(){
+	if(g_iGameMode == GAMEMODE_SCAVENGE)
+		return false;
+	
+	if(g_iGameMode == GAMEMODE_SURVIVAL)
+		return false;
+	
+	// Coop or Versus
+	
+	char strCurrentMap[LEN_MAP_FILENAME];
+	GetCurrentMap(strCurrentMap, sizeof(strCurrentMap));			//Get the current map from the game
+	
+	char firstMap[LEN_MAP_FILENAME];
+	//Run through all the maps, if the current map is a last campaign map, return true
+	for(int cycleIndex = 0; cycleIndex < ACS_GetMissionCount(g_iGameMode); cycleIndex++) {
+		ACS_GetFirstMapName(g_iGameMode, cycleIndex, firstMap, sizeof(firstMap));
+		if(StrEqual(strCurrentMap, firstMap, false))
 			return true;
 	}
 	
