@@ -192,4 +192,12 @@
 	{
 		"en" "Day Break"
 	}
+	"Landofoblivio"
+	{
+		"en" "The Land Of Oblivion"
+	}
+	"Lockdown"
+	{
+		"en" "Lock Down"
+	}
 }

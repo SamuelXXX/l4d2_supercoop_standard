@@ -192,4 +192,12 @@
 	{
 		"chi" "破晓"
 	}
+	"Landofoblivio"
+	{
+		"chi" "遗忘之地"
+	}
+	"Lockdown"
+	{
+		"chi" "禁闭"
+	}
 }
