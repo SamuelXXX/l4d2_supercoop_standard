@@ -1,4 +1,5 @@
-//破晓
+Msg("\n\n\n");
+Msg(">>>Loading threedays05 Director Scripts\n");
 
 DirectorOptions <-
 {

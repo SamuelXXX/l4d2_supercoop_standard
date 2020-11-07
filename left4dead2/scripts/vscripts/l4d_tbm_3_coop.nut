@@ -1,4 +1,5 @@
-//破晓
+Msg("\n\n\n");
+Msg(">>>Loading l4d_tbm_3 Director Scripts\n");
 
 DirectorOptions <-
 {

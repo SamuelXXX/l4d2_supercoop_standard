@@ -1,4 +1,5 @@
-//破晓
+Msg("\n\n\n");
+Msg(">>>Loading bt5 Director Scripts\n");
 
 DirectorOptions <-
 {
