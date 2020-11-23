@@ -33,8 +33,9 @@
 !/left4dead2/cfg/sourcemod/
 !/left4dead2/cfg/server*.cfg
 !/left4dead2/cfg/banned_user.cfg
-#注意server_debug只是本地调试使用，用来设置各种僵尸血量，不要同步
+#注意server_debug只是本地调试使用，用来设置各种僵尸血量，不要同步；server_local负责一些服务器自定制属性的配置
 /left4dead2/cfg/server_debug.cfg
+/left4dead2/cfg/server_local.cfg
 
 
 # vscripts文件目录
