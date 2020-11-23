@@ -120,6 +120,20 @@ DirectorOptions <-
 		}
 		return 0;
 	}
+
+	function KillAllSpecialInfected()
+	{
+		//杀死所有除了tank之外的其它所有特感
+		local playerEnt = null
+		Msg(">>>Kill All Special Infected\n");
+
+		while ( playerEnt = Entities.FindByClassname( playerEnt, "player" ) )
+		{
+			local zombieType=playerEnt.GetZombieType()
+			if (zombieType>=1&&zombieType<=6) //所有特感
+				playerEnt.TakeDamage(10000, -1, null)
+		}
+	}
 }
 
 Convars.SetValue("director_special_battlefield_respawn_interval",4) //防守时特感刷新的速度
@@ -159,6 +173,7 @@ function Update()
 	Convars.SetValue("z_smoker_limit",result.SmokerLimit)
 	Convars.SetValue("z_charger_limit",result.ChargerLimit)
 	Convars.SetValue("z_jockey_limit",result.JockeyLimit)
+	// result.KillAllSpecialInfected()
 }
 
 
