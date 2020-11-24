@@ -4,4 +4,8 @@ DirectorOptions <-
 {
 	cm_MaxSpecials = 8
 	DominatorLimit = 8
+
+	# 避免开电梯无限刷特
+	RelaxMinInterval = 120
+	RelaxMaxInterval = 120
 }
