@@ -298,6 +298,12 @@ function OnBeginCustomFinaleStage( num, type )
 	if ( developer() > 0 )
 		printl( "Beginning custom finale stage " + num + " of type " + type );
 	
+	local dopts=GetDirectorOptions();
+	if(type == TANK)
+	{
+		dopts.KillAllSpecialInfected()
+	}
+	
 	if ( num == 4 )
 	{
 		EntFire( "relay_boat_coming2", "Trigger" );

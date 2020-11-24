@@ -300,6 +300,12 @@ function AddTableToTable( dest, src )
 function OnBeginCustomFinaleStage( num, type )
 {
 	printl( "Beginning custom finale stage " + num + " of type " + type );
+
+	local dopts=GetDirectorOptions();
+	if(type == TANK)
+	{
+		dopts.KillAllSpecialInfected()
+	}
 	
 	local waveOptions = null
 	if ( num == 1 )

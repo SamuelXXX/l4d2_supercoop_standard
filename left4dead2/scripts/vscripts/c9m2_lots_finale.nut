@@ -51,3 +51,12 @@ Convars.SetValue("director_relax_min_interval","120")
 Convars.SetValue("director_relax_max_interval","120")
 Convars.SetValue("tongue_victim_max_speed","700")
 Convars.SetValue("tongue_range","2000")
+
+function OnBeginCustomFinaleStage( num, type )
+{
+	local dopts=GetDirectorOptions();
+	if(type == TANK)
+	{
+		dopts.KillAllSpecialInfected()
+	}
+}
