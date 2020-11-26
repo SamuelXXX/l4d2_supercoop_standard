@@ -56,7 +56,10 @@
 #define MAX_CLASS_RECHECKS 5
 #define DEBUG 0
 
-new LastClass;
+new LastClass[L4D_MAXPLAYERS+1];
+new ClassRechecks[L4D_MAXPLAYERS+1];
+new Handle:g_hCvarWait;
+new bool:g_bWaiting=false;
 
 public Plugin:myinfo =
 {
@@ -74,43 +77,119 @@ public OnPluginStart()
 	GetGameFolderName(game, sizeof(game))
 	//and don't load if it's not L4D2.
 	if (!StrEqual(game, "left4dead2", false)) SetFailState("Plugin supports Left 4 Dead 2 only.")
+	
+	CreateConVar("l4d2_inffixspawn_version", PLUGIN_VERSION, "InfectedFixSpawn plugin version", FCVAR_PLUGIN|FCVAR_SPONLY|FCVAR_NOTIFY|FCVAR_DONTRECORD);
+	g_hCvarWait=CreateConVar("sm_inffixspawn_wait", "5", "Plugin wait(no actions) this value seconds from round start.");
 		
+	HookEvent("ghost_spawn_time", Event_GhostSpawnTime);
+	HookEvent("versus_round_start", Event_RoundStart)
+	HookEvent("scavenge_round_start", Event_RoundStart)
 	HookEvent("round_start", Event_RoundStart);
-	HookEvent("player_spawn", Event_PlayerSpawn, EventHookMode_Post)
-
+//	HookEvent("player_spawn", Event_PlayerSpawn, EventHookMode_Post)
+	RegAdminCmd("sm_infectedchange", Command_ChangeTest, ADMFLAG_ROOT);
 	InitInfectedSpawnAPI();
 }
 
+public Action:Command_ChangeTest(client, args) 
+{
+	if (client==0) client=1;
+	new CurrentClass=GenerateZombieId(LastClass[client]);
+	InfectedChangeClass(client,CurrentClass);	
+	LastClass[client]=CurrentClass;
+}
+
+public Action:Timer_StopWait(Handle:timer){ g_bWaiting=false; }
+
 public Action:Event_RoundStart(Handle:event, const String:name[], bool:dontBroadcast)
 {
-	LastClass=-1;
-}
-
-public Event_PlayerSpawn(Handle:event, const String:name[], bool:dontBroadcast)
-{
-	int userid =  GetEventInt(event, "userid")
-	int client =  GetClientOfUserId(userid);
-
-	if (IsClientConnected(client) && IsClientInGame(client) && GetClientTeam(client)==TEAM_INFECTED) 
-	{
-		new ZombieClass=GetInfectedClass(client)
-		if(ZombieClass!=LastClass)
-		{
-			LastClass=ZombieClass;
-		}
-		else
-		{
-			new CurrentClass=GenerateZombieId(ZombieClass);
-			if(CurrentClass!=ZombieClass)
-			{
-				InfectedChangeClass(client,CurrentClass);
-				//PrintToServer(">>>Convert %s to %s",g_sBossNames[ZombieClass],g_sBossNames[CurrentClass]);
-				LastClass=CurrentClass;
-			}	
-		}
-		
+	for (new i = 1; i <= MaxClients; i++){
+		LastClass[i]=0;
+		ClassRechecks[i]=0;
 	}
+	if(GetConVarInt(g_hCvarWait)) {
+		g_bWaiting=true;
+		CreateTimer(GetConVarFloat(g_hCvarWait),Timer_StopWait);
+	}
+	
 }
+
+/*public Event_PlayerSpawn(Handle:event, const String:name[], bool:dontBroadcast)
+{
+}
+*/
+public Action:Event_GhostSpawnTime(Handle:event, const String:name[], bool:dontBroadcast)
+{
+	if (g_bWaiting) return;
+
+
+		
+	new client = GetClientOfUserId(GetEventInt(event, "userid"));
+	new spawntime = GetEventInt(event, "spawntime");
+	CreateTimer(float(spawntime)-1.0, PreDelayedTestClass, client)
+
+	PrintToChatAll("GhostSpawnTime, cl=%N, time=%d",client,spawntime);
+	ClassRechecks[client] = 0;
+	#if DEBUG
+		DebugPrint("GhostSpawnTime, cl=%N, time=%d",client,spawntime);
+	#endif
+}
+
+public Action:PreDelayedTestClass(Handle:timer, any:client)
+{
+	#if DEBUG
+		DebugPrint("PreDelayed test class, cl=%N, alive=%d",client,IsPlayerAlive(client));
+	#endif
+	if (IsClientConnected(client) && IsClientInGame(client) && !IsPlayerAlive(client) && GetClientTeam(client)==TEAM_INFECTED) 
+		CreateTimer(1.0, DelayedTestClass, client)
+}
+
+public Action:DelayedTestClass(Handle:timer, any:client)
+{
+	if (!IsClientConnected(client) || !IsClientInGame(client) || GetClientTeam(client)!=TEAM_INFECTED) return;
+
+	//check class
+	new CurrentClass= GetInfectedClass(client);	
+	#if DEBUG
+		DebugPrint("Delayed test class, cl=%N, class=%s, alive=%d",client,g_sBossNames[CurrentClass],IsPlayerAlive(client));
+	#endif
+	
+	if (CurrentClass == ZC_TANK) return;
+	
+	if (!IsPlayerAlive(client)) {
+		if (ClassRechecks[client] < MAX_CLASS_RECHECKS){
+			//If player after spawn ghost and is not alive then recheck in 0.1
+			CreateTimer(0.1, DelayedTestClass, client);
+			ClassRechecks[client]++;
+		}
+		// if after max check steel not alive - do nothing
+		return;
+	}
+	
+	if (CurrentClass==LastClass[client]){
+		CurrentClass=GenerateZombieId(LastClass[client]);
+		InfectedChangeClass(client,CurrentClass);
+		#if DEBUG
+			DebugPrint("Delayed change class, cl=%N, change=%s",client,g_sBossNames[CurrentClass]);
+		#endif
+	}
+	LastClass[client]=CurrentClass;
+}
+
+#if DEBUG
+
+DebugPrint(const String:format[], any:...)
+{
+	decl String:buffer[300];
+	static Handle:hLogFile=INVALID_HANDLE;
+	VFormat(buffer, sizeof(buffer), format, 2);	
+	if (hLogFile==INVALID_HANDLE){
+		decl String:logPath[256];
+		BuildPath(Path_SM, logPath, sizeof(logPath), "logs/l4d2_InfectedFixSpawn.log");
+		hLogFile=OpenFile(logPath,"a");
+	}
+	LogToOpenFileEx(hLogFile,buffer);
+}
+#endif
 
 
 

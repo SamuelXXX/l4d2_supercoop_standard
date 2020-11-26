@@ -169,7 +169,7 @@ stock __InitMaxInfectedCount(bool:regchangecallback = false)
 {
 	for (new i=ZC_SMOKER; i<=ZC_CHARGER; i++){ 
 		new String:CVarName[50];
-		Format(CVarName,sizeof(CVarName),"z_%s_limit",g_sBossNames[i]);
+		Format(CVarName,sizeof(CVarName),"z_versus_%s_limit",g_sBossNames[i]);
 		new Handle:cvar=FindConVar(CVarName);
 		g_iMaxInfectedCounts[i]=GetConVarInt(cvar);
 		if (regchangecallback)
@@ -308,22 +308,6 @@ stock bool:InfectedForceGhost(client, SavePos=false, inFinaleAlso=false){
 	return true;
 }
 
-stock IsDominator(class){
-	if(class==ZC_SMOKER)
-		return true;
-	
-	if(class==ZC_CHARGER)
-		return true;
-	
-	if(class==ZC_HUNTER)
-		return true;
-
-	if(class==ZC_JOCKEY)
-		return true;
-	
-	return false;
-}
-
 
 /**
 * Change infected zombie class
@@ -351,13 +335,11 @@ stock InfectedChangeClass(client,newclass){
 	
 //	AcceptEntityInput(GetEntPropEnt(client, Prop_Send, "m_customAbility"),"Kill");//MakeCompatEntRef(
 	AcceptEntityInput(GetEntDataEnt2(client, g_ISAPI_propinfo_customAbility),"Kill");
-	Create new ability
+	//Create new ability
 	SetEntData(client, g_ISAPI_propinfo_customAbility, GetEntData(SDKCall(g_ISAPI_fhCreateAbility,client),g_ISAPI_iRefEHandleOffset));
 
 	return true;
 }
-
-
 
 /**
 * Correctly generate new zombie class id for spawn, change, etc
@@ -373,35 +355,31 @@ stock GenerateZombieId(lastClass, bool:checkmax=true)
 	
 	if (checkmax) {
 		//get counts
-		decl Zombies[ZC_NOT_INFECTED];  
-		Zombies=GetInfectedCounts();
+		decl Zombies[ZC_NOT_INFECTED];  Zombies=GetInfectedCounts();
 	
 		//calc random
 		new bool:Randoms[ZC_TANK];
 		new RandomCount;
 		for (new i=ZC_SMOKER; i<=ZC_CHARGER; i++){ 
 			if (lastClass==i) continue;
-			if(!IsDominator(lastClass)&&IsDominator(i)) continue;
-
 			if (g_iMaxInfectedCounts[i]>Zombies[i]){
-					//PrintToServer(">>>Has empty slot for %s:%d:%d",g_sBossNames[i],g_iMaxInfectedCounts[i],Zombies[i])
-					Randoms[i]=true;
-					RandomCount++;			
+				Randoms[i]=true;
+				RandomCount++;			
 			}
-			
 		}
 		if (RandomCount > 0){
-			for (new i=1; i<=10; i++){ 		
-				ZombieId=GetRandomInt(ZC_SMOKER,ZC_CHARGER);	
+			for (new i=1; i<=10; i++){ 
+				ZombieId=GetRandomInt(ZC_SMOKER,ZC_CHARGER);
 				#if defined DEBUG_GENERATOR
 					InfAPIDebugPrint("Generate zombie. cycle=%d ZombieId=%d [t=%d,c=%d]",i,ZombieId,RandomCount,Randoms[ZombieId]);
 				#endif
 				if (!Randoms[ZombieId])  continue;
-				//PrintToServer(">>>Convert to new zombie:%s",g_sBossNames[ZombieId])
-				return ZombieId;
+				if (ZombieId != lastClass)  return ZombieId;
 			}
 		}
-		return lastClass;
+	}
+	if (ZombieId == lastClass){
+		while (ZombieId == lastClass) { ZombieId = GetRandomInt(ZC_SMOKER,ZC_CHARGER); }
 	}
 	return ZombieId;
 }
