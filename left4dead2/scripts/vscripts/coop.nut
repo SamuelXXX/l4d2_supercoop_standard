@@ -4,17 +4,17 @@ DirectorOptions <-
 {
 	//导演系统四大状态跳转条件参数配置
 	BuildUpMinInterval = 1
-	SustainPeakMinTime = 10
-	SustainPeakMaxTime = 25
+	SustainPeakMinTime = 12
+	SustainPeakMaxTime = 20
 	IntensityRelaxThreshold = 1.0
-	RelaxMaxFlowTravel = RandomInt(1000,1500)
+	RelaxMaxFlowTravel = RandomInt(700,1200)
 	RelaxMinInterval = 99999
 	RelaxMaxInterval = 99999
 
 	//特感刷新参数配置
 	SpecialInitialSpawnDelayMin = 10
 	SpecialInitialSpawnDelayMax = 20 //离开安全屋后第一波特感的刷新时间
-	cm_SpecialRespawnInterval=7  //特感通道冷却时间，该通道特感死亡后开始冷却，冷却时间见底后会从特感池中刷新一个新的特感
+	cm_SpecialRespawnInterval=5  //特感通道冷却时间，该通道特感死亡后开始冷却，冷却时间见底后会从特感池中刷新一个新的特感
 	cm_AggressiveSpecials = true
 
 	//尸潮刷新参数配置
@@ -26,7 +26,8 @@ DirectorOptions <-
 	MobSpawnMaxTime=20	//待机尸潮冷却时间上限，在下限与上限之间随机取值，当冷却时间见底时就会刷尸潮（前提还是处于Build_Up或者Sustain_Peak状态）
 	
 	//各类丧尸数量限制，不要删除这些字段，因为有些插件依赖这些字段
-	CommonLimit=30
+	WitchLimit=24
+	CommonLimit=20
 	cm_MaxSpecials = 8
 	DominatorLimit = 4
 	BoomerLimit = 4
@@ -91,19 +92,19 @@ DirectorOptions <-
 					}
 					break;
 				case "random_superweapon":
-					if(rv < 0.05)
+					if(rv < 0.02)
 					{
 						realConvertWeapon="weapon_sniper_awp_spawn"
 					}
-					else if(rv < 0.1)
+					else if(rv < 0.04)
 					{
 						realConvertWeapon="weapon_sniper_scout_spawn"
 					}
-					else if(rv < 0.15)
+					else if(rv < 0.06)
 					{
 						realConvertWeapon="weapon_rifle_m60_spawn"
 					}
-					else if(rv < 0.2)
+					else if(rv < 0.08)
 					{
 						realConvertWeapon="weapon_grenade_launcher_spawn"
 					}
@@ -163,18 +164,18 @@ Convars.SetValue("tongue_range",1500)
 Convars.SetValue("min_time_spawn_tank",480)
 Convars.SetValue("max_time_spawn_tank",900)
 
-function Update()
-{
-	//随机均分刷特插件需要读取convar，但是convar和DirectorOptions里的设置有不一样，所以在这里强行做绑定
-	local result=GetDirectorOptions();
-	Convars.SetValue("z_spitter_limit",result.SpitterLimit)
-	Convars.SetValue("z_boomer_limit",result.BoomerLimit)
-	Convars.SetValue("z_hunter_limit",result.HunterLimit)
-	Convars.SetValue("z_smoker_limit",result.SmokerLimit)
-	Convars.SetValue("z_charger_limit",result.ChargerLimit)
-	Convars.SetValue("z_jockey_limit",result.JockeyLimit)
-	// result.KillAllSpecialInfected()
-}
+// function Update()
+// {
+// 	//随机均分刷特插件需要读取convar，但是convar和DirectorOptions里的设置有不一样，所以在这里强行做绑定
+// 	local result=GetDirectorOptions();
+// 	Convars.SetValue("z_spitter_limit",result.SpitterLimit)
+// 	Convars.SetValue("z_boomer_limit",result.BoomerLimit)
+// 	Convars.SetValue("z_hunter_limit",result.HunterLimit)
+// 	Convars.SetValue("z_smoker_limit",result.SmokerLimit)
+// 	Convars.SetValue("z_charger_limit",result.ChargerLimit)
+// 	Convars.SetValue("z_jockey_limit",result.JockeyLimit)
+// 	// result.KillAllSpecialInfected()
+// }
 
 
 Msg(">>>>>>>>>>>>>>>>>>>>>>Common Coop Director Scripts Load Succeed<<<<<<<<<<<<<<<<<<<<<<<<\n\n\n\n");

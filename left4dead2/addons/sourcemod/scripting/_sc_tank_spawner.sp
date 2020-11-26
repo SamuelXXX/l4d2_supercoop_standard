@@ -48,7 +48,7 @@ public void Event_RoundEnd(Handle event, const char[] name, bool dontBroadcast)
 {
 	PrintToServer(">>>[TankSpawner] Round End!");
 	delete roundTickHandler;
-	delete delayStopTickHandler;
+	//delete delayStopTickHandler;
 }
 
 stock float GenerateRandomTime()
