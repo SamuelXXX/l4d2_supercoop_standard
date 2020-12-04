@@ -49,7 +49,7 @@ DirectorOptions <-
 	//道具转换
 	weaponsToConvert =
 	{
-		weapon_rifle_desert="random_superweapon"
+		//weapon_rifle_desert="random_superweapon"
 		weapon_sniper_military = "random_superweapon"
 		weapon_hunting_rifle = "random_superweapon"
 		weapon_vomitjar = "random_throwable"
@@ -100,14 +100,14 @@ DirectorOptions <-
 					{
 						realConvertWeapon="weapon_sniper_scout_spawn"
 					}
-					else if(rv < 0.06)
-					{
-						realConvertWeapon="weapon_rifle_m60_spawn"
-					}
-					else if(rv < 0.08)
-					{
-						realConvertWeapon="weapon_grenade_launcher_spawn"
-					}
+					// else if(rv < 0.06)
+					// {
+					// 	realConvertWeapon="weapon_rifle_m60_spawn"
+					// }
+					// else if(rv < 0.08)
+					// {
+					// 	realConvertWeapon="weapon_grenade_launcher_spawn"
+					// }
 					else
 					{
 						return 0;
