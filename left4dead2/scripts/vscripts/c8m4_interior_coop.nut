@@ -2,7 +2,7 @@ Msg(">>>Loading c8m4 Director Scripts\n");
 
 DirectorOptions <-
 {
-	cm_MaxSpecials = 8
+	cm_MaxSpecials = 11
 	DominatorLimit = 8
 
 	# 避免开电梯无限刷特
