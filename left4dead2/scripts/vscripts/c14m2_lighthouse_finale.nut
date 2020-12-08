@@ -17,7 +17,7 @@ DirectorOptions <-
 	A_CustomFinale_StageCount = 8
 	
 	A_CustomFinale1 		= PANIC
-	A_CustomFinaleValue1 	= RandomInt(1,3)
+	A_CustomFinaleValue1 	= GetFinalePanicWaveCount()
 	A_CustomFinale2 		= DELAY
 	A_CustomFinaleValue2 	= StageDelay
 	A_CustomFinale3 		= TANK

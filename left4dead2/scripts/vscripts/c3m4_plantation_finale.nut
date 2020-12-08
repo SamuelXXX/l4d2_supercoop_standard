@@ -8,7 +8,7 @@ SCRIPTED <- 3
 DirectorOptions <-
 {
 	 A_CustomFinale1 = PANIC
-	 A_CustomFinaleValue1 = RandomInt(1,3)
+	 A_CustomFinaleValue1 = GetFinalePanicWaveCount()
 
 	 A_CustomFinale2 = SCRIPTED
 	 A_CustomFinaleValue2 = "off.nut" 
@@ -23,7 +23,7 @@ DirectorOptions <-
 	 A_CustomFinaleValue5 = "c3m4_on.nut" 
  
 	 A_CustomFinale6 = PANIC
-	 A_CustomFinaleValue6 = RandomInt(1,3)
+	 A_CustomFinaleValue6 = GetFinalePanicWaveCount()
 
 	 A_CustomFinale7 = SCRIPTED
 	 A_CustomFinaleValue7 = "off.nut" 
@@ -38,7 +38,7 @@ DirectorOptions <-
 	 A_CustomFinaleValue10 = "c3m4_on.nut" 
 
 	 A_CustomFinale11 = PANIC
-	 A_CustomFinaleValue11 = RandomInt(1,3)
+	 A_CustomFinaleValue11 = GetFinalePanicWaveCount()
 
 	 A_CustomFinale12 = SCRIPTED
 	 A_CustomFinaleValue12 = "off.nut"
@@ -52,20 +52,11 @@ DirectorOptions <-
 	 A_CustomFinale15 = SCRIPTED
 	 A_CustomFinaleValue15 = "c3m4_on.nut"
 
-	 HordeEscapeCommonLimit = 30
-	 ZombieTankHealth = RandomInt(12000,20000)
-	 CommonLimit = 30
-	 MegaMobSize = 90
-	 cm_MaxSpecials = 14
-	 DominatorLimit = 8
-	 TankLimit = 24
 	 PreferredMobDirection = SPAWN_LARGE_VOLUME
 	 PreferredSpecialDirection = SPAWN_LARGE_VOLUME
-	 ProhibitBosses = false
-	 WitchLimit = 0
-	 SpecialRespawnInterval = 7
-	 TankHitDamageModifierCoop = RandomFloat(3,5)
 }
+ApplyCommonFinaleOptions(DirectorOptions)
+
 Convars.SetValue("l4d2_spawn_uncommons_autochance","3")
 Convars.SetValue("l4d2_spawn_uncommons_autotypes","59")
 Convars.SetValue("director_relax_min_interval","120")
