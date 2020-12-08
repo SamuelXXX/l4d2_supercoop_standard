@@ -86,3 +86,44 @@ function GetDirectorOptions()
 	return result;
 }
 
+function GetFinalePanicWaveCount()
+{
+	return RandomInt(3,5)
+}
+
+
+CommonFinaleOptions <-
+{
+	CommonLimit = 40
+	MegaMobSize = 180
+	cm_MaxSpecials = 10
+	DominatorLimit = 10
+	TankLimit = 24
+	ProhibitBosses = false
+	WitchLimit = 0
+	SpecialRespawnInterval = 4
+	TankHitDamageModifierCoop = RandomFloat(3,5)
+
+	HordeEscapeCommonLimit = 30
+	ZombieTankHealth = RandomInt(15000,20000)
+	//影响终局两个wave之间的时间间隔
+	PanicWavePauseMax = 20
+	PanicWavePauseMin = 30
+}
+
+function ApplyCommonFinaleOptions(finaleOptions)
+{
+	local tempTable={}
+	InjectTable(CommonFinaleOptions, tempTable)
+	InjectTable(finaleOptions, tempTable)
+	InjectTable(tempTable, finaleOptions)
+	Msg("Merge tables\n")
+	foreach(k,v in finaleOptions)
+	{
+		Msg(k)
+		Msg(":")
+		Msg(v)
+		Msg("\n")
+	}
+}
+

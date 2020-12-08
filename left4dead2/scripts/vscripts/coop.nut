@@ -19,7 +19,7 @@ DirectorOptions <-
 	cm_AggressiveSpecials = true
 
 	//尸潮刷新参数配置
-	MobRechargeRate=0.05 	//待机尸潮的小僵尸增加速度
+	MobRechargeRate=0.1 	//待机尸潮的小僵尸增加速度
 	MobMinSize=20		//待机尸潮的下限数目（充能基底值），其实还是从0开始充能，只是充能结果如果小于这个值，就以该值为准刷尸潮
 	MobMaxSize=40		//待机尸潮的上限数目（充能上限值）
 	MobMaxPending = 20 	//当刷出来的小僵尸超过CommonLimit后，超出的小僵尸数目会保留在一个池子里等待刷新
