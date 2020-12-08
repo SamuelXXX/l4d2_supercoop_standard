@@ -48,6 +48,7 @@ DirectorOptions <-
 	 
 	 PreferredMobDirection = SPAWN_ABOVE_SURVIVORS
 	 PreferredSpecialDirection = SPAWN_SPECIALS_ANYWHERE
+	 
 }
 
 ApplyCommonFinaleOptions(DirectorOptions)
