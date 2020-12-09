@@ -92,21 +92,33 @@ function GetFinalePanicWaveCount()
 }
 
 
+//公用终局的参数列表
 CommonFinaleOptions <-
 {
-	CommonLimit = 40
-	MegaMobSize = 180
-	cm_MaxSpecials = 10
+	//尸潮参数设置
+	CommonLimit = 30
+	MegaMobSize = 120
+	MobRechargeRate = 2 	//待机尸潮的小僵尸增加速度
+	MobMinSize = 40		//待机尸潮的下限数目（充能基底值），其实还是从0开始充能，只是充能结果如果小于这个值，就以该值为准刷尸潮
+	MobMaxSize = 60		//待机尸潮的上限数目（充能上限值）
+	MobMaxPending = 30 	//当刷出来的小僵尸超过CommonLimit后，超出的小僵尸数目会保留在一个池子里等待刷新
+	MobSpawnMinTime = 10	//待机尸潮冷却时间下限
+	MobSpawnMaxTime = 15	//待机尸潮冷却时间上限，在下限与上限之间随机取值，当冷却时间见底时就会刷尸潮（前提还是处于Build_Up或者Sustain_Peak状态）
+
+	//特感参数设置
+	cm_MaxSpecials = 14
 	DominatorLimit = 10
 	TankLimit = 24
 	ProhibitBosses = false
 	WitchLimit = 0
-	SpecialRespawnInterval = 4
+	SpecialRespawnInterval = 2
+	cm_SpecialRespawnInterval=2
 	TankHitDamageModifierCoop = RandomFloat(3,5)
+	ZombieTankHealth = RandomInt(15000,20000)
 
 	HordeEscapeCommonLimit = 30
-	ZombieTankHealth = RandomInt(15000,20000)
-	//影响终局两个wave之间的时间间隔
+	
+	//导演参数设置
 	PanicWavePauseMax = 20
 	PanicWavePauseMin = 30
 }
@@ -117,7 +129,6 @@ function ApplyCommonFinaleOptions(finaleOptions)
 	InjectTable(CommonFinaleOptions, tempTable)
 	InjectTable(finaleOptions, tempTable)
 	InjectTable(tempTable, finaleOptions)
-	Msg("Merge tables\n")
 	foreach(k,v in finaleOptions)
 	{
 		Msg(k)
