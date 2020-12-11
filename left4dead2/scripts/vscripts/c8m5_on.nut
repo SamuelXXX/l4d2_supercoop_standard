@@ -8,7 +8,7 @@ DirectorOptions <-
 	SpitterLimit = 2
 	JockeyLimit = 4
 	ChargerLimit = 4
-	MaxSpecials = 10
+	MaxSpecials = 14
 	DominatorLimit = 10
 }
 

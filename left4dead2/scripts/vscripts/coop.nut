@@ -19,7 +19,7 @@ DirectorOptions <-
 	cm_AggressiveSpecials = true
 
 	//尸潮刷新参数配置
-	MobRechargeRate=0.1 	//待机尸潮的小僵尸增加速度
+	MobRechargeRate=0.5 	//待机尸潮的小僵尸增加速度
 	MobMinSize=20		//待机尸潮的下限数目（充能基底值），其实还是从0开始充能，只是充能结果如果小于这个值，就以该值为准刷尸潮
 	MobMaxSize=40		//待机尸潮的上限数目（充能上限值）
 	MobMaxPending = 20 	//当刷出来的小僵尸超过CommonLimit后，超出的小僵尸数目会保留在一个池子里等待刷新
@@ -28,7 +28,7 @@ DirectorOptions <-
 	
 	//各类丧尸数量限制，不要删除这些字段，因为有些插件依赖这些字段
 	WitchLimit=24
-	CommonLimit=20
+	CommonLimit=30
 	cm_MaxSpecials = 8
 	DominatorLimit = 6
 	BoomerLimit = 4
@@ -50,10 +50,9 @@ DirectorOptions <-
 	//道具转换
 	weaponsToConvert =
 	{
-		//weapon_rifle_desert="random_superweapon"
-		weapon_sniper_military = "random_superweapon"
-		weapon_hunting_rifle = "random_superweapon"
 		weapon_vomitjar = "random_throwable"
+		weapon_rifle_m60 = "random_sniper"
+		weapon_grenade_launcher = "random_sniper"
 	}
 
 	function ConvertWeaponSpawn( classname )
@@ -92,23 +91,15 @@ DirectorOptions <-
 						realConvertWeapon="weapon_adrenaline_spawn"
 					}
 					break;
-				case "random_superweapon":
-					if(rv < 0.02)
+				case "random_sniper":
+					if(rv < 0.25)
 					{
 						realConvertWeapon="weapon_sniper_awp_spawn"
 					}
-					else if(rv < 0.04)
+					else if(rv < 0.6)
 					{
 						realConvertWeapon="weapon_sniper_scout_spawn"
 					}
-					// else if(rv < 0.06)
-					// {
-					// 	realConvertWeapon="weapon_rifle_m60_spawn"
-					// }
-					// else if(rv < 0.08)
-					// {
-					// 	realConvertWeapon="weapon_grenade_launcher_spawn"
-					// }
 					else
 					{
 						return 0;

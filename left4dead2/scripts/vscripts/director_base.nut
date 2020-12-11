@@ -88,7 +88,7 @@ function GetDirectorOptions()
 
 function GetFinalePanicWaveCount()
 {
-	return RandomInt(3,5)
+	return RandomInt(4,6)
 }
 
 
@@ -98,7 +98,7 @@ CommonFinaleOptions <-
 	//尸潮参数设置
 	CommonLimit = 30
 	MegaMobSize = 120
-	MobRechargeRate = 2 	//待机尸潮的小僵尸增加速度
+	MobRechargeRate = 10 	//待机尸潮的小僵尸增加速度
 	MobMinSize = 40		//待机尸潮的下限数目（充能基底值），其实还是从0开始充能，只是充能结果如果小于这个值，就以该值为准刷尸潮
 	MobMaxSize = 60		//待机尸潮的上限数目（充能上限值）
 	MobMaxPending = 30 	//当刷出来的小僵尸超过CommonLimit后，超出的小僵尸数目会保留在一个池子里等待刷新
@@ -113,14 +113,14 @@ CommonFinaleOptions <-
 	WitchLimit = 0
 	SpecialRespawnInterval = 2
 	cm_SpecialRespawnInterval=2
-	TankHitDamageModifierCoop = RandomFloat(3,5)
+	TankHitDamageModifierCoop = RandomFloat(1,5)
 	ZombieTankHealth = RandomInt(15000,20000)
 
 	HordeEscapeCommonLimit = 30
 	
 	//导演参数设置
-	PanicWavePauseMax = 20
-	PanicWavePauseMin = 30
+	PanicWavePauseMax = 10
+	PanicWavePauseMin = 20
 }
 
 function ApplyCommonFinaleOptions(finaleOptions)
