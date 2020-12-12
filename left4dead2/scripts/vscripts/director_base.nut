@@ -119,8 +119,8 @@ CommonFinaleOptions <-
 	HordeEscapeCommonLimit = 30
 	
 	//导演参数设置
-	PanicWavePauseMax = 10
-	PanicWavePauseMin = 20
+	PanicWavePauseMax = 5
+	PanicWavePauseMin = 10
 }
 
 function ApplyCommonFinaleOptions(finaleOptions)
