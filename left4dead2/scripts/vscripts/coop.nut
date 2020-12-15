@@ -92,13 +92,17 @@ DirectorOptions <-
 					}
 					break;
 				case "random_sniper":
-					if(rv < 0.25)
+					if(rv < 0.1)
 					{
 						realConvertWeapon="weapon_sniper_awp_spawn"
 					}
-					else if(rv < 0.6)
+					else if(rv < 0.2)
 					{
 						realConvertWeapon="weapon_sniper_scout_spawn"
+					}
+					else if(rv < 0.8)
+					{
+						realConvertWeapon="weapon_rifle_ak47_spawn"
 					}
 					else
 					{
