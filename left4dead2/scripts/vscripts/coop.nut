@@ -25,6 +25,7 @@ DirectorOptions <-
 	MobMaxPending = 20 	//当刷出来的小僵尸超过CommonLimit后，超出的小僵尸数目会保留在一个池子里等待刷新
 	MobSpawnMinTime=5	//待机尸潮冷却时间下限
 	MobSpawnMaxTime=20	//待机尸潮冷却时间上限，在下限与上限之间随机取值，当冷却时间见底时就会刷尸潮（前提还是处于Build_Up或者Sustain_Peak状态）
+	NumReservedWanderers = 20
 	
 	//各类丧尸数量限制，不要删除这些字段，因为有些插件依赖这些字段
 	WitchLimit=24
