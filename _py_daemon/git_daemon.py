@@ -4,8 +4,8 @@ from timer import Timer
 import requests
 import json
 
-FETCH_DELAY=6.0
-PULL_DELAY=600.0
+FAIL_DELAY=6.0
+SUCCEED_DELAY=600.0
 
 with open("server_tag.txt") as f:
 	tags=f.readlines()
@@ -14,12 +14,12 @@ with open("server_tag.txt") as f:
 
 WECHAT_BOT_URL= 'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=d36233f1-3850-4c12-9861-74ce7f019d47'
 
-def bot_log(msg):
+def bot_log_git_pull(log):
 	"""
 	向微信机器人推送一条普通信息
 	:return:
 	"""
-	msg="\n".join([SERVER_NAME,SERVER_IP,msg])
+	msg="\n".join(["**服务器Git Pull更新**","服务器名称："+SERVER_NAME,"服务器IP:"+SERVER_IP,"Git Pull Log:\n"+log])
 	request_headers = {'Content-Type': 'application/json'}
 	d = {
 		"msgtype": "markdown",
@@ -31,23 +31,17 @@ def bot_log(msg):
 	return r.text
 
 def action_git_pull():
-	print(">>>Start Git Fetch...")
-	fetch_proc = subprocess.Popen("git fetch", stdout=subprocess.PIPE)
-	lines = fetch_proc.stdout.readlines()
-	if len(lines)==0:
-		print("Nothing To Pull...\n")
-		return FETCH_DELAY
-	else:
-		for line in lines:
-			print(line.decode('utf-8'))
-		print(">>>Start Git Pull...")
-		pull_proc = subprocess.Popen("git pull", stdout=subprocess.PIPE)
-		lines = pull_proc.stdout.readlines()
-		lines=[line.decode('utf-8') for line in lines]
-		for line in lines:
-			print(line)
-		bot_log("\n".join(lines))
-		return PULL_DELAY
+	print(">>>Try Git Pull...")
+	pull_proc = subprocess.Popen("git pull", stdout=subprocess.PIPE)
+	lines = pull_proc.stdout.readlines()
+	lines=[line.decode('utf-8') for line in lines]
+	for line in lines:
+		print(line)
+	if len(lines)<=2:
+		return FAIL_DELAY
+
+	bot_log_git_pull("\n".join(lines))
+	return SUCCEED_DELAY
 
 if __name__=="__main__":
 	print(SERVER_NAME)
