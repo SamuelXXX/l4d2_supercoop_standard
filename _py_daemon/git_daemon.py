@@ -4,7 +4,7 @@ from timer import Timer
 import requests
 import json
 
-FETCH_DELAY=60.0
+FETCH_DELAY=6.0
 PULL_DELAY=600.0
 
 with open("server_tag.txt") as f:
@@ -12,13 +12,14 @@ with open("server_tag.txt") as f:
 	SERVER_NAME=tags[0].replace('\n','')
 	SERVER_IP=tags[1].replace('\n','')
 
-WECHAT_BOT_URL= 'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=d49629b9-6e79-41dc-8d2b-ccb6d85228f8'
+WECHAT_BOT_URL= 'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=d36233f1-3850-4c12-9861-74ce7f019d47'
 
 def bot_log(msg):
 	"""
 	向微信机器人推送一条普通信息
 	:return:
 	"""
+	msg="\n".join([SERVER_NAME,SERVER_IP,msg])
 	request_headers = {'Content-Type': 'application/json'}
 	d = {
 		"msgtype": "markdown",
@@ -42,8 +43,10 @@ def action_git_pull():
 		print(">>>Start Git Pull...")
 		pull_proc = subprocess.Popen("git pull", stdout=subprocess.PIPE)
 		lines = pull_proc.stdout.readlines()
+		lines=[line.decode('utf-8') for line in lines]
 		for line in lines:
-			print(line.decode('utf-8'))
+			print(line)
+		bot_log("\n".join(lines))
 		return PULL_DELAY
 
 if __name__=="__main__":
