@@ -14,7 +14,7 @@ if __name__ == "__main__":
 
 	timer_core.set_time(time.time())
 	timer_core.start_timer("git_daemon_routine", 0)
-	timer_core.start_timer("proc_daemon_routine", 0)
+	timer_core.start_timer("proc_daemon_routine", 5)
 
 	while True:
 		timer_core.process_all_timers(time.time())
