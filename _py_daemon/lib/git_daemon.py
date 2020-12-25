@@ -1,3 +1,4 @@
+# git自动拉取更新的daemon
 import subprocess
 import server_tag
 import global_config
