@@ -4,8 +4,8 @@ from timer import Timer
 import requests
 import json
 
-FAIL_DELAY=30.0
-SUCCEED_DELAY=600.0
+FAIL_DELAY=600.0
+SUCCEED_DELAY=1800.0
 
 with open("server_tag.txt") as f:
 	tags=f.readlines()
