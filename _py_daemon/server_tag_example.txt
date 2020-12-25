@@ -1,0 +1,2 @@
+Super Coop Test Server
+127.0.0.1

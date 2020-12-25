@@ -1,5 +1,4 @@
 Msg("\n\n\n>>>>>>>>>>>>>>>>>>>>>>Common Coop Director Scripts Start Load<<<<<<<<<<<<<<<<<<<<<<<<\n");
-
 DirectorOptions <-
 {
 	//导演系统四大状态跳转条件参数配置

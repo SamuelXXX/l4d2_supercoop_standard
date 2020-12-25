@@ -1,0 +1,4 @@
+/.idea
+*.pyc
+/__pycache__
+server_tag.txt
