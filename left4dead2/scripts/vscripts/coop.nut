@@ -53,6 +53,7 @@ DirectorOptions <-
 		weapon_vomitjar = "random_throwable"
 		weapon_rifle_m60 = "random_sniper"
 		weapon_grenade_launcher = "random_sniper"
+		weapon_pistol = "random_secondary"
 	}
 
 	function ConvertWeaponSpawn( classname )
@@ -103,6 +104,24 @@ DirectorOptions <-
 					else if(rv < 0.8)
 					{
 						realConvertWeapon="weapon_rifle_ak47_spawn"
+					}
+					else
+					{
+						return 0;
+					}
+					break;
+				case "random_secondary":
+					if(rv < 0.1)
+					{
+						realConvertWeapon="weapon_ammo_spawn"
+					}
+					else if(rv < 0.2)
+					{
+						realConvertWeapon="weapon_pistol_magnum_spawn"
+					}
+					else if(rv < 0.8)
+					{
+						realConvertWeapon="weapon_melee_spawn"
 					}
 					else
 					{
