@@ -152,6 +152,18 @@ DirectorOptions <-
 	}
 }
 
+local ri = RandomInt(1,2);
+if(ri == 1)
+{
+	Convars.SetValue("z_charge_min_force","600")
+	Convars.SetValue("z_charge_max_force","2000")
+}
+else
+{
+	Convars.SetValue("z_charge_min_force","1250")
+	Convars.SetValue("z_charge_max_force","1450")
+}
+
 Convars.SetValue("director_special_battlefield_respawn_interval",4) //防守时特感刷新的速度
 Convars.SetValue("director_custom_finale_tank_spacing",2) //终局tank出现的时间间隔
 Convars.SetValue("director_tank_checkpoint_interval",120)//允许tank出生的时间，自生还者离开安全屋开始计算
