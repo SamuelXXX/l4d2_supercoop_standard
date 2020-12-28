@@ -91,6 +91,21 @@ function GetFinalePanicWaveCount()
 	return RandomInt(4,6)
 }
 
+function GetFinalePanicWaveCount1()
+{
+	return RandomInt(2,3)
+}
+
+function GetFinalePanicWaveCount2()
+{
+	return RandomInt(2,4)
+}
+
+function GetFinalePanicWaveCount3()
+{
+	return RandomInt(2,5)
+}
+
 
 //公用终局的参数列表
 CommonFinaleOptions <-
