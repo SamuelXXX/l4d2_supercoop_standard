@@ -54,6 +54,14 @@ def kill_server_process(cmd):
 	if cmd not in server_proc_dict:
 		return
 	server_proc_dict[cmd].kill()
+
+def kill_all_server_process():
+	"""
+	杀死所有的服务器进程
+	:return:
+	"""
+	for proc in server_proc_dict.values():
+		proc.kill()
 # endregion
 
 # region Routines
