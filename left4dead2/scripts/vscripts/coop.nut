@@ -53,6 +53,7 @@ DirectorOptions <-
 		weapon_vomitjar = "random_throwable"
 		weapon_rifle_m60 = "random_sniper"
 		weapon_grenade_launcher = "random_sniper"
+		weapon_pistol = "random_secondary"
 	}
 
 	function ConvertWeaponSpawn( classname )
@@ -109,6 +110,24 @@ DirectorOptions <-
 						return 0;
 					}
 					break;
+				case "random_secondary":
+					if(rv < 0.1)
+					{
+						realConvertWeapon="weapon_ammo_spawn"
+					}
+					else if(rv < 0.2)
+					{
+						realConvertWeapon="weapon_pistol_magnum_spawn"
+					}
+					else if(rv < 0.8)
+					{
+						realConvertWeapon="weapon_melee_spawn"
+					}
+					else
+					{
+						return 0;
+					}
+					break;
 				default:
 					break;
 			}
@@ -131,6 +150,18 @@ DirectorOptions <-
 				playerEnt.TakeDamage(10000, -1, null)
 		}
 	}
+}
+
+local ri = RandomInt(1,2);
+if(ri == 1)
+{
+	Convars.SetValue("z_charge_min_force","600")
+	Convars.SetValue("z_charge_max_force","2000")
+}
+else
+{
+	Convars.SetValue("z_charge_min_force","1250")
+	Convars.SetValue("z_charge_max_force","1450")
 }
 
 Convars.SetValue("director_special_battlefield_respawn_interval",4) //防守时特感刷新的速度

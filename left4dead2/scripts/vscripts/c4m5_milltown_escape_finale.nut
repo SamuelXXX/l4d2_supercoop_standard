@@ -11,7 +11,7 @@ DirectorOptions <-
 	 A_CustomFinaleValue1 = "c4m5_1.nut"	 
  
 	 A_CustomFinale2 = PANIC
-	 A_CustomFinaleValue2 = GetFinalePanicWaveCount()
+	 A_CustomFinaleValue2 = GetFinalePanicWaveCount1()
 
 	 A_CustomFinale3 = TANK
 	 A_CustomFinaleValue3 = 1
@@ -26,14 +26,15 @@ DirectorOptions <-
 	 A_CustomFinaleValue6 = "c4m5_2.nut"
 
 	 A_CustomFinale7 = PANIC
-	 A_CustomFinaleValue7 = GetFinalePanicWaveCount()
+	 A_CustomFinaleValue7 = GetFinalePanicWaveCount3()
  
 	 A_CustomFinale8 = TANK
 	 A_CustomFinaleValue8 = 2 
 
 
-	 PreferredMobDirection = SPAWN_LARGE_VOLUME
-	 PreferredSpecialDirection = SPAWN_LARGE_VOLUME
+	 PreferredMobDirection = SPAWN_FAR_AWAY_FROM_SURVIVORS
+	 PreferredSpecialDirection = SPAWN_NO_PREFERENCE
+	 LockTempo = true
 }
 ApplyCommonFinaleOptions(DirectorOptions)
 
