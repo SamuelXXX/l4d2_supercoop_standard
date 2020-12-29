@@ -18,3 +18,4 @@ if __name__ == "__main__":
 
 	while True:
 		timer_core.process_all_timers(time.time())
+		time.sleep(5) # 休眠5秒，防止守护进程过度占据CPU资源
