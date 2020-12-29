@@ -19,12 +19,7 @@ def bot_log_git_pull(git_pull_log):
 
 
 def action_git_pull():
-	print(">>>Try Git Pull...")
-	pull_proc = subprocess.Popen("git pull", stdout=subprocess.PIPE)
-	lines = pull_proc.stdout.readlines()
-	lines = [line.decode('utf-8') for line in lines]
-	for line in lines:
-		print(line)
+	lines = git_bash_cmd("git pull")
 
 	if len(lines) <= 2:
 		return global_config.getfloat("GIT","GIT_PULL_FAIL_RETRY_TIME")
@@ -36,6 +31,26 @@ def action_git_pull():
 def on_update_received():
 	server_tag.reparse_server_tags() # 有更新的话需要重新parse一次server_tags
 	global_config.reparse()  # 有更新的话需要重新parse一次配置文件
+
+
+def git_bash_cmd(cmd):
+	print(">>>%s"%cmd)
+	try:
+		proc=subprocess.Popen(cmd,stdout=subprocess.PIPE)
+	except:
+		return []
+	else:
+		lines = proc.stdout.readlines()
+		lines = [line.decode('utf-8') for line in lines]
+		for line in lines:
+			print(line)
+		return lines
+
+# 初次启动需要设置服务器的身份，否则git pull次数多了就会被拒绝
+lines=git_bash_cmd("git config --get user.name")
+if len(lines) == 0:
+	git_bash_cmd('git config --global user.name "l4d2_supercoop"')
+	git_bash_cmd('git config --global user.email "supercoop@l4d2.com"')
 
 
 if __name__ == "__main__":
