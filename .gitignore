@@ -7,6 +7,7 @@
 !/left4dead2
 # 不忽略服务器守护工具
 !/_py_daemon
+!/README.md
 
 # 忽略left4dead2所有子目录及文件
 /left4dead2/*
