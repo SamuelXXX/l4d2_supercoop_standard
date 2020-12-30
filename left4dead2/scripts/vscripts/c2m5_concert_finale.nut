@@ -69,6 +69,5 @@ function OnBeginCustomFinaleStage( num, type )
 	}
 }
 
-//Test Conflict
 
 Msg("###Tank Health:"+DirectorOptions.ZombieTankHealth);
