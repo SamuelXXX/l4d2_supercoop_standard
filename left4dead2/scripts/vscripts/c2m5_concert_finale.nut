@@ -46,15 +46,9 @@ DirectorOptions <-
 	 A_CustomFinale13 = TANK
 	 A_CustomFinaleValue13 = RandomInt(6,10)
 	 
-<<<<<<< HEAD
-	 PreferredMobDirection = SPAWN_ABOVE_SURVIVORS
-	 PreferredSpecialDirection = SPAWN_SPECIALS_ANYWHERE
-	 
-=======
 	 PreferredMobDirection = SPAWN_LARGE_VOLUME
 	 PreferredSpecialDirection = SPAWN_LARGE_VOLUME
 	 ShouldConstrainLargeVolumeSpawn = true
->>>>>>> 2c4fca3ec7d9d62b22e886ce35ec769112e49f97
 }
 
 ApplyCommonFinaleOptions(DirectorOptions)
