@@ -30,18 +30,18 @@ DirectorOptions <-
 	WitchLimit=24
 	CommonLimit=30
 	cm_MaxSpecials = 8
-	DominatorLimit = 6
-	BoomerLimit = 4
+	DominatorLimit = 8
+	BoomerLimit = 2
 	ChargerLimit = 3
-	HunterLimit = 4
-	JockeyLimit = 3
-	SmokerLimit = 2
-	SpitterLimit = 4
+	HunterLimit = 2
+	JockeyLimit = 2
+	SmokerLimit = 3
+	SpitterLimit = 2
 	TankLimit=1  //战役模式不希望刷太多克，终局脚本改回来
 
 	//Tank相关设置
 	ZombieTankHealth=RandomInt(12000,20000)
-	TankHitDamageModifierCoop = RandomInt(1,5)
+	TankHitDamageModifierCoop = RandomInt(2,5)
 
 	//其它设置
 	PreferredMobDirection = SPAWN_IN_FRONT_OF_SURVIVORS
@@ -101,9 +101,21 @@ DirectorOptions <-
 					{
 						realConvertWeapon="weapon_sniper_scout_spawn"
 					}
-					else if(rv < 0.8)
+					else if(rv < 0.38)
+					{
+						realConvertWeapon="weapon_rifle_spawn"
+					}
+					else if(rv < 0.56)
+					{
+						realConvertWeapon="weapon_rifle_desert_spawn"
+					}
+					else if(rv < 0.74)
 					{
 						realConvertWeapon="weapon_rifle_ak47_spawn"
+					}
+					else if(rv < 0.8)
+					{
+						realConvertWeapon="weapon_rifle_sg552_spawn"
 					}
 					else
 					{
