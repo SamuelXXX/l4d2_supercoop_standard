@@ -93,17 +93,17 @@ function GetFinalePanicWaveCount()
 
 function GetFinalePanicWaveCount1()
 {
-	return RandomInt(2,3)
+	return RandomInt(3,5)
 }
 
 function GetFinalePanicWaveCount2()
 {
-	return RandomInt(2,4)
+	return RandomInt(4,6)
 }
 
 function GetFinalePanicWaveCount3()
 {
-	return RandomInt(2,5)
+	return RandomInt(5,7)
 }
 
 
