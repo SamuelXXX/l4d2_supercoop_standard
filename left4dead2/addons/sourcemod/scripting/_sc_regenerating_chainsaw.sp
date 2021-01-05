@@ -6,7 +6,7 @@
 
 static Handle client_handle_timers[MAXPLAYERS+1];// 单独处理每个玩家的电锯timer
 static int chainsaw_fire_count[MAXPLAYERS+1];// 单独处理每个玩家的电锯timer
-static int chainsawFireCont=30; // 每一发电锯子弹可以维持30个Fire事件
+static int chainsawFireCont=60; // 每一发电锯子弹可以维持60个Fire事件
 ConVar RefuelAmountCVAR, RefuelTimerCVAR, ExtraFuelConsumePerFireCVAR;
 
 public Plugin myinfo =
