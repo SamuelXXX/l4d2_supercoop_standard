@@ -1,3 +1,4 @@
+IncludeScript("VSLib");
 Msg("\n\n\n>>>>>>>>>>>>>>>>>>>>>>Common Coop Director Scripts Start Load<<<<<<<<<<<<<<<<<<<<<<<<\n");
 DirectorOptions <-
 {
@@ -6,13 +7,9 @@ DirectorOptions <-
 	SustainPeakMinTime = 12
 	SustainPeakMaxTime = 20
 	IntensityRelaxThreshold = 1.0
+	RelaxMaxFlowTravel = RandomInt(700,1200)
 	RelaxMinInterval = 99999
 	RelaxMaxInterval = 99999
-	local ri = RandomInt(0,100)
-	if(ri > 80)
-		RelaxMaxFlowTravel = RandomInt(1000,1200)
-	else
-		RelaxMaxFlowTravel = RandomInt(500,600)
 
 	//特感刷新参数配置
 	SpecialInitialSpawnDelayMin = 10
