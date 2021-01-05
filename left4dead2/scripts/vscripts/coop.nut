@@ -123,21 +123,21 @@ DirectorOptions <-
 					}
 					break;
 				case "random_secondary":
-					if(rv < 0.1)
+					if(rv < 0.3)
 					{
 						realConvertWeapon="weapon_ammo_spawn"
 					}
-					else if(rv < 0.2)
+					else if(rv < 0.6)
 					{
 						realConvertWeapon="weapon_pistol_magnum_spawn"
 					}
-					else if(rv < 0.8)
+					else if(rv < 0.9)
 					{
 						realConvertWeapon="weapon_melee_spawn"
 					}
 					else
 					{
-						return 0;
+						realConvertWeapon="weapon_pistol_spawn"
 					}
 					break;
 				default:
