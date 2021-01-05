@@ -6,9 +6,13 @@ DirectorOptions <-
 	SustainPeakMinTime = 12
 	SustainPeakMaxTime = 20
 	IntensityRelaxThreshold = 1.0
-	RelaxMaxFlowTravel = RandomInt(700,1200)
 	RelaxMinInterval = 99999
 	RelaxMaxInterval = 99999
+	local ri = RandomInt(0,100)
+	if(ri > 80)
+		RelaxMaxFlowTravel = RandomInt(1000,1200)
+	else
+		RelaxMaxFlowTravel = RandomInt(500,600)
 
 	//特感刷新参数配置
 	SpecialInitialSpawnDelayMin = 10
@@ -162,18 +166,6 @@ DirectorOptions <-
 				playerEnt.TakeDamage(10000, -1, null)
 		}
 	}
-}
-
-local ri = RandomInt(1,2);
-if(ri == 1)
-{
-	Convars.SetValue("z_charge_min_force","600")
-	Convars.SetValue("z_charge_max_force","2000")
-}
-else
-{
-	Convars.SetValue("z_charge_min_force","1250")
-	Convars.SetValue("z_charge_max_force","1450")
 }
 
 Convars.SetValue("director_special_battlefield_respawn_interval",4) //防守时特感刷新的速度
