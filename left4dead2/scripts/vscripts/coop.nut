@@ -1,4 +1,3 @@
-IncludeScript("VSLib");
 Msg("\n\n\n>>>>>>>>>>>>>>>>>>>>>>Common Coop Director Scripts Start Load<<<<<<<<<<<<<<<<<<<<<<<<\n");
 DirectorOptions <-
 {
@@ -7,7 +6,6 @@ DirectorOptions <-
 	SustainPeakMinTime = 12
 	SustainPeakMaxTime = 20
 	IntensityRelaxThreshold = 1.0
-	RelaxMaxFlowTravel = RandomInt(700,1200)
 	RelaxMinInterval = 99999
 	RelaxMaxInterval = 99999
 
@@ -163,6 +161,18 @@ DirectorOptions <-
 				playerEnt.TakeDamage(10000, -1, null)
 		}
 	}
+}
+
+local ri = RandomFloat(0,1)
+if(ri > 0.8)
+{
+	local randomflow = RandomInt(700,1200)
+	Convars.SetValue("director_relax_max_flow_travel",randomflow)
+}
+else
+{
+	local randomflow = RandomInt(400,600)
+	Convars.SetValue("director_relax_max_flow_travel",randomflow)
 }
 
 Convars.SetValue("director_special_battlefield_respawn_interval",4) //防守时特感刷新的速度
