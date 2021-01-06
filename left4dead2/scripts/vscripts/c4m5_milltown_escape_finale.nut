@@ -14,7 +14,7 @@ DirectorOptions <-
 	 A_CustomFinaleValue2 = GetFinalePanicWaveCount1()
 
 	 A_CustomFinale3 = TANK
-	 A_CustomFinaleValue3 = 1
+	 A_CustomFinaleValue3 = RandomInt(1,2)
  
 	 A_CustomFinale4 = SCRIPTED
 	 A_CustomFinaleValue4 = "off.nut"
@@ -29,7 +29,7 @@ DirectorOptions <-
 	 A_CustomFinaleValue7 = GetFinalePanicWaveCount3()
  
 	 A_CustomFinale8 = TANK
-	 A_CustomFinaleValue8 = 2 
+	 A_CustomFinaleValue8 = RandomInt(2,3)
 
 
 	 PreferredMobDirection = SPAWN_FAR_AWAY_FROM_SURVIVORS
