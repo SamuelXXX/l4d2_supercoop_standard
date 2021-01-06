@@ -32,7 +32,7 @@ DirectorOptions <-
 	 A_CustomFinaleValue8 = RandomInt(10,15)
  
 	 A_CustomFinale9 = TANK
-	 A_CustomFinaleValue9 = RandomInt(4,6)  
+	 A_CustomFinaleValue9 = RandomInt(4,8)  
  
 	 A_CustomFinale10 = SCRIPTED
 	 A_CustomFinaleValue10 = "c10m5_on.nut"

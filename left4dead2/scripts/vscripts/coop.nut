@@ -64,14 +64,7 @@ DirectorOptions <-
 			switch(weaponsToConvert[classname])
 			{
 				case "random_throwable":
-					if(rv < 0.5)
-					{
-						realConvertWeapon="weapon_pipebomb_spawn"
-					}
-					else
-					{
-						realConvertWeapon="weapon_molotov_spawn"
-					}
+					realConvertWeapon="weapon_molotov_spawn"
 					break;
 				case "random_supply":
 					if(rv < 0.25)
@@ -146,6 +139,20 @@ DirectorOptions <-
 			return realConvertWeapon;
 		}
 		return 0;
+	}
+
+	weaponsToRemove =
+	{
+		weapon_pipebomb_spawn = 0
+	}
+
+	function AllowWeaponSpawn( classname )
+	{
+		if ( classname in weaponsToRemove )
+		{
+			return false;
+		}
+		return true;
 	}
 
 	function KillAllSpecialInfected()
