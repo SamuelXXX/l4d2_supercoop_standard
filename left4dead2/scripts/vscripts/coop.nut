@@ -1,3 +1,4 @@
+IncludeScript("VSLib");
 Msg("\n\n\n>>>>>>>>>>>>>>>>>>>>>>Common Coop Director Scripts Start Load<<<<<<<<<<<<<<<<<<<<<<<<\n");
 DirectorOptions <-
 {
@@ -43,6 +44,8 @@ DirectorOptions <-
 	TankHitDamageModifierCoop = RandomInt(2,5)
 
 	//其它设置
+	ProhibitBosses = false
+	AllowWitchesInCheckpoints = true
 	PreferredMobDirection = SPAWN_IN_FRONT_OF_SURVIVORS
 	PreferredSpecialDirection = SPAWN_SPECIALS_IN_FRONT_OF_SURVIVORS
 
@@ -50,8 +53,13 @@ DirectorOptions <-
 	weaponsToConvert =
 	{
 		weapon_vomitjar = "random_throwable"
-		weapon_rifle_m60 = "random_sniper"
-		weapon_grenade_launcher = "random_sniper"
+		weapon_sniper_military = "random_sniper"
+		weapon_sniper_awp = "random_sniper"
+		weapon_sniper_scout = "random_sniper"
+		weapon_rifle = "random_rifle"
+		weapon_rifle_ak47 = "random_rifle"
+		weapon_rifle_desert = "random_rifle"
+		weapon_rifle_sg552 = "random_rifle"
 		weapon_pistol = "random_secondary"
 	}
 
@@ -85,51 +93,49 @@ DirectorOptions <-
 					}
 					break;
 				case "random_sniper":
-					if(rv < 0.1)
+					if(rv < 0.15)
 					{
 						realConvertWeapon="weapon_sniper_awp_spawn"
 					}
-					else if(rv < 0.2)
+					else if(rv < 0.3)
 					{
 						realConvertWeapon="weapon_sniper_scout_spawn"
 					}
-					else if(rv < 0.38)
+					else if(rv < 0.65)
+					{
+						realConvertWeapon="weapon_sniper_military_spawn"
+					}
+					else
+					{
+						realConvertWeapon="weapon_hunting_rifle_spawn"
+					}
+					break;
+				case "random_rifle":
+					if(rv < 0.27)
 					{
 						realConvertWeapon="weapon_rifle_spawn"
 					}
-					else if(rv < 0.56)
-					{
-						realConvertWeapon="weapon_rifle_desert_spawn"
-					}
-					else if(rv < 0.74)
+					else if(rv < 0.54)
 					{
 						realConvertWeapon="weapon_rifle_ak47_spawn"
 					}
-					else if(rv < 0.8)
+					else if(rv < 0.81)
+					{
+						realConvertWeapon="weapon_rifle_desert_spawn"
+					}
+					else
 					{
 						realConvertWeapon="weapon_rifle_sg552_spawn"
 					}
-					else
-					{
-						return 0;
-					}
 					break;
 				case "random_secondary":
-					if(rv < 0.3)
+					if(rv < 0.5)
 					{
 						realConvertWeapon="weapon_ammo_spawn"
 					}
-					else if(rv < 0.6)
-					{
-						realConvertWeapon="weapon_pistol_magnum_spawn"
-					}
-					else if(rv < 0.9)
-					{
-						realConvertWeapon="weapon_melee_spawn"
-					}
 					else
 					{
-						realConvertWeapon="weapon_pistol_spawn"
+						realConvertWeapon="weapon_pistol_magnum_spawn"
 					}
 					break;
 				default:
@@ -143,7 +149,7 @@ DirectorOptions <-
 
 	weaponsToRemove =
 	{
-		weapon_pipebomb = 0
+		weapon_pipebomb_spawn = 0
 	}
 
 	function AllowWeaponSpawn( classname )
@@ -166,6 +172,36 @@ DirectorOptions <-
 			local zombieType=playerEnt.GetZombieType()
 			if (zombieType>=1&&zombieType<=6) //所有特感
 				playerEnt.TakeDamage(10000, -1, null)
+		}
+	}
+}
+
+::RandomTime <- 0;
+::HFlow <- 0;
+
+function EasyLogic::Update::SpawnWitchWhenFlow ()
+{
+	local s = Players.SurvivorWithHighestFlow();
+	if ( s == null )
+		return;
+	local flow = s.GetFlowDistance();
+	if ( flow > HFlow )
+	{
+		local count = ((flow - HFlow) / 240).tointeger();
+		for (; count > 0; count-- )
+		{
+			
+			if(RandomTime == 0)
+			{
+				Convars.SetValue("sv_force_time_of_day","0")
+				RandomTime = 2;
+			}
+			else if(RandomTime == 2)
+			{
+				Convars.SetValue("sv_force_time_of_day","2")
+				RandomTime = 0;
+			}
+			HFlow += 2000;
 		}
 	}
 }
@@ -193,7 +229,7 @@ Convars.SetValue("director_threat_radius",0)
 Convars.SetValue("director_max_threat_areas",40)
 
 
-Convars.SetValue("director_force_tank",0) //是否走两步就刷tank
+Convars.SetValue("director_force_tank",0) //是否在每一个threat area刷tank
 Convars.SetValue("director_force_witch",0)
 
 
