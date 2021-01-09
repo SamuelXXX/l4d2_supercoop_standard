@@ -149,7 +149,7 @@ DirectorOptions <-
 
 	weaponsToRemove =
 	{
-		weapon_pipebomb = 0
+		weapon_pipe_bomb = 0
 	}
 
 	function AllowWeaponSpawn( classname )
