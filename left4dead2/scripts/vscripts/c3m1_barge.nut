@@ -5,7 +5,7 @@ Msg("\n\n\n");
 
 DirectorOptions <-
 {
-	ProhibitBosses = true
+	ProhibitBosses = false
 	SpecialRespawnInterval = 999999
 	MobMaxPending = 0
 	CommonLimit = 30

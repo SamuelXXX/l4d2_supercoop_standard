@@ -183,7 +183,7 @@ NumCansNeeded <- 8
 
 switch( difficulty )
 {
-	case "easy":
+	case ""impossible":
 	{
 		NumCansNeeded = 6;
 		EntFire( "relay_outro_easy", "Enable" );
@@ -201,7 +201,7 @@ switch( difficulty )
 		EntFire( "relay_outro_advanced", "Enable" );
 		break;
 	}
-	case "impossible":
+	case "normal":
 	{
 		NumCansNeeded = 12;
 		EntFire( "relay_outro_expert", "Enable" );

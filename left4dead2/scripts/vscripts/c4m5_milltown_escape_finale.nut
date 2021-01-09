@@ -11,7 +11,7 @@ DirectorOptions <-
 	 A_CustomFinaleValue1 = "c4m5_1.nut"	 
  
 	 A_CustomFinale2 = PANIC
-	 A_CustomFinaleValue2 = GetFinalePanicWaveCount1()
+	 A_CustomFinaleValue2 = GetFinalePanicWaveCount()
 
 	 A_CustomFinale3 = TANK
 	 A_CustomFinaleValue3 = RandomInt(1,2)
@@ -26,7 +26,7 @@ DirectorOptions <-
 	 A_CustomFinaleValue6 = "c4m5_2.nut"
 
 	 A_CustomFinale7 = PANIC
-	 A_CustomFinaleValue7 = GetFinalePanicWaveCount3()
+	 A_CustomFinaleValue7 = GetFinalePanicWaveCount()
  
 	 A_CustomFinale8 = TANK
 	 A_CustomFinaleValue8 = RandomInt(2,3)
