@@ -4,5 +4,5 @@ Msg("\n\n\n");
 
 DirectorOptions <-
 {
-   ProhibitBosses = true
+   ProhibitBosses = false
 }

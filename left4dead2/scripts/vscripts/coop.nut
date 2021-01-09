@@ -12,7 +12,7 @@ DirectorOptions <-
 
 	//特感刷新参数配置
 	SpecialInitialSpawnDelayMin = 10
-	SpecialInitialSpawnDelayMax = 20 //离开安全屋后第一波特感的刷新时间
+	SpecialInitialSpawnDelayMax = 10 //离开安全屋后第一波特感的刷新时间
 	SpecialRespawnInterval=3
 	cm_SpecialRespawnInterval=3  //特感通道冷却时间，该通道特感死亡后开始冷却，冷却时间见底后会从特感池中刷新一个新的特感
 	cm_AggressiveSpecials = true

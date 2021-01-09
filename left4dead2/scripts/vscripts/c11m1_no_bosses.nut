@@ -5,6 +5,5 @@ Msg("\n\n\n");
 DirectorOptions <-
 {
                 // This turns off tanks and witches.
-                ProhibitBosses = true
-
+                ProhibitBosses = false
 }
