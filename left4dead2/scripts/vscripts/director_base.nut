@@ -56,6 +56,15 @@ function GetDirectorOptions()
 	{
 		result = DirectorScript.DirectorOptions;
 	}
+
+	if ( DirectorScript.MapScript.LocalScript.rawin( "DirectorOptions") )
+	{
+		if ( result != null )
+		{
+			DirectorScript.MapScript.LocalScript.DirectorOptions.setdelegate( result );
+		}
+		result = DirectorScript.MapScript.LocalScript.DirectorOptions;
+	}
 	
 	if ( DirectorScript.MapScript.ChallengeScript.rawin( "DirectorOptions" ) )
 	{
@@ -73,15 +82,6 @@ function GetDirectorOptions()
 				DirectorScript.MapScript.DirectorOptions.setdelegate( result );
 		}
 		result = DirectorScript.MapScript.DirectorOptions;
-	}
-
-	if ( DirectorScript.MapScript.LocalScript.rawin( "DirectorOptions") )
-	{
-		if ( result != null )
-		{
-			DirectorScript.MapScript.LocalScript.DirectorOptions.setdelegate( result );
-		}
-		result = DirectorScript.MapScript.LocalScript.DirectorOptions;
 	}
 	return result;
 }
