@@ -22,7 +22,7 @@ if ( Director.GetGameMode() == "coop" )
 
 DirectorOptions <-
 {
-	ProhibitBosses = false
+	ProhibitBosses = true
 	CommonLimit = DocksCommonLimit	
 	MegaMobSize = DocksMegaMobSize
 }

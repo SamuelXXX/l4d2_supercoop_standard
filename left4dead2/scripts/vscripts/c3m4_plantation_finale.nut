@@ -8,7 +8,7 @@ SCRIPTED <- 3
 DirectorOptions <-
 {
 	 A_CustomFinale1 = PANIC
-	 A_CustomFinaleValue1 = GetFinalePanicWaveCount1()
+	 A_CustomFinaleValue1 = GetFinalePanicWaveCount()
 
 	 A_CustomFinale2 = SCRIPTED
 	 A_CustomFinaleValue2 = "off.nut" 
@@ -23,7 +23,7 @@ DirectorOptions <-
 	 A_CustomFinaleValue5 = "c3m4_on.nut" 
  
 	 A_CustomFinale6 = PANIC
-	 A_CustomFinaleValue6 = GetFinalePanicWaveCount2()
+	 A_CustomFinaleValue6 = GetFinalePanicWaveCount()
 
 	 A_CustomFinale7 = SCRIPTED
 	 A_CustomFinaleValue7 = "off.nut" 
@@ -32,13 +32,13 @@ DirectorOptions <-
 	 A_CustomFinaleValue8 = RandomInt(10,15)
  
 	 A_CustomFinale9 = TANK
-	 A_CustomFinaleValue9 = RandomInt(4,8)  
+	 A_CustomFinaleValue9 = RandomInt(4,6)  
  
 	 A_CustomFinale10 = SCRIPTED
 	 A_CustomFinaleValue10 = "c3m4_on.nut" 
 
 	 A_CustomFinale11 = PANIC
-	 A_CustomFinaleValue11 = GetFinalePanicWaveCount3()
+	 A_CustomFinaleValue11 = GetFinalePanicWaveCount()
 
 	 A_CustomFinale12 = SCRIPTED
 	 A_CustomFinaleValue12 = "off.nut"

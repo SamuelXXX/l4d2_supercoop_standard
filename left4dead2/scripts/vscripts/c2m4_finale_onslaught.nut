@@ -5,7 +5,7 @@ Msg("\n\n\n");
 DirectorOptions <-
 {
 	// This turns off tanks and witches.
-	ProhibitBosses = false
+	ProhibitBosses = true
 
         LockTempo = 0
 	MobSpawnMinTime = 3

@@ -5,7 +5,7 @@ Msg("\n\n\n");
 DirectorOptions <-
 {
 	// This turns off tanks and witches.
-	ProhibitBosses = false
+	ProhibitBosses = true
 
 	PreferredMobDirection = SPAWN_BEHIND_SURVIVORS
 	MobSpawnMinTime = 1

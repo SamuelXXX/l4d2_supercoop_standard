@@ -26,7 +26,7 @@ DirectorOptions <-
 	 A_CustomFinaleValue6 = "off.nut"
  
 	 A_CustomFinale7 = TANK
-	 A_CustomFinaleValue7 = RandomInt(4,6)  
+	 A_CustomFinaleValue7 = RandomInt(2,3)  
  
 	 A_CustomFinale8 = SCRIPTED
 	 A_CustomFinaleValue8 = "c9m2_on.nut"

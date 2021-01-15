@@ -56,15 +56,6 @@ function GetDirectorOptions()
 	{
 		result = DirectorScript.DirectorOptions;
 	}
-
-	if ( DirectorScript.MapScript.LocalScript.rawin( "DirectorOptions") )
-	{
-		if ( result != null )
-		{
-			DirectorScript.MapScript.LocalScript.DirectorOptions.setdelegate( result );
-		}
-		result = DirectorScript.MapScript.LocalScript.DirectorOptions;
-	}
 	
 	if ( DirectorScript.MapScript.ChallengeScript.rawin( "DirectorOptions" ) )
 	{
@@ -83,27 +74,21 @@ function GetDirectorOptions()
 		}
 		result = DirectorScript.MapScript.DirectorOptions;
 	}
+
+	if ( DirectorScript.MapScript.LocalScript.rawin( "DirectorOptions") )
+	{
+		if ( result != null )
+		{
+			DirectorScript.MapScript.LocalScript.DirectorOptions.setdelegate( result );
+		}
+		result = DirectorScript.MapScript.LocalScript.DirectorOptions;
+	}
 	return result;
 }
 
 function GetFinalePanicWaveCount()
 {
 	return RandomInt(4,6)
-}
-
-function GetFinalePanicWaveCount1()
-{
-	return RandomInt(3,5)
-}
-
-function GetFinalePanicWaveCount2()
-{
-	return RandomInt(4,6)
-}
-
-function GetFinalePanicWaveCount3()
-{
-	return RandomInt(5,7)
 }
 
 

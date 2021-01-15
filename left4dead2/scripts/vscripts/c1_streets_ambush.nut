@@ -8,10 +8,10 @@ DirectorOptions <-
 	// This turns off tanks and witches.
 	ProhibitBosses = false
 
-	BoomerLimit = 0
+	BoomerLimit = 2
 	SmokerLimit = 0
 	HunterLimit = 0
-	ChargerLimit = 6
-	SpitterLimit = 0
-	JockeyLimit = 2
+	ChargerLimit = 5
+	SpitterLimit = 3
+	JockeyLimit = 3
 }
