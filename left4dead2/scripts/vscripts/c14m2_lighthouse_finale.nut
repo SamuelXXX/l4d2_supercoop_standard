@@ -17,11 +17,11 @@ DirectorOptions <-
 	A_CustomFinale_StageCount = 8
 	
 	A_CustomFinale1 		= PANIC
-	A_CustomFinaleValue1 	= GetFinalePanicWaveCount3()
+	A_CustomFinaleValue1 	= GetFinalePanicWaveCount()
 	A_CustomFinale2 		= DELAY
 	A_CustomFinaleValue2 	= StageDelay
 	A_CustomFinale3 		= TANK
-	A_CustomFinaleValue3 	= RandomInt(4,8)
+	A_CustomFinaleValue3 	= RandomInt(2,4)
 
 	A_CustomFinale4 		= DELAY
 	A_CustomFinaleValue4 	= StageDelay
@@ -43,16 +43,14 @@ DirectorOptions <-
 	ZombieTankHealth = RandomInt(15000,20000)
 	CommonLimit = 30
 	MegaMobSize = 90
-	MaxSpecials = 14
+	MaxSpecials = 12
 	DominatorLimit = 8
 	ProhibitBosses = false
 	WitchLimit = 0
 	SpecialRespawnInterval = 4
 	TankHitDamageModifierCoop = RandomFloat(1,5)
-	ZombieSpawnRange = 9999
+	ZombieSpawnRange = 1500
 	TankLimit = 24
-	PreferredMobDirection = SPAWN_FAR_AWAY_FROM_SURVIVORS
-	PreferredSpecialDirection = SPAWN_NO_PREFERENCE
 }
 
 local difficulty = Convars.GetStr( "z_difficulty" ).tolower();
@@ -155,7 +153,7 @@ function SpawnScavengeCans( difficulty )
 		case "normal":
 		{
 			local gascan = null;
-			while ( gascan = Entities.FindByName( gascan, "gascans_finale_expert" ) )
+			while ( gascan = Entities.FindByName( gascan, "gascans_finale_normal" ) )
 			{
 				if ( gascan.IsValid() )
 					SpawnCan( gascan );
@@ -189,9 +187,9 @@ switch( difficulty )
 		EntFire( "relay_outro_easy", "Enable" );
 		break;
 	}
-	case "impossible":
+	case "normal":
 	{
-		NumCansNeeded = 12;
+		NumCansNeeded = 8;
 		EntFire( "relay_outro_normal", "Enable" );
 		break;
 	}
@@ -201,7 +199,7 @@ switch( difficulty )
 		EntFire( "relay_outro_advanced", "Enable" );
 		break;
 	}
-	case "normal":
+	case "impossible":
 	{
 		NumCansNeeded = 12;
 		EntFire( "relay_outro_expert", "Enable" );
