@@ -7,6 +7,9 @@ DirectorOptions <-
 	DominatorLimit = 5
 
 	ZombieTankHealth=RandomInt(6000,12000)
+
+	RelaxMinInterval = 180
+	RelaxMaxInterval = 180
 }
 
 Convars.SetValue("z_witch_always_kills","0")
