@@ -172,7 +172,7 @@ void InsertRecordToDB_Logout(Database db, int client)
 	
 	Format(query2, 
 		sizeof(query2), 
-		"SELECT last_logout_time FROM %s WHERE steam_id='%s'",
+		"SELECT last_logout_time,max_online_time FROM %s WHERE steam_id='%s'",
 		TABLE_BASIC_INFO,
 		loginSteamID[client]);
 
@@ -211,13 +211,19 @@ void OnFetchQuery_Logout(Database db, DBResultSet results, const char[] error, a
 	else if(lastLoginTime[client]!=-1)
 	{
 		int play_time=-1;
+		int max_time=-1;
 		int last_login_time=lastLoginTime[client];
 		lastLoginTime[client]=-1;
 
 		while (results!=null&&results.FetchRow())
 		{
 			int time_stamp=results.FetchInt(0);
-			play_time=time_stamp-last_login_time;		
+			max_time=results.FetchInt(1);
+			play_time=time_stamp-last_login_time;
+			if(max_time<play_time)
+			{
+				max_time=play_time;
+			}		
 			//PrintToServer("Play Time:%d",play_time);
 		}
 
@@ -226,9 +232,10 @@ void OnFetchQuery_Logout(Database db, DBResultSet results, const char[] error, a
 			char query[200];
 			Format(query, 
 				sizeof(query), 
-				"UPDATE %s SET total_play_time=total_play_time+%d WHERE steam_id='%s'",
+				"UPDATE %s SET total_play_time=total_play_time+%d,max_online_time=%d WHERE steam_id='%s'",
 				TABLE_BASIC_INFO,
 				play_time,
+				max_time,
 				steamid);
 			db.Query(OnPostQuery_TotalTime, query);
 		}
