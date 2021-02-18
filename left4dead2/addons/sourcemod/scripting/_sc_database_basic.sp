@@ -133,6 +133,7 @@ void OnFetchQuery_Login(Database db, DBResultSet results, const char[] error, in
 public void OnClientDisconnect(int client)
 {
 	if(IsFakeClient(client)) return;
+	if(lastLoginTime[client]==-1) return;
 	AsyncPostPlayerLogoutRecord(client);
 }
 
