@@ -7,6 +7,8 @@
 static const char DATABASE_CONF_NAME[] = "supercoop";
 static const char TABLE_BASIC_INFO[] = "players_basic";
 static const char DATABASE_CHARSET[]="utf8";
+static int lastLoginTime[MAXPLAYERS + 1];
+static char loginSteamID[MAXPLAYERS + 1][64];
 
 
 public Plugin myinfo =
@@ -18,15 +20,39 @@ public Plugin myinfo =
 	url = ""
 };
 
+public void OnPluginStart()
+{
+	ResetAllClients();
+}
+
+void WriteSteamID(int client, const char[] steamid)
+{
+	strcopy(loginSteamID[client],64,steamid);
+}
+
+void ResetAllClients()
+{
+	for(int i=0;i<MAXPLAYERS + 1;i++)
+	{
+		lastLoginTime[i]=-1;
+		WriteSteamID(i,"");
+	}
+}
+
 public void OnClientPutInServer(int client)
 {
 	if(IsFakeClient(client)) return;
-
-	PrintToServer("Start Connecting SQL Server...");
-	Database.Connect(OnSQLConnected, DATABASE_CONF_NAME, client);
+	lastLoginTime[client]=-1;
+	AsyncPostPlayerLoginRecord(client);
 }
 
-void OnSQLConnected(Database db, const char[] error,any data)
+void AsyncPostPlayerLoginRecord(int client)
+{
+	PrintToServer("Start Connecting SQL Server...");
+	Database.Connect(OnSQLConnected_Login, DATABASE_CONF_NAME, client);
+}
+
+void OnSQLConnected_Login(Database db, const char[] error,any data)
 {
 	if(db==null)
 	{
@@ -35,11 +61,11 @@ void OnSQLConnected(Database db, const char[] error,any data)
 	else
 	{
 		PrintToServer("Database connect succeed!");
-		InsertRecordToDB(db, data);
+		InsertRecordToDB_Login(db, data);
 	}
 }
 
-void InsertRecordToDB(Database db, int client)
+void InsertRecordToDB_Login(Database db, int client)
 {
 	char steamid[32];
 	char username[50];
@@ -48,22 +74,172 @@ void InsertRecordToDB(Database db, int client)
 	GetClientAuthId(client, AuthId_Steam2, steamid, sizeof(steamid),false);
 
 	if(strcmp(steamid,"BOT")==0) return;
+
+	WriteSteamID(client,steamid);
 	
-	PrintToServer("Add database record:%s %s",steamid,username);
+	PrintToServer("Add login database record:%s %s",steamid,username);
 	
-	char query[200];
-	Format(query, sizeof(query), "REPLACE INTO %s (steam_id,user_name) VALUES ('%s','%s')",TABLE_BASIC_INFO,steamid,username);
+	char query1[600];
+	char query2[200];
+	Format(query1, 
+		sizeof(query1), 
+		"INSERT INTO %s (steam_id,user_name,last_login_time) VALUES ('%s','%s',unix_timestamp()) ON DUPLICATE KEY UPDATE user_name=VALUES(user_name),last_login_time=VALUES(last_login_time)",
+		TABLE_BASIC_INFO,
+		steamid,
+		username);
+	
+	Format(query2, 
+		sizeof(query2), 
+		"SELECT last_login_time FROM %s WHERE steam_id='%s'",
+		TABLE_BASIC_INFO,
+		steamid);
 
 	db.SetCharset(DATABASE_CHARSET);
-	db.Query(OnPostQuery, query, client);
+	db.Query(OnPostQuery_Login, query1, client);
+	db.Query(OnFetchQuery_Login, query2, client);
 }
 
-void OnPostQuery(Database db, DBResultSet results, const char[] error, int client)
+void OnPostQuery_Login(Database db, DBResultSet results, const char[] error, int client)
 {
 	if (db == null || results == null || error[0] != '\0')
     {
         PrintToServer("Query failed! %s", error);
     }
+}
 
+void OnFetchQuery_Login(Database db, DBResultSet results, const char[] error, int client)
+{
+	if (db == null || results == null || error[0] != '\0')
+    {
+        PrintToServer("Query failed! %s", error);
+    }
+	else
+	{
+		while (results!=null&&results.FetchRow())
+		{
+			int time_stamp=results.FetchInt(0);
+			lastLoginTime[client]=time_stamp;
+			
+			// char format_time[200];
+			// FormatTime(format_time,200,"%Y/%m/%d-%H:%M:%S",time_stamp);
+			// PrintToChatAll("Login Time:%s",format_time);
+		}
+	}
+	delete db;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+public void OnClientDisconnect(int client)
+{
+	if(IsFakeClient(client)) return;
+	AsyncPostPlayerLogoutRecord(client);
+}
+
+void AsyncPostPlayerLogoutRecord(int client)
+{
+	PrintToServer("Start Connecting SQL Server...");
+	Database.Connect(OnSQLConnected_Logout, DATABASE_CONF_NAME, client);
+}
+
+void OnSQLConnected_Logout(Database db, const char[] error,any data)
+{
+	if(db==null)
+	{
+		PrintToServer("Database connect failure:%s",error);
+	}
+	else
+	{
+		PrintToServer("Database connect succeed!");
+		InsertRecordToDB_Logout(db, data);
+	}
+}
+
+void InsertRecordToDB_Logout(Database db, int client)
+{
+	if(strcmp(loginSteamID[client],"BOT")==0) return;
+	
+	PrintToServer("Add logout database record:%s",loginSteamID[client]);
+	
+	char query1[400];
+	char query2[200];
+	Format(query1, 
+		sizeof(query1), 
+		"INSERT INTO %s (steam_id,last_logout_time) VALUES ('%s',unix_timestamp()) ON DUPLICATE KEY UPDATE last_logout_time=VALUES(last_logout_time)",
+		TABLE_BASIC_INFO,
+		loginSteamID[client]);
+	
+	Format(query2, 
+		sizeof(query2), 
+		"SELECT last_logout_time FROM %s WHERE steam_id='%s'",
+		TABLE_BASIC_INFO,
+		loginSteamID[client]);
+
+	db.SetCharset(DATABASE_CHARSET);
+
+	DataPack pack=new DataPack();
+	pack.WriteCell(client);
+	pack.WriteString(loginSteamID[client]);
+	WriteSteamID(client,"");
+ 	db.Query(OnPostQuery_Logout, query1, pack);
+	db.Query(OnFetchQuery_Logout, query2, pack);
+}
+
+void OnPostQuery_Logout(Database db, DBResultSet results, const char[] error, any data)
+{
+	if (db == null || results == null || error[0] != '\0')
+    {
+        PrintToServer("Query failed! %s", error);
+    }
+}
+
+void OnFetchQuery_Logout(Database db, DBResultSet results, const char[] error, any data)
+{
+	DataPack pack=view_as<DataPack>(data);
+	pack.Reset();
+
+	int client=pack.ReadCell();
+	char steamid[200];
+	pack.ReadString(steamid,sizeof(steamid));
+	delete pack;
+
+	if (db == null || results == null || error[0] != '\0')
+    {
+        PrintToServer("Query failed! %s", error);
+    }
+	else if(lastLoginTime[client]!=-1)
+	{
+		int play_time=-1;
+		int last_login_time=lastLoginTime[client];
+		lastLoginTime[client]=-1;
+
+		while (results!=null&&results.FetchRow())
+		{
+			int time_stamp=results.FetchInt(0);
+			play_time=time_stamp-last_login_time;		
+			//PrintToServer("Play Time:%d",play_time);
+		}
+
+		if(play_time>0)
+		{
+			char query[200];
+			Format(query, 
+				sizeof(query), 
+				"UPDATE %s SET total_play_time=total_play_time+%d WHERE steam_id='%s'",
+				TABLE_BASIC_INFO,
+				play_time,
+				steamid);
+			db.Query(OnPostQuery_TotalTime, query);
+		}
+	}
+	delete db;
+}
+
+void OnPostQuery_TotalTime(Database db, DBResultSet results, const char[] error, any data)
+{
+	if (db == null || results == null || error[0] != '\0')
+    {
+        PrintToServer("Query failed! %s", error);
+    }
 	delete db;
 }
