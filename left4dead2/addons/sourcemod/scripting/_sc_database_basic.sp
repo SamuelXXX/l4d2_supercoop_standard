@@ -23,6 +23,8 @@ public Plugin myinfo =
 public void OnPluginStart()
 {
 	ResetAllClients();
+	HookEvent("player_connect",Event_PlayerConnect);
+	HookEvent("player_disconnect",Event_PlayerDisconnect);
 }
 
 void WriteSteamID(int client, const char[] steamid)
@@ -39,11 +41,18 @@ void ResetAllClients()
 	}
 }
 
-public void OnClientPutInServer(int client)
-{
-	if(IsFakeClient(client)) return;
+//Event fired when a player disconnects from the server
+public Action Event_PlayerConnect(Handle hEvent, const char[] strName, bool bDontBroadcast) {
+	int client = GetClientOfUserId(GetEventInt(hEvent, "userid"));
+	
+	if(client < 1)
+		return Plugin_Continue;
+		
+	if(IsFakeClient(client)) return Plugin_Continue;
 	lastLoginTime[client]=-1;
 	AsyncPostPlayerLoginRecord(client);
+	
+	return Plugin_Continue;
 }
 
 void AsyncPostPlayerLoginRecord(int client)
@@ -130,11 +139,17 @@ void OnFetchQuery_Login(Database db, DBResultSet results, const char[] error, in
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
-public void OnClientDisconnect(int client)
-{
-	if(IsFakeClient(client)) return;
-	if(lastLoginTime[client]==-1) return;
+public Action Event_PlayerDisconnect(Handle hEvent, const char[] strName, bool bDontBroadcast) {
+	int client = GetClientOfUserId(GetEventInt(hEvent, "userid"));
+	
+	if(client < 1)
+		return Plugin_Continue;
+		
+	if(IsFakeClient(client)) return Plugin_Continue;
+	if(lastLoginTime[client]==-1) return Plugin_Continue;
 	AsyncPostPlayerLogoutRecord(client);
+	
+	return Plugin_Continue;
 }
 
 void AsyncPostPlayerLogoutRecord(int client)
