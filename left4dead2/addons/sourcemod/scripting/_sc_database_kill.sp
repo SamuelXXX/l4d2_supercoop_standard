@@ -20,6 +20,7 @@ public Plugin myinfo =
 
 public void OnPluginStart()
 {
+	HookEvent("round_start",Event_RoundStart);
 	HookEvent("player_death",Event_PlayerDeath);
 	HookEvent("map_transition", Event_RoundEnd);
 }
@@ -194,6 +195,12 @@ public Action Event_RoundEnd(Handle event, const char[] name,bool dontBroadcast)
 		}	
 	}
 
+	ResetSpecialInfectedKilled();
+	return Plugin_Continue;
+}
+
+public Action Event_RoundStart(Handle event, const char[] name,bool dontBroadcast)
+{
 	ResetSpecialInfectedKilled();
 	return Plugin_Continue;
 }

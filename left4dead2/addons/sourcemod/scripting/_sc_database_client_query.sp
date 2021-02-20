@@ -20,19 +20,25 @@ public Plugin myinfo =
 
 enum SQLSessionType
 {
-	MyRecord=1,
-	TotalTimeRanks=2,
-	MaxOnlineTimeRanks=3
+	MyTimeRecord=1,
+	MyKillRecord=2,
+	TotalTimeRanks=3,
+	MaxOnlineTimeRanks=4,
+	MaxSpecialKilledRanks=5,
+	TotalSpecialKilledRanks=6
 }
 
 public void OnPluginStart()
 {
-	RegConsoleCmd("sm_myrecord", CmdMyRecord);
+	RegConsoleCmd("sm_mytimerecord", CmdMyTimeRecord);
+	RegConsoleCmd("sm_mykillrecord",CmdMyKillRecord);
 	RegConsoleCmd("sm_total_time_ranks",CmdTotalTimeRanks);
 	RegConsoleCmd("sm_max_online_time_ranks",CmdMaxOnlineTimeRanks);
+	RegConsoleCmd("sm_max_special_killed_ranks",CmdMaxSpecialKilledRanks);
+	RegConsoleCmd("sm_total_special_killed_ranks",CmdTotalSpecialKilledRanks);
 }
 
-Action CmdMyRecord(int client,int args)
+Action CmdMyTimeRecord(int client,int args)
 {
 	char steamid[32];
 	char username[50];
@@ -47,9 +53,28 @@ Action CmdMyRecord(int client,int args)
 		TABLE_BASIC_INFO,
 		steamid);
 	
-	StartSQLSession(client,MyRecord,query);
+	StartSQLSession(client,MyTimeRecord,query);
 	return Plugin_Handled;
 }
+
+Action CmdMyKillRecord(int client,int args)
+{
+	char steamid[32];
+	char username[50];
+
+	GetClientName(client,username,50);
+	GetClientAuthId(client, AuthId_Steam2, steamid, sizeof(steamid),false);
+
+	char query[1024];
+	Format(query, 
+		sizeof(query), 
+		"SELECT * FROM players_kill WHERE steam_id='%s'",
+		steamid);
+	
+	StartSQLSession(client,MyKillRecord,query);
+	return Plugin_Handled;
+}
+
 
 Action CmdTotalTimeRanks(int client,int args)
 {
@@ -62,7 +87,7 @@ Action CmdTotalTimeRanks(int client,int args)
 	char query[600];
 	Format(query, 
 		sizeof(query), 
-		"SELECT user_name,total_play_time FROM %s ORDER BY total_play_time DESC LIMIT 10",
+		"SELECT user_name,total_play_time FROM %s ORDER BY total_play_time DESC LIMIT 20",
 		TABLE_BASIC_INFO,
 		steamid);
 	
@@ -81,11 +106,45 @@ Action CmdMaxOnlineTimeRanks(int client,int args)
 	char query[600];
 	Format(query, 
 		sizeof(query), 
-		"SELECT user_name,max_online_time FROM %s ORDER BY max_online_time DESC LIMIT 10",
+		"SELECT user_name,max_online_time FROM %s ORDER BY max_online_time DESC LIMIT 20",
 		TABLE_BASIC_INFO,
 		steamid);
 	
 	StartSQLSession(client,MaxOnlineTimeRanks,query);
+	return Plugin_Handled;
+}
+
+Action CmdMaxSpecialKilledRanks(int client,int args)
+{
+	char steamid[32];
+	char username[50];
+
+	GetClientName(client,username,50);
+	GetClientAuthId(client, AuthId_Steam2, steamid, sizeof(steamid),false);
+
+	char query[600];
+	Format(query, 
+		sizeof(query), 
+		"SELECT user_name,max_specials_killed FROM players_kill ORDER BY max_specials_killed DESC LIMIT 20");
+	
+	StartSQLSession(client,MaxSpecialKilledRanks,query);
+	return Plugin_Handled;
+}
+
+Action CmdTotalSpecialKilledRanks(int client,int args)
+{
+	char steamid[32];
+	char username[50];
+
+	GetClientName(client,username,50);
+	GetClientAuthId(client, AuthId_Steam2, steamid, sizeof(steamid),false);
+
+	char query[1024];
+	Format(query, 
+		sizeof(query), 
+		"SELECT user_name,total_spitter_killed + total_boomer_killed + total_smoker_killed + total_jockey_killed + total_charger_killed + total_hunter_killed + total_witch_killed FROM players_kill ORDER BY total_spitter_killed + total_boomer_killed + total_smoker_killed + total_jockey_killed + total_charger_killed + total_hunter_killed + total_witch_killed DESC LIMIT 20");
+	
+	StartSQLSession(client,TotalSpecialKilledRanks,query);
 	return Plugin_Handled;
 }
 
@@ -140,9 +199,14 @@ void OnReceiveResult(Database db, DBResultSet results, const char[] error, DataP
 	{
 		switch(session_type)
 		{
-			case MyRecord:
+			case MyTimeRecord:
 			{
-				PrintMyRecordResult(client,results);
+				PrintMyTimeRecordResult(client,results);
+			}
+
+			case MyKillRecord:
+			{
+				PrintMyKillRecordResult(client,results);
 			}
 				
 			case TotalTimeRanks:
@@ -154,13 +218,23 @@ void OnReceiveResult(Database db, DBResultSet results, const char[] error, DataP
 			{
 				PrintMaxOnlineRanksResult(client,results);
 			}
+
+			case MaxSpecialKilledRanks:
+			{
+				PrintMaxSpecialsKilledResult(client,results);
+			}
+
+			case TotalSpecialKilledRanks:
+			{
+				PrintTotalSpecialsKilledResult(client,results);
+			}
 		}
 	}
 	delete results;
 	delete db;
 }
 
-void PrintMyRecordResult(int client,DBResultSet results)
+void PrintMyTimeRecordResult(int client,DBResultSet results)
 {
 	while(results.FetchRow())
 	{
@@ -172,6 +246,48 @@ void PrintMyRecordResult(int client,DBResultSet results)
 		FormatDuration(total_time_str,sizeof(total_time_str),total_time);
 		PrintToChat(client,"\x01最长在线时间：\x03%s",max_time_str);
 		PrintToChat(client,"\x01总游玩时间：\x03%s",total_time_str);
+	}
+
+	delete results;
+}
+
+void PrintMyKillRecordResult(int client,DBResultSet results)
+{
+	int total_spitter_killed=0;
+	int total_boomer_killed=0;
+	int total_smoker_killed=0;
+	int total_jockey_killed=0;
+
+	int total_charger_killed=0;
+	int total_hunter_killed=0;
+	int total_witch_killed=0;
+
+	int max_specials_killed=0;
+	int total_infected_killed=0;
+	int max_infected_killed=0;
+
+	while(results.FetchRow())
+	{
+		total_spitter_killed=results.FetchInt(2); 	PrintToChat(client,"\x04Spitter\x01击杀总数：\x03%d",total_spitter_killed);
+		total_boomer_killed=results.FetchInt(3); 	PrintToChat(client,"\x04Boomer\x01击杀总数：\x03%d",total_boomer_killed);
+		total_smoker_killed=results.FetchInt(4); 	PrintToChat(client,"\x04Smoker\x01击杀总数：\x03%d",total_smoker_killed);
+		total_jockey_killed=results.FetchInt(5);	PrintToChat(client,"\x04Jockey\x01击杀总数：\x03%d",total_jockey_killed);
+
+		total_charger_killed=results.FetchInt(6);	PrintToChat(client,"\x04Charger\x01击杀总数：\x03%d",total_charger_killed);
+		total_hunter_killed=results.FetchInt(7);	PrintToChat(client,"\x04Hunter\x01击杀总数：\x03%d",total_hunter_killed);
+		total_witch_killed=results.FetchInt(8);		PrintToChat(client,"\x04Witch\x01击杀总数：\x03%d",total_witch_killed);
+		PrintToChat(client,"\x01历史特感击杀总数合计：\x03%d",
+					total_spitter_killed+
+					total_boomer_killed+
+					total_smoker_killed+
+					total_jockey_killed+
+					total_charger_killed+
+					total_hunter_killed+
+					total_witch_killed);
+
+		max_specials_killed=results.FetchInt(9);	PrintToChat(client,"\x01单局最高特感击杀数：\x03%d",max_specials_killed);
+		total_infected_killed=results.FetchInt(10);	PrintToChat(client,"\x01历史普通感染者击杀总数：\x03%d",total_infected_killed);
+		max_infected_killed=results.FetchInt(11);	PrintToChat(client,"\x01单局最高普通感染者击杀总数：\x03%d",max_infected_killed);
 	}
 
 	delete results;
@@ -189,7 +305,7 @@ void PrintTotalTimeRanksResult(int client,DBResultSet results)
 		char total_time_str[30];
 		FormatDuration(total_time_str,sizeof(total_time_str),total_time);
 
-		PrintToChat(client,"\x01%d：\x03%s-%s",rank,username,total_time_str);
+		PrintToChat(client,"\x01%d：\x03%s-\x04%s",rank,username,total_time_str);
 		rank++;
 	}
 	PrintToChat(client,"======================");
@@ -211,7 +327,47 @@ void PrintMaxOnlineRanksResult(int client,DBResultSet results)
 
 		FormatDuration(total_time_str,sizeof(total_time_str),total_time);
 
-		PrintToChat(client,"\x01%d：\x03%s-%s",rank,username,total_time_str);
+		PrintToChat(client,"\x01%d：\x03%s-\x04%s",rank,username,total_time_str);
+		rank++;
+	}
+
+	PrintToChat(client,"======================");
+	delete results;
+}
+
+void PrintMaxSpecialsKilledResult(int client,DBResultSet results)
+{
+	int rank=1;
+	PrintToChat(client,"===单局特感击杀数排行榜===");
+	
+	while(results.FetchRow())
+	{
+		char username[100];
+		results.FetchString(0,username,100);
+
+		int max=results.FetchInt(1);
+
+		PrintToChat(client,"\x01%d：\x03%s-\x04%d",rank,username,max);
+		rank++;
+	}
+
+	PrintToChat(client,"======================");
+	delete results;
+}
+
+void PrintTotalSpecialsKilledResult(int client,DBResultSet results)
+{
+	int rank=1;
+	PrintToChat(client,"===历史特感击杀总数排行榜===");
+	
+	while(results.FetchRow())
+	{
+		char username[100];
+		results.FetchString(0,username,100);
+
+		int max=results.FetchInt(1);
+
+		PrintToChat(client,"\x01%d：\x03%s-\x04%d",rank,username,max);
 		rank++;
 	}
 
