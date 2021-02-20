@@ -330,9 +330,12 @@ void CreateStatisticsMenu(int client , const char[] title)
 	Menu menu=CreateMenu(StatisticsMainHandler);
 	SetMenuTitle(menu,title);
 	
-	AddMenuItem(menu, "1", "个人统计信息");
-	AddMenuItem(menu, "2", "总游戏时间排行榜");
-	AddMenuItem(menu, "3", "单次游戏时长排行榜");
+	AddMenuItem(menu, "1", "个人时间统计");
+	AddMenuItem(menu, "2", "个人击杀统计");
+	AddMenuItem(menu, "3", "总游戏时间排行榜");
+	AddMenuItem(menu, "4", "单次游戏时长排行榜");
+	AddMenuItem(menu, "5", "历史特感击杀排行榜");
+	AddMenuItem(menu, "6", "单局特感击杀排行榜");
 	
 	DisplayMenu(menu, client, MENU_TIME_FOREVER);
 }
@@ -360,15 +363,27 @@ int StatisticsMainHandler(Menu menu,MenuAction action,int client,int param2)
 				{
 					case 1:
 					{
-						FakeClientCommand(client,"sm_myrecord");
+						FakeClientCommand(client,"sm_mytimerecord");
 					}
 					case 2:
 					{
-						FakeClientCommand(client,"sm_total_time_ranks");
+						FakeClientCommand(client,"sm_mykillrecord");
 					}
 					case 3:
 					{
+						FakeClientCommand(client,"sm_total_time_ranks");
+					}
+					case 4:
+					{
 						FakeClientCommand(client,"sm_max_online_time_ranks");
+					}
+					case 5:
+					{
+						FakeClientCommand(client,"sm_total_special_killed_ranks");
+					}
+					case 6:
+					{
+						FakeClientCommand(client,"sm_max_special_killed_ranks");
 					}
 				}
 			}
