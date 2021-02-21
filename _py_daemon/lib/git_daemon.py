@@ -19,6 +19,8 @@ def bot_log_git_pull(git_pull_log):
 
 
 def action_git_pull():
+	git_bash_cmd("git add .")
+	git_bash_cmd("git reset --hard")
 	lines = git_bash_cmd("git pull")
 
 	if len(lines) <= 2:
