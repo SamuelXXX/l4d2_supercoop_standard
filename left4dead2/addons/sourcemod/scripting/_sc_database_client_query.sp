@@ -1,13 +1,6 @@
 #include <sourcemod>
 #include <sdktools>
 
-#pragma semicolon 1
-#pragma newdecls required
-
-static const char DATABASE_CONF_NAME[] = "supercoop";
-static const char TABLE_BASIC_INFO[] = "players_basic";
-static const char DATABASE_CHARSET[]="utf8";
-
 
 public Plugin myinfo =
 {
@@ -20,22 +13,31 @@ public Plugin myinfo =
 
 enum SQLSessionType
 {
-	MyTimeRecord=1,
-	MyKillRecord=2,
-	TotalTimeRanks=3,
-	MaxOnlineTimeRanks=4,
-	MaxSpecialKilledRanks=5,
-	TotalSpecialKilledRanks=6
+	MyTimeRecord,
+	MyKillRecord,
+	TotalTimeRanks,
+	MaxOnlineTimeRanks,
+	MaxSpecialKilledRanks,
+	TotalSpecialKilledRanks,
+	TeamTotalTimeRanks,
+	TeamMaxTimeRanks,
+	TeamMaxSpecialKillRanks
+
 }
 
 public void OnPluginStart()
 {
 	RegConsoleCmd("sm_mytimerecord", CmdMyTimeRecord);
 	RegConsoleCmd("sm_mykillrecord",CmdMyKillRecord);
+
 	RegConsoleCmd("sm_total_time_ranks",CmdTotalTimeRanks);
 	RegConsoleCmd("sm_max_online_time_ranks",CmdMaxOnlineTimeRanks);
 	RegConsoleCmd("sm_max_special_killed_ranks",CmdMaxSpecialKilledRanks);
 	RegConsoleCmd("sm_total_special_killed_ranks",CmdTotalSpecialKilledRanks);
+
+	RegConsoleCmd("sm_team_total_time", CmdTeamTotalTime);
+	RegConsoleCmd("sm_team_max_time",CmdTeamMaxTime);
+	RegConsoleCmd("sm_team_max_special_kills",CmdTeamMaxSpecialKills);
 }
 
 Action CmdMyTimeRecord(int client,int args)
@@ -49,8 +51,7 @@ Action CmdMyTimeRecord(int client,int args)
 	char query[600];
 	Format(query, 
 		sizeof(query), 
-		"SELECT max_online_time,total_play_time FROM %s WHERE steam_id='%s'",
-		TABLE_BASIC_INFO,
+		"SELECT max_online_time,total_play_time FROM players_basic WHERE steam_id='%s'",
 		steamid);
 	
 	StartSQLSession(client,MyTimeRecord,query);
@@ -87,8 +88,7 @@ Action CmdTotalTimeRanks(int client,int args)
 	char query[600];
 	Format(query, 
 		sizeof(query), 
-		"SELECT user_name,total_play_time FROM %s ORDER BY total_play_time DESC LIMIT 20",
-		TABLE_BASIC_INFO,
+		"SELECT user_name,total_play_time FROM players_basic ORDER BY total_play_time DESC LIMIT 20",
 		steamid);
 	
 	StartSQLSession(client,TotalTimeRanks,query);
@@ -106,8 +106,7 @@ Action CmdMaxOnlineTimeRanks(int client,int args)
 	char query[600];
 	Format(query, 
 		sizeof(query), 
-		"SELECT user_name,max_online_time FROM %s ORDER BY max_online_time DESC LIMIT 20",
-		TABLE_BASIC_INFO,
+		"SELECT user_name,max_online_time FROM players_basic ORDER BY max_online_time DESC LIMIT 20",
 		steamid);
 	
 	StartSQLSession(client,MaxOnlineTimeRanks,query);
@@ -148,6 +147,105 @@ Action CmdTotalSpecialKilledRanks(int client,int args)
 	return Plugin_Handled;
 }
 
+void FormTeamPlayersList(char[] buffer,int maxLength)
+{
+	bool firstInside=false;
+	buffer[0]='\0';
+	int len=0;
+	for(int i=1;i<=32;i++)
+	{
+		if (IsClientConnected(i) && IsClientInGame(i) && !IsFakeClient(i))	
+		{
+			char id[32];
+			char name[64];
+			GetClientAuthId(i, AuthId_Steam2, id, sizeof(id),false)
+			GetClientName(i,name,sizeof(name));
+
+			if(StrEqual(id,"BOT",false))
+				continue;
+
+			if(!firstInside)
+			{
+				len+=Format(buffer[len], maxLength-len, "'%s'", id);
+				firstInside=true;
+			}
+			else
+			{
+				len+=Format(buffer[len], maxLength-len, ",'%s'", id);
+			}
+		}
+	}
+}
+
+Action CmdTeamMaxSpecialKills(int client,int args)
+{
+	char steamid[32];
+	char username[50];
+
+	GetClientName(client,username,50);
+	GetClientAuthId(client, AuthId_Steam2, steamid, sizeof(steamid),false);
+
+	char team_steamid[1024];
+	FormTeamPlayersList(team_steamid,sizeof(team_steamid));
+
+	//PrintToServer(">>>Team Steam ID: %s",team_steamid);
+
+	char query[3000];
+	Format(query, 
+		sizeof(query), 
+		"SELECT user_name,max_specials_killed FROM players_kill  WHERE steam_id IN (%s) ORDER BY max_specials_killed DESC",
+		team_steamid);
+	
+	StartSQLSession(client,TeamMaxSpecialKillRanks,query);
+	return Plugin_Handled;
+}
+
+Action CmdTeamTotalTime(int client,int args)
+{
+	char steamid[32];
+	char username[50];
+
+	GetClientName(client,username,50);
+	GetClientAuthId(client, AuthId_Steam2, steamid, sizeof(steamid),false);
+
+	char team_steamid[1024];
+	FormTeamPlayersList(team_steamid,sizeof(team_steamid));
+
+	//PrintToServer(">>>Team Steam ID: %s",team_steamid);
+
+	char query[2048];
+	Format(query, 
+		sizeof(query), 
+		"SELECT user_name,total_play_time FROM players_basic  WHERE steam_id IN (%s) ORDER BY total_play_time DESC",
+		team_steamid);
+	
+	StartSQLSession(client,TeamTotalTimeRanks,query);
+	return Plugin_Handled;
+}
+
+Action CmdTeamMaxTime(int client,int args)
+{
+	char steamid[32];
+	char username[50];
+
+	GetClientName(client,username,50);
+	GetClientAuthId(client, AuthId_Steam2, steamid, sizeof(steamid),false);
+
+	char team_steamid[1024];
+	FormTeamPlayersList(team_steamid,sizeof(team_steamid));
+
+	//PrintToServer(">>>Team Steam ID: %s",team_steamid);
+
+	char query[2048];
+	Format(query, 
+		sizeof(query), 
+		"SELECT user_name,max_online_time FROM players_basic  WHERE steam_id IN (%s) ORDER BY max_online_time DESC",
+		team_steamid);
+	
+	StartSQLSession(client,TeamMaxTimeRanks,query);
+	return Plugin_Handled;
+}
+
 
 void StartSQLSession(int client,int session_type,const char[] query)
 {
@@ -157,7 +255,7 @@ void StartSQLSession(int client,int session_type,const char[] query)
 	dp.WriteString(query);
 
 	PrintToChat(client,"查询中，请稍候...");
-	Database.Connect(OnSQLServerConnected, DATABASE_CONF_NAME, dp);
+	Database.Connect(OnSQLServerConnected, "supercoop", dp);
 }
 
 void OnSQLServerConnected(Database db, const char[] error,any data)
@@ -177,7 +275,7 @@ void OnSQLServerConnected(Database db, const char[] error,any data)
 	else
 	{
 		//PrintToChat(client,"Database connect succeed!");
-		db.SetCharset(DATABASE_CHARSET);
+		db.SetCharset("utf8");
 		db.Query(OnReceiveResult, query, dp);
 	}
 }
@@ -227,6 +325,21 @@ void OnReceiveResult(Database db, DBResultSet results, const char[] error, DataP
 			case TotalSpecialKilledRanks:
 			{
 				PrintTotalSpecialsKilledResult(client,results);
+			}
+
+			case TeamTotalTimeRanks:
+			{
+				PrintTeamTotalTimeResult(client,results);
+			}
+
+			case TeamMaxTimeRanks:
+			{
+				PrintTeamMaxTimeResult(client,results);
+			}
+
+			case TeamMaxSpecialKillRanks:
+			{
+				PrintTeamSpecialsKilledResult(client,results);
 			}
 		}
 	}
@@ -359,6 +472,64 @@ void PrintTotalSpecialsKilledResult(int client,DBResultSet results)
 {
 	int rank=1;
 	PrintToChat(client,"===历史特感击杀总数排行榜===");
+	
+	while(results.FetchRow())
+	{
+		char username[100];
+		results.FetchString(0,username,100);
+
+		int max=results.FetchInt(1);
+
+		PrintToChat(client,"\x01%d：\x03%s-\x04%d",rank,username,max);
+		rank++;
+	}
+
+	PrintToChat(client,"======================");
+	delete results;
+}
+
+void PrintTeamTotalTimeResult(int client,DBResultSet results)
+{
+	int rank=1;
+	PrintToChat(client,"===团队总游戏时长排行榜===");
+	while(results.FetchRow())
+	{
+		char username[100];
+		results.FetchString(0,username,100);
+		int total_time=results.FetchInt(1);
+		char total_time_str[30];
+		FormatDuration(total_time_str,sizeof(total_time_str),total_time);
+
+		PrintToChat(client,"\x01%d：\x03%s-\x04%s",rank,username,total_time_str);
+		rank++;
+	}
+	PrintToChat(client,"======================");
+	delete results;
+}
+
+void PrintTeamMaxTimeResult(int client,DBResultSet results)
+{
+	int rank=1;
+	PrintToChat(client,"===团队最大在线时长排行榜===");
+	while(results.FetchRow())
+	{
+		char username[100];
+		results.FetchString(0,username,100);
+		int total_time=results.FetchInt(1);
+		char total_time_str[30];
+		FormatDuration(total_time_str,sizeof(total_time_str),total_time);
+
+		PrintToChat(client,"\x01%d：\x03%s-\x04%s",rank,username,total_time_str);
+		rank++;
+	}
+	PrintToChat(client,"======================");
+	delete results;
+}
+
+void PrintTeamSpecialsKilledResult(int client,DBResultSet results)
+{
+	int rank=1;
+	PrintToChat(client,"===团队单局特感击杀排行榜===");
 	
 	while(results.FetchRow())
 	{

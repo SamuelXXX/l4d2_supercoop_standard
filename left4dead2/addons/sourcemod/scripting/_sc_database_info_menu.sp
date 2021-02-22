@@ -135,7 +135,7 @@ void CreateTeamRecordMenu(int client)
 	
 	AddMenuItem(menu, "1", "总游戏时间");
 	AddMenuItem(menu, "2", "最大在线时间");
-	AddMenuItem(menu, "3", "总特感击杀");
+	AddMenuItem(menu, "3", "单局特感击杀");
 	
 	DisplayMenu(menu, client, MENU_TIME_FOREVER);
 }
@@ -162,15 +162,15 @@ int TeamRecordMenuHandler(Menu menu,MenuAction action,int client,int param2)
 				{
 					case 1:
 					{
-						PrintToChat(client,"此功能正在开发！！！");
+						FakeClientCommand(client,"sm_team_total_time");
 					}
 					case 2:
 					{
-						PrintToChat(client,"此功能正在开发！！！");
+						FakeClientCommand(client,"sm_team_max_time");
 					}
 					case 3:
 					{
-						PrintToChat(client,"此功能正在开发！！！");
+						FakeClientCommand(client,"sm_team_max_special_kills");
 					}
 				}
 			}
