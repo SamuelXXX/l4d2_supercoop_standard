@@ -15,6 +15,7 @@ public Plugin myinfo =
 public void OnPluginStart()
 {
 	RegConsoleCmd("sm_menu",Command_ShowPlayerMenu);
+	RegConsoleCmd("sm_m",Command_ShowPlayerMenu);
 }
 
 public Action Command_ShowPlayerMenu(int client,int args)
@@ -30,9 +31,8 @@ enum MainMenuItem
 	PMVoteMap=3,
 	PMVoiceMute=4,
 	PMTakeOverBot=5,
-	PMStatistics=6,
-	PMKick=7,
-	PMSpawnWeapon=8
+	PMKick=6,
+	PMSpawnWeapon=7
 }
 
 bool menuOn=false;
@@ -45,11 +45,10 @@ void CreateMainMenu(int client)
 	AddMenuItem(menu,"3","换图投票(限首关)");
 	AddMenuItem(menu,"4","静音玩家");
 	AddMenuItem(menu,"5","接管电脑");
-	AddMenuItem(menu,"6","统计信息查看");
 	if(CheckCommandAccess(client,"sm_kick",ADMFLAG_KICK,false))
-		AddMenuItem(menu,"7","踢出玩家（管理员）");
+		AddMenuItem(menu,"6","踢出玩家（管理员）");
 	if(CheckCommandAccess(client,"sm_sw",ADMFLAG_SLAY,false))
-		AddMenuItem(menu,"8","刷枪（最高权限）");
+		AddMenuItem(menu,"7","刷枪（最高权限）");
 		
 	SetMenuExitButton(menu, true);
 	DisplayMenu(menu, client, MENU_TIME_FOREVER);
@@ -96,11 +95,6 @@ public int MainMenuHandler(Menu menu,MenuAction action,int param1,int param2)
 					case PMTakeOverBot:
 					{
 						FakeClientCommand(param1,"sm_pickbot");
-					}
-
-					case PMStatistics:
-					{
-						CreateStatisticsMenu(param1,"统计信息查询");
 					}
 					
 					case PMKick:
@@ -323,72 +317,6 @@ void CreateWeaponMenu(int client , const char[] title, MenuHandler handler,const
 		AddMenuItem(menu, uid, description[i]);
 	}
 	DisplayMenu(menu, client, MENU_TIME_FOREVER);
-}
-
-void CreateStatisticsMenu(int client , const char[] title)
-{
-	Menu menu=CreateMenu(StatisticsMainHandler);
-	SetMenuTitle(menu,title);
-	
-	AddMenuItem(menu, "1", "个人时间统计");
-	AddMenuItem(menu, "2", "个人击杀统计");
-	AddMenuItem(menu, "3", "总游戏时间排行榜");
-	AddMenuItem(menu, "4", "单次游戏时长排行榜");
-	AddMenuItem(menu, "5", "历史特感击杀排行榜");
-	AddMenuItem(menu, "6", "单局特感击杀排行榜");
-	
-	DisplayMenu(menu, client, MENU_TIME_FOREVER);
-}
-
-int StatisticsMainHandler(Menu menu,MenuAction action,int client,int param2)
-{
-	switch (action)
-	{
-		case MenuAction_End:
-			delete menu;
-			
-		case MenuAction_Cancel:
-			if (param2 == MenuCancel_ExitBack)
-				CreateMainMenu(client);
-					
-		case MenuAction_Select:
-		{
-			char info[16];
-			char name[MAX_NAME_LENGTH];
-			
-			if(menu.GetItem(param2, info, sizeof(info)))
-			{
-				int target = StringToInt(info);
-				switch(target)
-				{
-					case 1:
-					{
-						FakeClientCommand(client,"sm_mytimerecord");
-					}
-					case 2:
-					{
-						FakeClientCommand(client,"sm_mykillrecord");
-					}
-					case 3:
-					{
-						FakeClientCommand(client,"sm_total_time_ranks");
-					}
-					case 4:
-					{
-						FakeClientCommand(client,"sm_max_online_time_ranks");
-					}
-					case 5:
-					{
-						FakeClientCommand(client,"sm_total_special_killed_ranks");
-					}
-					case 6:
-					{
-						FakeClientCommand(client,"sm_max_special_killed_ranks");
-					}
-				}
-			}
-		}
-	}
 }
 
 public int HandlerSpawnWeapon(Menu menu,MenuAction action,int client,int param2,const char[][] weapon)

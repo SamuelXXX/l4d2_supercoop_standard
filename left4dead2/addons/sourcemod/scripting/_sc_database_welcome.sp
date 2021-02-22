@@ -41,16 +41,25 @@ public void ConnectDB()
 	}
 }
 
-public void SendSQLQuery(const char[] query)
+public void SendSQLQuery(const char[] query,const char[] name)
 {
 	if (gDatabase == INVALID_HANDLE)
         return;
-
-	gDatabase.Query(SQLQueryCheckCallback, query);
+	DataPack dp=new DataPack();
+	dp.Reset();
+	dp.WriteString(name);
+	gDatabase.Query(SQLQueryCheckCallback, query,dp);
 }
 
 public void SQLQueryCheckCallback(Database db, DBResultSet results, const char[] error,any data)
 {
+	DataPack dp=view_as<DataPack>(data);
+	dp.Reset();
+	char name[32];
+	dp.ReadString(name,sizeof(name));
+
+	delete dp;
+
 	if (db == INVALID_HANDLE)
         return;
 
@@ -66,13 +75,13 @@ public void SQLQueryCheckCallback(Database db, DBResultSet results, const char[]
 
 		if(total_time==0)
 		{
-			PrintToChatAll("该玩家尚未玩过群服，请诸位大佬耐心引导哦！");
+			PrintToChatAll("\x03[统计]\x01 玩家\x04%s\x01尚未玩过群服，请诸位大佬耐心引导哦！",name);
 		}
 		else
 		{
 			char time_str[32];
 			FormatDuration(time_str,32,total_time);
-			PrintToChatAll("该玩家群服游戏时长：\x06%s",time_str);
+			PrintToChatAll("\x03[统计]\x01 玩家\x04%s\x01群服游戏总时长：\x06%s",name,time_str);
 		}
 	}
 }
@@ -112,7 +121,7 @@ public Action Event_PlayerConnect(Handle hEvent, const char[] strName, bool bDon
 		"SELECT total_play_time FROM players_basic WHERE steam_id='%s'",
 		id);
 	
-	SendSQLQuery(query);
+	SendSQLQuery(query,name);
 	
 	return Plugin_Continue;
 }
