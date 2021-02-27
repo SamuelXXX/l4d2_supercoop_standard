@@ -15,6 +15,7 @@ enum SQLSessionType
 {
 	MyTimeRecord,
 	MyKillRecord,
+	MyKillPerHourRecord,
 	TotalTimeRanks,
 	MaxOnlineTimeRanks,
 	MaxSpecialKilledRanks,
