@@ -64,11 +64,12 @@ void GetCampaignBriefStr(char[] buffer,int maxLength)
 	int i=0;
 	while(i<maxLength)
 	{
-		if(buffer[i]=='m')
+		if(buffer[i]=='m'||buffer[i]=='\0')
 		{
 			buffer[i]='\0';
 			break;
 		}
+		i++;
 	}
 }
 
