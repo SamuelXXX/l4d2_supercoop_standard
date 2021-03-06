@@ -90,6 +90,7 @@ void CreateSelfRecordMenu(int client)
 	
 	AddMenuItem(menu, "1", "个人时间统计");
 	AddMenuItem(menu, "2", "个人击杀统计");
+	AddMenuItem(menu, "3", "个人战役统计");
 	
 	DisplayMenu(menu, client, MENU_TIME_FOREVER);
 }
@@ -116,11 +117,15 @@ int SelfRecordMenuHandler(Menu menu,MenuAction action,int client,int param2)
 				{
 					case 1:
 					{
-						FakeClientCommand(client,"sm_mytimerecord");
+						FakeClientCommand(client,"sm_my_time");
 					}
 					case 2:
 					{
-						FakeClientCommand(client,"sm_mykillrecord");
+						FakeClientCommand(client,"sm_my_kills");
+					}
+					case 3:
+					{
+						FakeClientCommand(client,"sm_my_campaign");
 					}
 				}
 			}
@@ -170,7 +175,7 @@ int TeamRecordMenuHandler(Menu menu,MenuAction action,int client,int param2)
 					}
 					case 3:
 					{
-						FakeClientCommand(client,"sm_team_max_special_kills");
+						FakeClientCommand(client,"sm_team_max_kills");
 					}
 				}
 			}
@@ -187,6 +192,7 @@ void CreateRanksMenu(int client)
 	AddMenuItem(menu, "2", "单次游戏时长");
 	AddMenuItem(menu, "3", "历史特感击杀");
 	AddMenuItem(menu, "4", "单局特感击杀");
+	AddMenuItem(menu, "5", "终局通关总数");
 	
 	DisplayMenu(menu, client, MENU_TIME_FOREVER);
 }
@@ -213,19 +219,23 @@ int RanksMenuHandler(Menu menu,MenuAction action,int client,int param2)
 				{
 					case 1:
 					{
-						FakeClientCommand(client,"sm_total_time_ranks");
+						FakeClientCommand(client,"sm_rank_total_time");
 					}
 					case 2:
 					{
-						FakeClientCommand(client,"sm_max_online_time_ranks");
+						FakeClientCommand(client,"sm_rank_max_time");
 					}
 					case 3:
 					{
-						FakeClientCommand(client,"sm_total_special_killed_ranks");
+						FakeClientCommand(client,"sm_rank_max_kills");
 					}
 					case 4:
 					{
-						FakeClientCommand(client,"sm_max_special_killed_ranks");
+						FakeClientCommand(client,"sm_rank_total_kills");
+					}
+					case 5:
+					{
+						FakeClientCommand(client,"sm_rank_campaign");
 					}
 				}
 			}
