@@ -124,6 +124,13 @@ public Action Event_PlayerDeath(Handle event, const char[] name,bool dontBroadca
 	infectedKey
 	);
 	SendSQLUpdate(query);
+
+	char update[1024];
+	Format(update,
+	sizeof(update),
+	"UPDATE players_kill SET total_specials_killed=total_spitter_killed+total_boomer_killed+total_smoker_killed+total_jockey_killed+total_charger_killed+total_hunter_killed+total_witch_killed WHERE steam_id='%s'",
+	attackerId);
+	SendSQLUpdate(update);
 	return Plugin_Continue;
 }
 
