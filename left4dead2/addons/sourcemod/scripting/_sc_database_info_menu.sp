@@ -193,6 +193,7 @@ void CreateRanksMenu(int client)
 	AddMenuItem(menu, "3", "历史特感击杀");
 	AddMenuItem(menu, "4", "单局特感击杀");
 	AddMenuItem(menu, "5", "终局通关总数");
+	AddMenuItem(menu, "6", "特感击杀效率");
 	
 	DisplayMenu(menu, client, MENU_TIME_FOREVER);
 }
@@ -236,6 +237,10 @@ int RanksMenuHandler(Menu menu,MenuAction action,int client,int param2)
 					case 5:
 					{
 						FakeClientCommand(client,"sm_rank_campaign");
+					}
+					case 6:
+					{
+						FakeClientCommand(client,"sm_rank_efficiency");
 					}
 				}
 			}

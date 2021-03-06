@@ -27,7 +27,8 @@ enum SQLSessionType
 	Rank_Max_Time,
 	Rank_Max_Kills,
 	Rank_Total_Kills,
-	Rank_Campaign
+	Rank_Campaign,
+	Rank_Efficiency
 }
 
 public void OnPluginStart()
@@ -45,11 +46,7 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_rank_max_kills",CMD_RankMaxKills);
 	RegConsoleCmd("sm_rank_total_kills",CMD_RankTotalKills);
 	RegConsoleCmd("sm_rank_campaign",CMD_RankCampaign);
-}
-
-void CommonCMDInvoke(const char[] query,int client,int type)
-{
-
+	RegConsoleCmd("sm_rank_efficiency",CMD_RankEfficiency);
 }
 
 Action CMD_MyTime(int client,int args)
@@ -78,8 +75,8 @@ Action CMD_MyKill(int client,int args)
 	char query[1024];
 	Format(query, 
 		sizeof(query), 
-		"SELECT * FROM players_kill WHERE steam_id='%s'",
-		steamid);
+		"SELECT players_kill.*,players_basic.total_play_time FROM players_kill,players_basic WHERE players_kill.steam_id='%s' AND players_basic.steam_id='%s'",
+		steamid,steamid);
 	
 	StartSQLSession(client,My_Kill,query);
 	return Plugin_Handled;
@@ -237,7 +234,7 @@ Action CMD_RankTotalKills(int client,int args)
 	char query[1024];
 	Format(query, 
 		sizeof(query), 
-		"SELECT user_name,total_spitter_killed + total_boomer_killed + total_smoker_killed + total_jockey_killed + total_charger_killed + total_hunter_killed + total_witch_killed FROM players_kill ORDER BY total_spitter_killed + total_boomer_killed + total_smoker_killed + total_jockey_killed + total_charger_killed + total_hunter_killed + total_witch_killed DESC LIMIT 20");
+		"SELECT user_name,total_spitter_killed + total_boomer_killed + total_smoker_killed + total_jockey_killed + total_charger_killed + total_hunter_killed + total_witch_killed AS total FROM players_kill ORDER BY total DESC LIMIT 20");
 	
 	StartSQLSession(client,Rank_Total_Kills,query);
 	return Plugin_Handled;
@@ -251,6 +248,14 @@ Action CMD_RankCampaign(int client,int args)
 		"SELECT user_name,c1+c2+c3+c4+c5+c6+c7+c8+c9+c10+c11+c12+c13+c14 AS total FROM players_campaign ORDER BY total DESC LIMIT 20");
 	
 	StartSQLSession(client,Rank_Campaign,query);
+	return Plugin_Handled;
+}
+
+Action CMD_RankEfficiency(int client,int args)
+{
+	char query[]="SELECT players_kill.user_name,players_kill.total_specials_killed*3600/players_basic.total_play_time AS data FROM players_kill,players_basic WHERE players_basic.steam_id=players_kill.steam_id AND players_basic.total_play_time >3600 ORDER BY data DESC LIMIT 20";
+	
+	StartSQLSession(client,Rank_Efficiency,query);
 	return Plugin_Handled;
 }
 
@@ -394,6 +399,11 @@ void OnReceiveResult(Database db, DBResultSet results, const char[] error, DataP
 				PRINT_RankCampaign(client,results);
 			}
 
+			case Rank_Efficiency:
+			{
+				PRINT_RankEfficiency(client,results);
+			}
+
 			
 		}
 	}
@@ -443,14 +453,16 @@ void PRINT_MyKill(int client,DBResultSet results)
 		total_charger_killed=results.FetchInt(6);	PrintToChat(client,"\x04Charger\x01击杀总数：\x03%d",total_charger_killed);
 		total_hunter_killed=results.FetchInt(7);	PrintToChat(client,"\x04Hunter\x01击杀总数：\x03%d",total_hunter_killed);
 		total_witch_killed=results.FetchInt(8);		PrintToChat(client,"\x04Witch\x01击杀总数：\x03%d",total_witch_killed);
-		PrintToChat(client,"\x01历史特感击杀总数合计：\x03%d",
-					total_spitter_killed+
+
+		int total_killed=total_spitter_killed+
 					total_boomer_killed+
 					total_smoker_killed+
 					total_jockey_killed+
 					total_charger_killed+
 					total_hunter_killed+
-					total_witch_killed);
+					total_witch_killed;
+		PrintToChat(client,"\x01历史特感击杀总数合计：\x03%d",total_killed);
+		PrintToChat(client,"\x01特感击杀效率：\x03%d 只/小时",total_killed*3600/results.FetchInt(13));
 
 		max_specials_killed=results.FetchInt(9);	PrintToChat(client,"\x01单局最高特感击杀数：\x03%d",max_specials_killed);
 		total_infected_killed=results.FetchInt(10);	PrintToChat(client,"\x01历史普通感染者击杀总数：\x03%d",total_infected_killed);
@@ -593,6 +605,26 @@ void PRINT_RankCampaign(int client,DBResultSet results)
 		int max=results.FetchInt(1);
 
 		PrintToChat(client,"\x01%d：\x03%s-\x04%d",rank,username,max);
+		rank++;
+	}
+
+	PrintToChat(client,"======================");
+	delete results;
+}
+
+void PRINT_RankEfficiency(int client,DBResultSet results)
+{
+	int rank=1;
+	PrintToChat(client,"===特感击杀效率排行榜===");
+	
+	while(results.FetchRow())
+	{
+		char username[100];
+		results.FetchString(0,username,100);
+
+		int max=results.FetchInt(1);
+
+		PrintToChat(client,"\x01%d：\x03%s-\x04%d\x01只/小时",rank,username,max);
 		rank++;
 	}
 
