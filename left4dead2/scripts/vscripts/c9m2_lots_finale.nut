@@ -36,8 +36,8 @@ DirectorOptions <-
 }
 
 ApplyCommonFinaleOptions(DirectorOptions)
-Convars.SetValue("l4d2_spawn_uncommons_autochance","3")
-Convars.SetValue("l4d2_spawn_uncommons_autotypes","59")
+// Convars.SetValue("l4d2_spawn_uncommons_autochance","3")
+// Convars.SetValue("l4d2_spawn_uncommons_autotypes","59")
 Convars.SetValue("director_relax_min_interval","120")
 Convars.SetValue("director_relax_max_interval","120")
 Convars.SetValue("tongue_victim_max_speed","700")

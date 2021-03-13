@@ -136,7 +136,7 @@ DirectorOptions <-
 
 Convars.SetValue("director_special_battlefield_respawn_interval",4) //防守时特感刷新的速度
 Convars.SetValue("director_custom_finale_tank_spacing",2) //终局tank出现的时间间隔
-Convars.SetValue("director_tank_checkpoint_interval",120)//允许tank出生的时间，自生还者离开安全屋开始计算
+Convars.SetValue("director_tank_checkpoint_interval",240)//允许tank出生的时间，自生还者离开安全屋开始计算
 
 //决定Witch的刷新数量，可能吧，未验证
 Convars.SetValue("director_threat_max_separation",1) 
