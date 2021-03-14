@@ -3,13 +3,13 @@ Msg("Super Coop")
 DirectorOptions <-
 {
 	BoomerLimit = 0
-	SmokerLimit = 3
-	HunterLimit = 8
+	SmokerLimit = 4
+	HunterLimit = 6
 	SpitterLimit = 2
-	JockeyLimit = 3
-	ChargerLimit = 1
-	MaxSpecials = 14
-	cm_MaxSpecials = 14
+	JockeyLimit = 6
+	ChargerLimit = 6
+	MaxSpecials = 16
+	cm_MaxSpecials = 16
 	DominatorLimit = 14
 }
 

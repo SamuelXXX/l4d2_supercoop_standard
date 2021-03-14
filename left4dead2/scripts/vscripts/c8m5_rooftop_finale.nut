@@ -7,41 +7,45 @@ SCRIPTED <- 3
 
 DirectorOptions <-
 {
-	 A_CustomFinale1 = PANIC
-	 A_CustomFinaleValue1 = GetFinalePanicWaveCount()
+	 A_CustomFinale1 = SCRIPTED
+	 A_CustomFinaleValue1 = "c8m5_1.nut"
 
-	 A_CustomFinale2 = SCRIPTED
-	 A_CustomFinaleValue2 = "off.nut" 
+	 A_CustomFinale2 = PANIC
+	 A_CustomFinaleValue2 = GetFinalePanicWaveCount()	 
  
 	 A_CustomFinale3 = TANK
 	 A_CustomFinaleValue3 = RandomInt(2,4)
+
+
  
 	 A_CustomFinale4 = SCRIPTED
-	 A_CustomFinaleValue4 = "c8m5_on.nut" 
+	 A_CustomFinaleValue4 = "c8m5_2.nut"
  
 	 A_CustomFinale5 = PANIC
 	 A_CustomFinaleValue5 = GetFinalePanicWaveCount()
-
-	 A_CustomFinale6 = SCRIPTED
-	 A_CustomFinaleValue6 = "off.nut" 
  
-	 A_CustomFinale7 = TANK
-	 A_CustomFinaleValue7 = RandomInt(2,6)  
+	 A_CustomFinale6 = TANK
+	 A_CustomFinaleValue6 = RandomInt(4,6) 
+
+
  
-	 A_CustomFinale8 = SCRIPTED
-	 A_CustomFinaleValue8 = "c8m5_on.nut"
+	 A_CustomFinale7 = SCRIPTED
+	 A_CustomFinaleValue7 = "c8m5_3.nut" 
 
-	 A_CustomFinale9 = PANIC
-	 A_CustomFinaleValue9 = GetFinalePanicWaveCount()
+	 A_CustomFinale8 = PANIC
+	 A_CustomFinaleValue8 = GetFinalePanicWaveCount() - 1
 
-	 A_CustomFinale10 = SCRIPTED
-	 A_CustomFinaleValue10 = "off.nut"
+	 A_CustomFinale9 = SCRIPTED
+	 A_CustomFinaleValue9 = "c8m5_4.nut"
+
+	 A_CustomFinale10 = PANIC
+	 A_CustomFinaleValue10 = GetFinalePanicWaveCount() - 1
 
 	 A_CustomFinale11 = TANK
-	 A_CustomFinaleValue11 = RandomInt(4,8)
+	 A_CustomFinaleValue11 = RandomInt(6,10)
 
 	 A_CustomFinale12 = SCRIPTED
-	 A_CustomFinaleValue12 = "c8m5_on.nut"
+	 A_CustomFinaleValue12 = "c8m5_4.nut"
 }
 
 ApplyCommonFinaleOptions(DirectorOptions)
