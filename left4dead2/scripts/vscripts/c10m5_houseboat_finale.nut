@@ -12,40 +12,50 @@ DirectorOptions <-
 
 	 A_CustomFinale2 = PANIC
 	 A_CustomFinaleValue2 = GetFinalePanicWaveCount()	 
+
+	 A_CustomFinale3 = SCRIPTED
+	 A_CustomFinaleValue3 = "off.nut" 
  
-	 A_CustomFinale3 = TANK
-	 A_CustomFinaleValue3 = RandomInt(2,4)
+	 A_CustomFinale4 = TANK
+	 A_CustomFinaleValue4 = RandomInt(2,4)
 
 
  
-	 A_CustomFinale4 = SCRIPTED
-	 A_CustomFinaleValue4 = "c10m5_2.nut"
+	 A_CustomFinale5 = SCRIPTED
+	 A_CustomFinaleValue5 = "c10m5_2.nut"
  
-	 A_CustomFinale5 = PANIC
-	 A_CustomFinaleValue5 = GetFinalePanicWaveCount()
- 
-	 A_CustomFinale6 = TANK
-	 A_CustomFinaleValue6 = RandomInt(4,6) 
+	 A_CustomFinale6 = PANIC
+	 A_CustomFinaleValue6 = GetFinalePanicWaveCount()
 
-
- 
 	 A_CustomFinale7 = SCRIPTED
-	 A_CustomFinaleValue7 = "c10m5_3.nut" 
+	 A_CustomFinaleValue7 = "off.nut" 
+ 
+	 A_CustomFinale8 = TANK
+	 A_CustomFinaleValue8 = RandomInt(4,6) 
 
-	 A_CustomFinale8 = PANIC
-	 A_CustomFinaleValue8 = GetFinalePanicWaveCount() - 1
 
+ 
 	 A_CustomFinale9 = SCRIPTED
-	 A_CustomFinaleValue9 = "c10m5_4.nut"
+	 A_CustomFinaleValue9 = "c10m5_3.nut" 
 
 	 A_CustomFinale10 = PANIC
 	 A_CustomFinaleValue10 = GetFinalePanicWaveCount() - 1
 
-	 A_CustomFinale11 = TANK
-	 A_CustomFinaleValue11 = RandomInt(6,10)
+	 A_CustomFinale11 = SCRIPTED
+	 A_CustomFinaleValue11 = "c10m5_4.nut"
 
-	 A_CustomFinale12 = SCRIPTED
-	 A_CustomFinaleValue12 = "c10m5_4.nut"
+	 A_CustomFinale12 = PANIC
+	 A_CustomFinaleValue12 = GetFinalePanicWaveCount() - 1
+
+	 A_CustomFinale13 = SCRIPTED
+	 A_CustomFinaleValue13 = "off.nut" 
+
+	 A_CustomFinale14 = TANK
+	 A_CustomFinaleValue14 = RandomInt(6,10)
+
+	 A_CustomFinale15 = SCRIPTED
+	 A_CustomFinaleValue15 = "c10m5_4.nut"
+
 
 	 PreferredMobDirection = SPAWN_LARGE_VOLUME
 	 PreferredSpecialDirection = SPAWN_LARGE_VOLUME
