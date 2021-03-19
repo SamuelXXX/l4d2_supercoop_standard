@@ -228,11 +228,11 @@ int RanksMenuHandler(Menu menu,MenuAction action,int client,int param2)
 					}
 					case 3:
 					{
-						FakeClientCommand(client,"sm_rank_max_kills");
+						FakeClientCommand(client,"sm_rank_total_kills");	
 					}
 					case 4:
 					{
-						FakeClientCommand(client,"sm_rank_total_kills");
+						FakeClientCommand(client,"sm_rank_max_kills");
 					}
 					case 5:
 					{
