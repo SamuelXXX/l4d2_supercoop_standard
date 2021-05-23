@@ -14,3 +14,5 @@ DirectorOptions <-
 		weapon_vomitjar = "random_supply"
 	}
 }
+
+Convars.SetValue("z_tank_speed",250)

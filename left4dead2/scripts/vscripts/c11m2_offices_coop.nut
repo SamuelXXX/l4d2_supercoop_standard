@@ -10,3 +10,5 @@ DirectorOptions <-
 	RelaxMinInterval = 120
 	RelaxMaxInterval = 120
 }
+
+Convars.SetValue("z_tank_speed",250)
