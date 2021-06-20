@@ -7,13 +7,13 @@ DirectorOptions <-
 	SustainPeakMinTime = 12
 	SustainPeakMaxTime = 20
 	IntensityRelaxThreshold = 1.0
-	RelaxMaxFlowTravel = RandomInt(700,1200)
+	RelaxMaxFlowTravel = 1000
 	RelaxMinInterval = 99999
 	RelaxMaxInterval = 99999
 
 	//特感刷新参数配置
 	SpecialInitialSpawnDelayMin = 10
-	SpecialInitialSpawnDelayMax = 20 //离开安全屋后第一波特感的刷新时间
+	SpecialInitialSpawnDelayMax = 10 //离开安全屋后第一波特感的刷新时间
 	SpecialRespawnInterval=3
 	cm_SpecialRespawnInterval=3  //特感通道冷却时间，该通道特感死亡后开始冷却，冷却时间见底后会从特感池中刷新一个新的特感
 	cm_AggressiveSpecials = true
@@ -41,8 +41,8 @@ DirectorOptions <-
 	TankLimit=1  //战役模式不希望刷太多克，终局脚本改回来
 
 	//Tank相关设置
-	ZombieTankHealth=RandomInt(20000,40000)
-	TankHitDamageModifierCoop = RandomInt(1,5)
+	ZombieTankHealth=40000
+	TankHitDamageModifierCoop = 5
 
 	//其它设置
 	PreferredMobDirection = SPAWN_IN_FRONT_OF_SURVIVORS
@@ -149,8 +149,6 @@ Convars.SetValue("director_force_tank",0) //是否走两步就刷tank
 Convars.SetValue("director_force_witch",0)
 
 
-Convars.SetValue("l4d2_spawn_uncommons_autochance",3)
-Convars.SetValue("l4d2_spawn_uncommons_autotypes",31)
 Convars.SetValue("z_witch_always_kills",1)
 
 Convars.SetValue("tongue_victim_max_speed",225)
@@ -158,8 +156,8 @@ Convars.SetValue("tongue_range",1500)
 
 //插件配置参数修改
 //tank生成插件，默认在8-15分钟刷一只克，有些关卡第一关可能不希望刷这么多（把刷克时间改的尽可能长就行），有些关卡则希望能多点
-Convars.SetValue("min_time_spawn_tank",480)
-Convars.SetValue("max_time_spawn_tank",900)
+Convars.SetValue("min_time_spawn_tank",9999)
+Convars.SetValue("max_time_spawn_tank",9999)
 
 // function Update()
 // {

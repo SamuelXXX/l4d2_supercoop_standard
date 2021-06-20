@@ -17,7 +17,7 @@ DirectorOptions <-
 	 A_CustomFinaleValue3 = "off.nut" 
  
 	 A_CustomFinale4 = TANK
-	 A_CustomFinaleValue4 = RandomInt(2,4)
+	 A_CustomFinaleValue4 = 3
 
 
  
@@ -31,7 +31,7 @@ DirectorOptions <-
 	 A_CustomFinaleValue7 = "off.nut" 
  
 	 A_CustomFinale8 = TANK
-	 A_CustomFinaleValue8 = RandomInt(4,6) 
+	 A_CustomFinaleValue8 = 5 
 
 
  
@@ -51,7 +51,7 @@ DirectorOptions <-
 	 A_CustomFinaleValue13 = "off.nut" 
 
 	 A_CustomFinale14 = TANK
-	 A_CustomFinaleValue14 = RandomInt(6,10)
+	 A_CustomFinaleValue14 = 8
 
 	 A_CustomFinale15 = SCRIPTED
 	 A_CustomFinaleValue15 = "c2m5_4.nut"

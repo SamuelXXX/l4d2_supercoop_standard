@@ -88,7 +88,7 @@ function GetDirectorOptions()
 
 function GetFinalePanicWaveCount()
 {
-	return RandomInt(4,6)
+	return 6
 }
 
 
@@ -113,8 +113,8 @@ CommonFinaleOptions <-
 	WitchLimit = 0
 	SpecialRespawnInterval = 2
 	cm_SpecialRespawnInterval=2
-	TankHitDamageModifierCoop = RandomFloat(1,5)
-	ZombieTankHealth = RandomInt(15000,20000)
+	TankHitDamageModifierCoop = 5
+	ZombieTankHealth = 20000
 
 	HordeEscapeCommonLimit = 30
 	
