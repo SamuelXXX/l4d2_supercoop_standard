@@ -31,8 +31,16 @@
 
 	Change Log
 		----- Rikka's upgraded version -----
-		v2.0.0 (Oct 7, 2018)	- Appied Lux's patch, players should see the next map voting menu anyway
-		
+		v2.3.0 (Oct 24, 2020)	- Add randomizer and other customizations to the next map voting menu
+
+		v2.2.0 (Oct 1, 2020)	- Use a new SDKCall method for checking if the current map is finale or not
+
+		v2.1.1 (Dec 15, 2019)	- Allow server admins to set custom finales in coop mode
+
+		v2.1.0 (Oct 19, 2019)	- Applied Lux's patch, map switching is now more safe and memory leakage is eliminated
+
+		v2.0.0 (Oct 7, 2018)	- Applied Lux's patch, players should see the next map voting menu anyway
+
 		v1.9.9 (Sep 5, 2018)	- Transformed to new SourcePawn syntax
 								- Fixed incorrect reading of CVars
 								- Removed hardcoded map lists
@@ -75,7 +83,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define PLUGIN_VERSION	"v2.0.0"
+#define PLUGIN_VERSION	"v2.3.0"
 
 //Define the wait time after round before changing to the next map in each game mode
 #define WAIT_TIME_BEFORE_SWITCH_COOP			5.0
@@ -108,17 +116,22 @@ bool g_bFinaleWon;				//Indicates whether a finale has be beaten or not
 //Voting Variables					
 bool g_bClientShownVoteAd[MAXPLAYERS + 1];				//If the client has seen the ad already
 bool g_bClientVoted[MAXPLAYERS + 1];					//If the client has voted on a map
-int g_iWinningMapVotes;									//Winning map/campaign's number of votes
 // For Coop/Versus: missionIndex of the winning campaign
 // For Scavenge/Survival: uniqueID of the winning map
 int g_iClientVote[MAXPLAYERS + 1];						//The value of the clients vote
-int g_iWinningMapIndex;									//Winning map/campaign's index
+// Only updated by findVoteWinner()
+int g_iWinningMapIndices[MAXPLAYERS + 1];				//Winning map/campaigns' indices
+int g_iWinningMapIndices_Len;
+int g_iWinningMapVotes;									//Winning map/campaign's number of votes, 0 = no one voted yet
 
 //Console Variables (CVars)
-ConVar g_hCVar_VotingEnabled;			//Tells if the voting system is on	
+ConVar g_hCVar_VotingEnabled;			//Tells if the voting system is on
 ConVar g_hCVar_VoteWinnerSoundEnabled;	//Sound plays when vote winner changes
 ConVar g_hCVar_VotingAdMode;			//The way to advertise the voting system
-ConVar g_hCVar_VotingAdDelayTime;		//Time to wait before showing advertising			
+ConVar g_hCVar_VotingAdDelayTime;		//Time to wait before showing advertising
+ConVar g_hCVar_NextMapMenuOptions;		// Controls what maps will be shown in the next maps menu
+ConVar g_hCVar_NextMapMenuExcludes;		// Excludes certain maps from the next maps menu
+ConVar g_hCVar_NextMapMenuOrder;		// Controls the order of maps shown in the next maps menu
 ConVar g_hCVar_NextMapAdMode;			//The way to advertise the next map 
 ConVar g_hCVar_NextMapAdInterval;		//Interval for ACS next map advertisement
 ConVar g_hCVar_MaxFinaleFailures;		//Amount of times Survivors can fail before ACS switches in coop
@@ -129,6 +142,37 @@ ConVar g_hCVar_PreventEmptyServer;		//If enabled, the server automatically switc
 Handle g_hTimer_ChMapBroadcast;
 Handle g_hTimer_CheckEmpty;
 
+
+/*========================================================
+#########       Mission Change SDKCall Method     #######
+========================================================*/
+bool g_bMapChanger = false;
+native void L4D2_ChangeLevel(const char[] sMap);
+
+public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
+{
+	MarkNativeAsOptional("L4D2_ChangeLevel");
+	return APLRes_Success;
+}
+
+public void OnLibraryAdded(const char[] sName)
+{
+	if(StrEqual(sName, "l4d2_changelevel")) {
+		g_bMapChanger = true;
+	}
+}
+
+public void OnLibraryRemoved(const char[] sName)
+{
+	if(StrEqual(sName, "l4d2_changelevel")) {
+		g_bMapChanger = false;
+	}
+}
+
+
+
+
+
 /*=========================================================
 #########       Mission Cycle Data Storage        #########
 =========================================================*/
@@ -138,18 +182,23 @@ Handle g_hTimer_CheckEmpty;
 
 ArrayList g_hInt_MapIndexes[COUNT_LMM_GAMEMODE];
 int g_int_CyclingCount[COUNT_LMM_GAMEMODE];
+ArrayList g_hStr_MyCoopFinales;
 
 void ACS_InitLists() {
 	for (int gamemode=0; gamemode<COUNT_LMM_GAMEMODE; gamemode++) {
 		g_hInt_MapIndexes[gamemode] = new ArrayList(1);
 		g_int_CyclingCount[gamemode] = 0;
 	}
+
+	g_hStr_MyCoopFinales = new ArrayList(LEN_MAP_FILENAME);
 }
 
 void ACS_FreeLists() {
 	for (int gamemode=0; gamemode<COUNT_LMM_GAMEMODE; gamemode++) {
 		delete g_hInt_MapIndexes[gamemode];
 	}
+
+	delete g_hStr_MyCoopFinales;
 }
 
 ArrayList ACS_GetMissionIndexList(LMM_GAMEMODE gamemode) {
@@ -174,8 +223,17 @@ int ACS_GetMissionIndex(LMM_GAMEMODE gamemode, int cycleIndex) {
 	if (missionIndexList == null) {
 		return -1;
 	}
-	
+
 	return missionIndexList.Get(cycleIndex);
+}
+
+int ACS_GetCycleIndex(LMM_GAMEMODE gamemode, int missionIndex) {
+	ArrayList missionIndexList = ACS_GetMissionIndexList(gamemode);
+	if (missionIndexList == null) {
+		return -1;
+	}
+
+	return missionIndexList.FindValue(missionIndex);
 }
 
 int ACS_GetFirstMapName(LMM_GAMEMODE gamemode, int cycleIndex, char[] mapname, int length){
@@ -186,6 +244,15 @@ int ACS_GetLastMapName(LMM_GAMEMODE gamemode, int cycleIndex, char[] mapname, in
 	int iMission = ACS_GetMissionIndex(gamemode, cycleIndex);
 	int mapCount = LMM_GetNumberOfMaps(gamemode, iMission);
 	return LMM_GetMapName(gamemode, iMission, mapCount-1, mapname, length);
+}
+
+int ACS_GetCycleIndexFromMapName(LMM_GAMEMODE gamemode, const char[] mapname) {
+  int missionIndex = -1;
+  int mapIndex = LMM_FindMapIndexByName(gamemode, missionIndex, mapname);
+  if (mapIndex == -1)
+    return -1;
+
+  return ACS_GetCycleIndex(gamemode, missionIndex);
 }
 
 bool ACS_GetLocalizedMissionName(LMM_GAMEMODE gamemode, int cycleIndex, int client, char[] localizedName, int length) {
@@ -200,48 +267,40 @@ bool ACS_GetLocalizedMissionName(LMM_GAMEMODE gamemode, int cycleIndex, int clie
 /*====================================================
 #########       Mission Cycle Parsing        #########
 ====================================================*/
-bool HasMissionCycleFile(LMM_GAMEMODE gamemode) {
-	char path[PLATFORM_MAX_PATH];
+// Get the path of the mission cycle file, max length of char[] path = PLATFORM_MAX_PATH
+// Return the actual length of the path, -1 if failed
+int GetMissionCycleFilePath(LMM_GAMEMODE gamemode, char[] path) {
 	switch (gamemode) {
 		case LMM_GAMEMODE_COOP: {
-			BuildPath(Path_SM, path, sizeof(path), "configs/missioncycle.coop.txt");
+			return BuildPath(Path_SM, path, PLATFORM_MAX_PATH, "configs/missioncycle.coop.txt");
 		}
 		case LMM_GAMEMODE_VERSUS: {
-			BuildPath(Path_SM, path, sizeof(path), "configs/missioncycle.versus.txt");
+			return BuildPath(Path_SM, path, PLATFORM_MAX_PATH, "configs/missioncycle.versus.txt");
 		}
 		case LMM_GAMEMODE_SCAVENGE: {
-			BuildPath(Path_SM, path, sizeof(path), "configs/missioncycle.scavenge.txt");
+			return BuildPath(Path_SM, path, PLATFORM_MAX_PATH, "configs/missioncycle.scavenge.txt");
 		}
 		case LMM_GAMEMODE_SURVIVAL: {
-			BuildPath(Path_SM, path, sizeof(path), "configs/missioncycle.survival.txt");
+			return BuildPath(Path_SM, path, PLATFORM_MAX_PATH, "configs/missioncycle.survival.txt");
 		}
 		default: {
-			return false;
+			return -1;
 		}
 	}
-	
+}
+
+bool HasMissionCycleFile(LMM_GAMEMODE gamemode) {
+	char path[PLATFORM_MAX_PATH];
+	if (GetMissionCycleFilePath(gamemode, path) == -1)
+		return false;
+
 	return FileExists(path);
 }
 
 File OpenMissionCycleFile(LMM_GAMEMODE gamemode, const char[] mode) {
 	char path[PLATFORM_MAX_PATH];
-	switch (gamemode) {
-		case LMM_GAMEMODE_COOP: {
-			BuildPath(Path_SM, path, sizeof(path), "configs/missioncycle.coop.txt");
-		}
-		case LMM_GAMEMODE_VERSUS: {
-			BuildPath(Path_SM, path, sizeof(path), "configs/missioncycle.versus.txt");
-		}
-		case LMM_GAMEMODE_SCAVENGE: {
-			BuildPath(Path_SM, path, sizeof(path), "configs/missioncycle.scavenge.txt");
-		}
-		case LMM_GAMEMODE_SURVIVAL: {
-			BuildPath(Path_SM, path, sizeof(path), "configs/missioncycle.survival.txt");
-		}
-		default: {
-			return null;
-		}
-	}
+	if (GetMissionCycleFilePath(gamemode, path) == -1)
+		return null;
 	
 	return OpenFile(path, mode);
 }
@@ -385,6 +444,62 @@ void DumpMissionInfo(int client, LMM_GAMEMODE gamemode) {
 	ReplyToCommand(client, "-------------------");
 }
 
+/*====================================================
+#########   Custom Coop Finale List Parsing  #########
+====================================================*/
+bool LoadCustomCoopFinaleList() {
+	char path[PLATFORM_MAX_PATH];
+	int path_len = BuildPath(Path_SM, path, sizeof(path), "configs/finale.coop.txt");
+	if (path_len == -1)
+		return false;
+
+	File finaleListFile;
+
+	if (!FileExists(path)){
+		finaleListFile = OpenFile(path, "w+");
+		if (finaleListFile == null)
+			return false;
+		finaleListFile.WriteLine("// The following maps will be treated as finale maps in Coop mode. Example: c1m1_hotel. Do not delete this line!");
+		delete finaleListFile;
+		return true;
+	}
+
+	finaleListFile = OpenFile(path, "r");
+	if (finaleListFile == null)
+		return false;
+
+	// Start parsing the file
+	char buffer[128];
+	finaleListFile.ReadLine(buffer, sizeof(buffer));
+	while(!finaleListFile.EndOfFile() && finaleListFile.ReadLine(buffer, sizeof(buffer))) {
+		ReplaceString(buffer, sizeof(buffer), "\n", "");
+		TrimString(buffer);
+
+		int missionIndex;
+		int iMap = LMM_FindMapIndexByName(LMM_GAMEMODE_COOP, missionIndex, buffer);
+		if (iMap > -1) {
+			g_hStr_MyCoopFinales.PushString(buffer);
+		} else {
+			LogError("Map \"%s\" (From finale.coop.txt) is invalid!\n", buffer);
+		}
+	}
+	delete finaleListFile;
+
+	return true;
+}
+
+void DumpCustomCoopFinaleList(int client) {
+	char buffer[LEN_MAP_FILENAME];
+	int len = GetArraySize(g_hStr_MyCoopFinales);
+
+	ReplyToCommand(client, "%d valid custom coop finales from finale.coop.txt:", len);
+
+	for (int i=0; i<len; i++) {
+		g_hStr_MyCoopFinales.GetString(i, buffer, sizeof(buffer));
+		ReplyToCommand(client, "%d. %s", i+1, buffer);
+	}
+}
+
 /*===========================================
 #########       Menu Systems        #########
 ===========================================*/
@@ -397,10 +512,11 @@ void DumpMissionInfo(int client, LMM_GAMEMODE gamemode) {
 bool ShowMissionChooser(int iClient, bool isMap, bool isVote, int prevLevelMenuPage=0) {
 	if(iClient < 1 || IsClientInGame(iClient) == false || IsFakeClient(iClient) == true)
 		return false;
-	
+
 	//Create the menu
 	Menu chooser = CreateMenu(MissionChooserMenuHandler, MenuAction_Select | MenuAction_DisplayItem | MenuAction_End);
-		
+
+  // Setup the title and "I dont care" option
 	if (isMap) {
 		chooser.SetTitle("%T", "Choose a Map", iClient);
 		if (isVote) {
@@ -413,19 +529,49 @@ bool ShowMissionChooser(int iClient, bool isMap, bool isVote, int prevLevelMenuP
 			chooser.AddItem(MMC_ITEM_IDONTCARE_TEXT, "N/A");
 		}
 	}
-	
+
+	// Determine the map list shown in the menu
+	char curMapName[LEN_MAP_FILENAME];
+	GetCurrentMap(curMapName,sizeof(curMapName));			//Get the current map from the game
+	int curCycleIndex = ACS_GetCycleIndexFromMapName(g_iGameMode, curMapName);  // -1 if not found
+	int cycledCount = ACS_GetCycledMissionCount(g_iGameMode);
+	int cycleIndices_maxlen = ACS_GetMissionCount(g_iGameMode);
+	int[] cycleIndices = new int[cycleIndices_maxlen];
+	int cycleIndices_len = 0;
+	// Go through each mission, add valid options to int[] cycleIndices
+	for(int cycleIndex = 0; cycleIndex < cycleIndices_maxlen; cycleIndex++) {
+		// Exclude the current map (g_hCVar_NextMapMenuExcludes)
+		if (g_hCVar_NextMapMenuExcludes.IntValue == 1 && curCycleIndex == cycleIndex) continue;
+		// Exclude addon maps (g_hCVar_NextMapMenuOptions)
+		if (g_hCVar_NextMapMenuOptions.IntValue == 1 && !(cycleIndex < cycledCount)) continue;	
+		// Exclude maps with different types (g_hCVar_NextMapMenuOptions)
+		if (g_hCVar_NextMapMenuOptions.IntValue == 2 && (cycleIndex < cycledCount) != (curCycleIndex < cycledCount)) continue;
+		cycleIndices[cycleIndices_len] = cycleIndex;
+		cycleIndices_len++;
+	}
+
+	// Randomize (g_hCVar_NextMapMenuOrder)
+	if (isVote && g_hCVar_NextMapMenuOrder.IntValue == 1) {
+		for (int i = 0; i<cycleIndices_len; i++) {
+			int iSwap = i + GetRandomInt(0, cycleIndices_len-i-1);
+			int temp = cycleIndices[i];
+			cycleIndices[i] = cycleIndices[iSwap];
+			cycleIndices[iSwap] = temp;
+		}
+	}
+
 	char menuName[20];
-	for(int cycleIndex = 0; cycleIndex < ACS_GetMissionCount(g_iGameMode); cycleIndex++) {
-		IntToString(cycleIndex, menuName, sizeof(menuName));
+	for (int i = 0; i<cycleIndices_len; i++) {
+		IntToString(cycleIndices[i], menuName, sizeof(menuName));
 		chooser.AddItem(MMC_ITEM_MISSION_TEXT, menuName);
 	}
-	
+
 	//Add an exit button
 	chooser.ExitButton = true;
-	
+
 	//And finally, show the menu to the client
 	chooser.DisplayAt(iClient, prevLevelMenuPage, MENU_TIME_FOREVER);
-		
+
 	return true;	
 }
 
@@ -767,12 +913,20 @@ public Action Timer_ChangeMap(Handle timer, DataPack dp) {
 	dp.Reset();
 	dp.ReadString(mapName, sizeof(mapName));
 	
-	ForceChangeLevel(mapName, "sm_votemap Result");
-	
+	if(g_bMapChanger)
+	{
+		L4D2_ChangeLevel(mapName);
+	}
+	else
+	{
+		ShutDownScriptedMode();
+		ForceChangeLevel(mapName, "sm_votemap Result");
+	}
 	return Plugin_Stop;
 }
 
-public void OnAllPluginsLoaded() {
+public void OnAllPluginsLoaded() 
+{
 	if (!LibraryExists("l4d2_mission_manager")) {
 		SetFailState("l4d2_mission_manager was not found.");
 	}
@@ -787,6 +941,11 @@ public void OnAllPluginsLoaded() {
 	DumpMissionInfo(0, LMM_GAMEMODE_VERSUS);
 	DumpMissionInfo(0, LMM_GAMEMODE_SCAVENGE);
 	DumpMissionInfo(0, LMM_GAMEMODE_SURVIVAL);
+
+	LoadCustomCoopFinaleList();
+	DumpCustomCoopFinaleList(0);
+
+	g_bMapChanger = LibraryExists("l4d2_changelevel");
 }
 
 public void OnPluginEnd() {
@@ -808,7 +967,6 @@ public Plugin myinfo = {
 /*======================================================================================
 #################             O N   P L U G I N   S T A R T            #################
 ======================================================================================*/
-
 public void OnPluginStart() {
 	LoadTranslations("acs.phrases");
 	LoadTranslations("common.phrases");
@@ -826,6 +984,9 @@ public void OnPluginStart() {
 	g_hCVar_VoteWinnerSoundEnabled = CreateConVar("acs_voting_sound_enabled", "1", "Determines if a sound plays when a new map is winning the vote [0 = DISABLED, 1 = ENABLED]", _, true, 0.0, true, 1.0);
 	g_hCVar_VotingAdMode = CreateConVar("acs_voting_ad_mode", "3", "Sets how to advertise voting at the start of the map [0 = DISABLED, 1 = HINT TEXT, 2 = CHAT TEXT, 3 = OPEN VOTE MENU]\n * Note: This is only displayed once during a finale or scavenge map *", _, true, 0.0, true, 3.0);
 	g_hCVar_VotingAdDelayTime = CreateConVar("acs_voting_ad_delay_time", "10.0", "Time, in seconds, to wait after survivors leave the start area to advertise voting as defined in acs_voting_ad_mode\n * Note: If the server is up, changing this in the .cfg file takes two map changes before the change takes place *", _, true, 0.1, false);
+	g_hCVar_NextMapMenuOptions = CreateConVar("acs_next_map_menu_options", "0", "Controls the maps shown in the next map voting menu [0 = Official and addon maps(Default), 1 = Official maps only, 2 = Depending on the type of the current map ]");
+	g_hCVar_NextMapMenuExcludes = CreateConVar("acs_next_map_menu_excludes", "0", "Excludes certain map(s) from the map changing menu [0 = Nothing(Default), 1 = Current map ]");
+	g_hCVar_NextMapMenuOrder= CreateConVar("acs_next_map_menu_order", "0", "Controls the order of maps shown in the next map voting menu [0 = Official then addon maps(Default), 1 = Random ]");
 	g_hCVar_NextMapAdMode = CreateConVar("acs_next_map_ad_mode", "2", "Sets how the next campaign/map is advertised during a finale or scavenge map [0 = DISABLED, 1 = HINT TEXT, 2 = CHAT TEXT]", _, true, 0.0, true, 2.0);
 	g_hCVar_NextMapAdInterval = CreateConVar("acs_next_map_ad_interval", "60.0", "The time, in seconds, between advertisements for the next campaign/map on finales and scavenge maps", _, true, 60.0, false);
 	g_hCVar_MaxFinaleFailures = CreateConVar("acs_max_coop_finale_failures", "0", "The amount of times the survivors can fail a finale in Coop before it switches to the next campaign [0 = INFINITE FAILURES]", _, true, 0.0, false);
@@ -863,10 +1024,10 @@ public void OnPluginStart() {
 public Action Command_ChangeMapVote(int iClient, int args) {
 	if (g_hCVar_ChMapPolicy.IntValue < 1)
 		return Plugin_Handled;	// Disabled
-	
+
 	if(!OnFirstMap())
 	{
-		ReplyToCommand(iClient,"选图投票仅仅在第一关可用！");
+		ReplyToCommand(iClient,"选图投票仅在第一关可用！");
 		return Plugin_Handled;	// Not In First Map
 	}
 
@@ -1215,7 +1376,16 @@ public Action Timer_CheckEmptyServer(Handle timer, any param) {
 			char mapName[LEN_MAP_FILENAME];
 			ACS_GetFirstMapName(g_iGameMode, 0, mapName, sizeof(mapName));
 			LogMessage("Empty server is running 3-rd map, switching to the first official map!");
-			ForceChangeLevel(mapName, "Empty server with 3-rd map");			
+			
+			if(g_bMapChanger)
+			{
+				L4D2_ChangeLevel(mapName);
+			}
+			else
+			{
+				//ShutDownScriptedMode(); i guess we would need the signiture here :P
+				ForceChangeLevel(mapName, "Empty server with 3-rd map");			
+			}
 		}
 	} else {
 		// Some one joined
@@ -1243,13 +1413,14 @@ void CheckMapForChange() {
 			}
 			
 			//Check to see if someone voted for a campaign, if so, then change to the winning campaign
-			if(g_hCVar_VotingEnabled.BoolValue && g_iWinningMapVotes > 0 && g_iWinningMapIndex >= 0) {
-				// Get the name of the next first map
-				LMM_GetMapName(g_iGameMode, g_iWinningMapIndex, 0, mapName, sizeof(mapName));
+			if(g_hCVar_VotingEnabled.BoolValue && hasVoted()) {
+				int winningMapIndex = GetRandomInt(0, g_iWinningMapIndices_Len-1);
+				winningMapIndex = g_iWinningMapIndices[winningMapIndex];
+				LMM_GetMapName(g_iGameMode, winningMapIndex, 0, mapName, sizeof(mapName));
 				if(IsMapValid(mapName)) {
 					for (int client = 1; client <= MaxClients; client++) {
 						if (IsClientInGame(client)) {
-							LMM_GetMissionLocalizedName(g_iGameMode, g_iWinningMapIndex, localizedName, sizeof(localizedName), client);
+							LMM_GetMissionLocalizedName(g_iGameMode, winningMapIndex, localizedName, sizeof(localizedName), client);
 							Format(colorizedname, sizeof(colorizedname), "\x04%s\x05", localizedName);
 							PrintToChat(client, "\x03[提示]\x05 %t", "Switching to the vote winner", colorizedname);
 						}
@@ -1298,9 +1469,11 @@ void ChangeScavengeMap() {
 	int cycleCount = ACS_GetMissionCount(g_iGameMode);
 
 	//Check to see if someone voted for a map, if so, then change to the winning map
-	if(g_hCVar_VotingEnabled.BoolValue && g_iWinningMapVotes > 0 && g_iWinningMapIndex >= 0) {
+	if(g_hCVar_VotingEnabled.BoolValue && hasVoted()) {
+		int winningMapIndex = GetRandomInt(0, g_iWinningMapIndices_Len-1);
+		winningMapIndex = g_iWinningMapIndices[winningMapIndex];
 		int missionIndex;
-		int mapIndex = LMM_DecodeMapUniqueID(g_iGameMode, missionIndex, g_iWinningMapIndex);
+		int mapIndex = LMM_DecodeMapUniqueID(g_iGameMode, missionIndex, winningMapIndex);
 		LMM_GetMapName(g_iGameMode, missionIndex, mapIndex, mapName, sizeof(mapName));
 		if(IsMapValid(mapName)) {
 			for (int client = 1; client <= MaxClients; client++) {
@@ -1385,136 +1558,238 @@ public Action Timer_AdvertiseNextMap(Handle timer, any param) {
 	return Plugin_Stop;
 }
 
-// Display nothing if not on the last map
-void DisplayNextMapToAll() {
+// Assume g_iWinningMapIndices_Len >= 1
+// maxlen = (LEN_MISSION_NAME + 4) * g_iWinningMapIndices_Len
+void GetWinnerListForDisplay_Scavenge(int client, char[] strbuf, int maxlen) {
 	char localizedName[LEN_MISSION_NAME];
-	char colorizedName[LEN_MISSION_NAME];
-	
-	//If there is a winner to the vote display the winner if not display the next map in rotation
-	if(g_iWinningMapIndex >= 0) {
-		if(g_hCVar_NextMapAdMode.IntValue == DISPLAY_MODE_HINT) {	
-			//Display the map that is currently winning the vote to all the players using hint text
-			if(g_iGameMode == GAMEMODE_SCAVENGE) {
-				int missionIndex;
-				int mapIndex = LMM_DecodeMapUniqueID(g_iGameMode, missionIndex, g_iWinningMapIndex);
-				for (int client = 1; client <= MaxClients; client++) {
-					if (IsClientInGame(client)) {
-						LMM_GetMapLocalizedName(g_iGameMode, missionIndex, mapIndex, localizedName, sizeof(localizedName), client);
-						PrintHintText(client, "%t", "The next map is currently", localizedName);
-					}
-				}
-			} else {
-				for (int client = 1; client <= MaxClients; client++) {
-					if (IsClientInGame(client)) {
-						LMM_GetMissionLocalizedName(g_iGameMode, g_iWinningMapIndex, localizedName, sizeof(localizedName), client);
-						PrintHintText(client, "%t", "The next campaign is currently", localizedName);
-					}
-				}
-			}
-		} else if(g_hCVar_NextMapAdMode.IntValue == DISPLAY_MODE_CHAT)	{
-			//Display the map that is currently winning the vote to all the players using chat text
-			if(g_iGameMode == GAMEMODE_SCAVENGE) {
-				int missionIndex;
-				int mapIndex = LMM_DecodeMapUniqueID(g_iGameMode, missionIndex, g_iWinningMapIndex);
-				for (int client = 1; client <= MaxClients; client++) {
-					if (IsClientInGame(client)) {
-						LMM_GetMapLocalizedName(g_iGameMode, missionIndex, mapIndex, localizedName, sizeof(localizedName), client);
-						Format(colorizedName, sizeof(colorizedName), "\x04%s\x05", localizedName);
-						PrintToChat(client, "\x03[提示]\x05 %t", "The next map is currently", colorizedName);
-					}
-				}
-			} else {
-				for (int client = 1; client <= MaxClients; client++) {
-					if (IsClientInGame(client)) {
-						LMM_GetMissionLocalizedName(g_iGameMode, g_iWinningMapIndex, localizedName, sizeof(localizedName), client);
-						Format(colorizedName, sizeof(colorizedName), "\x04%s\x05", localizedName);
-						PrintToChat(client, "\x03[提示]\x05 %t", "The next campaign is currently", colorizedName);
-					}
-				}
-			}
-		}
-	} else {
-		char mapName[LEN_MAP_FILENAME];
-		char strCurrentMap[LEN_MAP_FILENAME];
-		GetCurrentMap(strCurrentMap, sizeof(strCurrentMap));	//Get the filename of the current map from the game
-		int cycleCount = ACS_GetMissionCount(g_iGameMode);
-		
-		if(g_iGameMode == GAMEMODE_SCAVENGE) {
-			//Go through all maps and to find which map index it is on, and then switch to the next map
-			for(int cycleIndex = 0; cycleIndex < cycleCount; cycleIndex++)	{
-				int missionIndex = ACS_GetMissionIndex(g_iGameMode, cycleIndex);
-				int mapCount = LMM_GetNumberOfMaps(g_iGameMode, missionIndex);
-				for (int mapIndex = 0; mapIndex<mapCount; mapIndex++) {
-					LMM_GetMapName(g_iGameMode, missionIndex, mapIndex, mapName, sizeof(mapName));
-					
-					if(StrEqual(strCurrentMap, mapName, false)) {
-						if (mapIndex >= mapCount - 1) {	// Last map of a mission
-							mapIndex = 0;	// Switch to the first map of the next mission
-							
-							if (cycleIndex >= ACS_GetCycledMissionCount(g_iGameMode) - 1) {	// End of mission cycle
-								cycleIndex = 0;
-							} else {
-								cycleIndex++;
-							}
-							// Find out the new cycleIndex
-							missionIndex = ACS_GetMissionIndex(g_iGameMode, cycleIndex);
-						} else {
-							mapIndex++;		// Move to next map
-						}
-						
-						// Display the result to everyone
-						for (int client = 1; client <= MaxClients; client++) {
-							if (IsClientInGame(client)) {
-								LMM_GetMapLocalizedName(g_iGameMode, missionIndex, mapIndex, localizedName, sizeof(localizedName), client);
-								
-								//Display the next map in the rotation in the appropriate way
-								if(g_hCVar_NextMapAdMode.IntValue == DISPLAY_MODE_HINT)
-									PrintHintText(client, "%t", "The next map is currently", localizedName);
-								else if(g_hCVar_NextMapAdMode.IntValue == DISPLAY_MODE_CHAT) {
-									Format(colorizedName, sizeof(colorizedName), "\x04%s\x05", localizedName);
-									PrintToChat(client, "\x03[提示]\x05 %t", "The next map is currently", colorizedName);
-								}
-							}
-						}
-						
-						return;
-					}
-				}
-			}
-		} else {
-			// Coop or Versus
-			//Go through all maps and to find which map index it is on, and then switch to the next map
-			for(int cycleIndex = 0; cycleIndex < cycleCount; cycleIndex++)	{
-				ACS_GetLastMapName(g_iGameMode, cycleIndex, mapName, sizeof(mapName));
-				if(StrEqual(strCurrentMap, mapName, false)) {
-					if (cycleIndex >= ACS_GetCycledMissionCount(g_iGameMode) - 1) {	//Check to see if its the end of the array
-						cycleIndex = 0;					//If so, start the array over by setting to -1 + 1 = 0
-					} else {
-						cycleIndex ++;
-					}
-					
-					//Display the next map in the rotation in the appropriate way
-					for (int client = 1; client <= MaxClients; client++) {
-						if (IsClientInGame(client)) {
-							ACS_GetLocalizedMissionName(g_iGameMode, cycleIndex, client, localizedName, sizeof(localizedName));
-							
-							if(g_hCVar_NextMapAdMode.IntValue == DISPLAY_MODE_HINT)
-								PrintHintText(client, "%t", "The next campaign is currently", localizedName);
-							else if(g_hCVar_NextMapAdMode.IntValue == DISPLAY_MODE_CHAT) {
-								Format(colorizedName, sizeof(colorizedName), "\x04%s\x05", localizedName);
-								PrintToChat(client, "\x03[提示]\x05 %t", "The next campaign is currently", colorizedName);
-							}
-						}
-					}
-					return;
-				}
-			}
-		}
-		
-		// LogError("ACS was unable to locate the current map (%s) in the map cycle!", strCurrentMap);
+	char colorizedName[LEN_MISSION_NAME + 4];
+
+	int missionIndex;
+	int mapIndex = LMM_DecodeMapUniqueID(g_iGameMode, missionIndex, g_iWinningMapIndices[0]);
+
+	LMM_GetMapLocalizedName(g_iGameMode, missionIndex, mapIndex, localizedName, sizeof(localizedName), client);
+	Format(strbuf, maxlen, "\x04%s\x05", localizedName);
+
+	for (int i = 1; i<g_iWinningMapIndices_Len; i++) {
+		mapIndex = LMM_DecodeMapUniqueID(g_iGameMode, missionIndex, g_iWinningMapIndices[0]);
+		LMM_GetMapLocalizedName(g_iGameMode, missionIndex, mapIndex, localizedName, sizeof(localizedName), client);
+		Format(colorizedName, sizeof(colorizedName), ", \x04%s\x05", localizedName);
+		StrCat(strbuf, maxlen, colorizedName);
 	}
 }
 
+void GetWinnerListForDisplay(int client, char[] strbuf, int maxlen) {
+	char localizedName[LEN_MISSION_NAME];
+	char colorizedName[LEN_MISSION_NAME + 4];
+
+	LMM_GetMissionLocalizedName(g_iGameMode, g_iWinningMapIndices[0], localizedName, sizeof(localizedName), client);
+	Format(strbuf, maxlen, "\x04%s\x05", localizedName);
+
+	for (int i = 1; i<g_iWinningMapIndices_Len; i++) {
+		LMM_GetMissionLocalizedName(g_iGameMode, g_iWinningMapIndices[i], localizedName, sizeof(localizedName), client);
+		Format(colorizedName, sizeof(colorizedName), ", \x04%s\x05", localizedName);
+		StrCat(strbuf, maxlen, colorizedName);
+	}
+}
+
+bool NextMapFromRotation_Scavenge(int& missionIndex_ret, int& mapIndex_ret) {
+	char mapName[LEN_MAP_FILENAME];
+	char strCurrentMap[LEN_MAP_FILENAME];
+	GetCurrentMap(strCurrentMap, sizeof(strCurrentMap));	//Get the filename of the current map from the game
+	int cycleCount = ACS_GetMissionCount(g_iGameMode);
+
+	//Go through all maps and to find which map index it is on, and then switch to the next map
+	for (int cycleIndex = 0; cycleIndex < cycleCount; cycleIndex++) {
+		int missionIndex = ACS_GetMissionIndex(g_iGameMode, cycleIndex);
+		int mapCount = LMM_GetNumberOfMaps(g_iGameMode, missionIndex);
+		for (int mapIndex = 0; mapIndex<mapCount; mapIndex++) {
+			LMM_GetMapName(g_iGameMode, missionIndex, mapIndex, mapName, sizeof(mapName));
+
+			if (StrEqual(strCurrentMap, mapName, false)) {
+				if (mapIndex >= mapCount - 1) {	// Last map of a mission
+					mapIndex = 0;	// Switch to the first map of the next mission
+
+					if (cycleIndex >= ACS_GetCycledMissionCount(g_iGameMode) - 1) {	// End of mission cycle
+						cycleIndex = 0;
+					}
+					else {
+						cycleIndex++;
+					}
+					// Find out the new cycleIndex
+					missionIndex = ACS_GetMissionIndex(g_iGameMode, cycleIndex);
+				}
+				else {
+					mapIndex++;		// Move to next map
+				}
+
+				missionIndex_ret = missionIndex;
+				mapIndex_ret = mapIndex;
+				return true;
+			}
+		}
+	}
+
+	LogError("ACS was unable to locate the current map (%s) in the map cycle!", strCurrentMap);
+	return false;
+}
+
+bool NextMapFromRotation(int& cycleIndex_ret) {
+	char mapName[LEN_MAP_FILENAME];
+	char strCurrentMap[LEN_MAP_FILENAME];
+	GetCurrentMap(strCurrentMap, sizeof(strCurrentMap));	//Get the filename of the current map from the game
+	int cycleCount = ACS_GetMissionCount(g_iGameMode);
+
+	// Not voted yet, display the next map in rotation
+	//Go through all maps and to find which map index it is on, and then switch to the next map
+	for (int cycleIndex = 0; cycleIndex < cycleCount; cycleIndex++) {
+		ACS_GetLastMapName(g_iGameMode, cycleIndex, mapName, sizeof(mapName));
+		if (StrEqual(strCurrentMap, mapName, false)) {
+			if (cycleIndex >= ACS_GetCycledMissionCount(g_iGameMode) - 1) {	//Check to see if its the end of the array
+				cycleIndex_ret = 0;					//If so, start the array over by setting to -1 + 1 = 0
+			} else {
+				cycleIndex_ret = cycleIndex + 1;
+			}
+			return true;
+		}
+	}
+
+	// If in Coop mode, also check the custom finale list
+	if (g_iGameMode == LMM_GAMEMODE_COOP) {
+		for (int i=0; i<GetArraySize(g_hStr_MyCoopFinales); i++) {
+			g_hStr_MyCoopFinales.GetString(i, mapName, sizeof(mapName));
+			if(StrEqual(strCurrentMap, mapName, false)) {
+				int iMission;
+				LMM_FindMapIndexByName(g_iGameMode, iMission, mapName);
+				// Locate the current mission in the mission cycle list
+				for (int cycleIndex = 0; cycleIndex < cycleCount; cycleIndex++) {
+					if (ACS_GetMissionIndex(g_iGameMode, cycleIndex) == iMission) {
+						if (cycleIndex >= ACS_GetCycledMissionCount(g_iGameMode) - 1) {	//Check to see if its the end of the array
+							cycleIndex_ret = 0;					//If so, start the array over by setting to -1 + 1 = 0
+						} else {
+							cycleIndex_ret = cycleIndex + 1;
+						}
+						return true;
+					}
+				}
+			}
+		}
+	}
+
+	LogError("ACS was unable to locate the current map (%s) in the map cycle!", strCurrentMap);
+	return false;
+}
+
+void DisplayNextMapTo_Scavenge(int client, bool replyCMD) {
+	int strbuf_len = (LEN_MISSION_NAME + 4) * g_iWinningMapIndices_Len;
+	char[] strbuf = new char[strbuf_len];
+
+	if(g_iWinningMapVotes > 0) {
+		GetWinnerListForDisplay_Scavenge(client, strbuf, strbuf_len);
+
+		if (replyCMD) {
+			ReplyToCommand(client, "\x03[提示]\x05 %t",
+				g_iWinningMapIndices_Len == 1 ?
+				"The next map is currently" :
+				"The next map will be one of",
+				strbuf);
+		} else if(g_hCVar_NextMapAdMode.IntValue == DISPLAY_MODE_HINT) {
+			PrintHintText(client, "%t",
+				g_iWinningMapIndices_Len == 1 ?
+					"The next map is currently" :
+					"The next map will be one of",
+				strbuf);
+		} else if(g_hCVar_NextMapAdMode.IntValue == DISPLAY_MODE_CHAT)	{
+			PrintToChat(client, "\x03[提示]\x05 %t",
+				g_iWinningMapIndices_Len == 1 ?
+					"The next map is currently" :
+					"The next map will be one of",
+				strbuf);
+		}
+	} else {
+		int missionIndex, mapIndex;
+		if (!NextMapFromRotation_Scavenge(missionIndex, mapIndex))
+			return;
+
+		char localizedName[LEN_MISSION_NAME];
+		char colorizedName[LEN_MISSION_NAME + 4];
+		// Display the result to everyone
+		LMM_GetMapLocalizedName(g_iGameMode, missionIndex, mapIndex, localizedName, sizeof(localizedName), client);
+
+		//Display the next map in the rotation in the appropriate way
+		if (replyCMD) {
+			Format(colorizedName, sizeof(colorizedName), "\x04%s\x05", localizedName);
+			ReplyToCommand(client, "\x03[提示]\x05 %t", "The next map is currently", colorizedName);
+		} else if (g_hCVar_NextMapAdMode.IntValue == DISPLAY_MODE_HINT) {
+			PrintHintText(client, "%t", "The next map is currently", localizedName);
+		} else if (g_hCVar_NextMapAdMode.IntValue == DISPLAY_MODE_CHAT) {
+			Format(colorizedName, sizeof(colorizedName), "\x04%s\x05", localizedName);
+			PrintToChat(client, "\x03[提示]\x05 %t", "The next map is currently", colorizedName);
+		}
+	}
+}
+
+void DisplayNextMapTo(int client, bool replyCMD) {
+	int strbuf_len = (LEN_MISSION_NAME + 4) * g_iWinningMapIndices_Len;
+	char[] strbuf = new char[strbuf_len];
+
+	//If there is a winner to the vote display the winner if not display the next map in rotation
+	if (g_iWinningMapVotes > 0) {
+		GetWinnerListForDisplay(client, strbuf, strbuf_len);
+		
+		if (replyCMD) {
+			ReplyToCommand(client, "\x03[提示]\x05 %t",
+				g_iWinningMapIndices_Len == 1 ?
+				"The next campaign is currently" :
+				"The next campaign will be one of",
+				strbuf);
+		} else if(g_hCVar_NextMapAdMode.IntValue == DISPLAY_MODE_HINT) {
+			PrintHintText(client, "%t",
+				g_iWinningMapIndices_Len == 1 ?
+					"The next campaign is currently" :
+					"The next campaign will be one of",
+				strbuf);
+		} else if(g_hCVar_NextMapAdMode.IntValue == DISPLAY_MODE_CHAT)	{
+			PrintToChat(client, "\x03[提示]\x05 %t",
+				g_iWinningMapIndices_Len == 1 ?
+					"The next campaign is currently" :
+					"The next campaign will be one of",
+				strbuf);
+		}
+	} else {
+		int cycleIndex = 0;
+		if (!NextMapFromRotation(cycleIndex))
+			return;
+
+		char localizedName[LEN_MISSION_NAME];
+		char colorizedName[LEN_MISSION_NAME + 4];
+
+		//Display the next map in the rotation in the appropriate way
+		ACS_GetLocalizedMissionName(g_iGameMode, cycleIndex, client, localizedName, sizeof(localizedName));
+
+		if (replyCMD) {
+			Format(colorizedName, sizeof(colorizedName), "\x04%s\x05", localizedName);
+			ReplyToCommand(client, "\x03[提示]\x05 %t", "The next campaign is currently", colorizedName);
+		} else if (g_hCVar_NextMapAdMode.IntValue == DISPLAY_MODE_HINT) {
+			PrintHintText(client, "%t", "The next campaign is currently", localizedName);
+		} else if (g_hCVar_NextMapAdMode.IntValue == DISPLAY_MODE_CHAT) {
+			Format(colorizedName, sizeof(colorizedName), "\x04%s\x05", localizedName);
+			PrintToChat(client, "\x03[提示]\x05 %t", "The next campaign is currently", colorizedName);
+		}
+	}
+}
+
+// Display nothing if not on the last map
+void DisplayNextMapToAll() {
+	for (int client = 1; client <= MaxClients; client++) {
+		if (IsClientInGame(client)) {
+			if(g_iGameMode == GAMEMODE_SCAVENGE) {
+				DisplayNextMapTo_Scavenge(client, false);
+			} else {
+				DisplayNextMapTo(client, false);
+			}
+		}
+	}
+}
 /*======================================================================================
 #################              V O T I N G   S Y S T E M               #################
 ======================================================================================*/
@@ -1545,7 +1820,7 @@ public Action MapVote(int iClient, int args) {
 //Command that a player can use to see the total votes for all maps/campaigns
 public Action DisplayCurrentVotes(int iClient, int args) {
 	char localizedName[LEN_MISSION_NAME];
-	char colorizedName[LEN_MISSION_NAME];
+
 	if(!g_hCVar_VotingEnabled.BoolValue) {
 		ReplyToCommand(iClient, "\x03[提示]\x01 %t", "Voting is disable");
 		return;
@@ -1557,18 +1832,12 @@ public Action DisplayCurrentVotes(int iClient, int args) {
 	}
 			
 	//Display to the client the current winning map
-	if(g_iWinningMapIndex >= 0) {
+	if(hasVoted()) {
 		//Show message to all the players of the new vote winner
 		if(g_iGameMode == GAMEMODE_SCAVENGE) {
-			int missionIndex;
-			int mapIndex = LMM_DecodeMapUniqueID(g_iGameMode, missionIndex, g_iWinningMapIndex);
-			LMM_GetMapLocalizedName(g_iGameMode, missionIndex, mapIndex, localizedName, sizeof(localizedName), iClient);
-			Format(colorizedName, sizeof(colorizedName), "\x04%s\x05", localizedName);
-			ReplyToCommand(iClient,"\x03[提示]\x05 %t", "Map is now winning the vote", colorizedName);	
+			DisplayNextMapTo_Scavenge(iClient, true);
 		} else {
-			LMM_GetMissionLocalizedName(g_iGameMode, g_iWinningMapIndex, localizedName, sizeof(localizedName), iClient);
-			Format(colorizedName, sizeof(colorizedName), "\x04%s\x05", localizedName);
-			ReplyToCommand(iClient,"\x03[提示]\x05 %t", "Mission is now winning the vote", colorizedName);
+			DisplayNextMapTo(iClient, true);
 		}
 	} else {
 		ReplyToCommand(iClient, "\x03[提示]\x01 %t", "No one has voted yet");	
@@ -1667,6 +1936,7 @@ public void VoteMenuDraw(int iClient) {
 //Handle the menu selection the client chose for voting
 public void VoteMenuHandler(int iClient, bool dontCare, int missionIndex, int mapIndex) {
 	g_bClientVoted[iClient] = true;
+
 	char clientName[128];
 	GetClientName(iClient,clientName,128);
 
@@ -1707,6 +1977,59 @@ stock void display_vote(const char[] name,const char[] map)
 /*======================================================================================
 #########       M I S C E L L A N E O U S   V O T E   F U N C T I O N S        #########
 ======================================================================================*/
+int GetNumOfMenuOption() {
+	if(g_iGameMode == GAMEMODE_SCAVENGE)
+		return LMM_GetMapUniqueIDCount(g_iGameMode);
+	else
+		return LMM_GetNumberOfMissions(g_iGameMode);
+}
+
+bool hasVoted() {
+	return g_iWinningMapVotes > 0;
+}
+
+// Find the campaigns with the highest number of votes
+// g_iWinningMapIndices will contain an array of campaign indices
+// The length is indicated by g_iWinningMapIndices_Len,
+// -1 means no one has voted yet
+void findVoteWinner() {
+	int iNumberOfOptions = GetNumOfMenuOption();
+	int[] iMapVotes = new int[iNumberOfOptions];
+
+	g_iWinningMapVotes = 0;
+
+	//Loop through all options and get the highest voted option
+	for(int iOption = 0; iOption < iNumberOfOptions; iOption++) {
+		iMapVotes[iOption] = 0;
+
+		//Tally votes for the current option
+		for(int iPlayer = 1; iPlayer <= MaxClients; iPlayer++)
+			if(g_iClientVote[iPlayer] == iOption)
+				iMapVotes[iOption]++;
+		
+		//Check if the current option has more votes than the currently highest voted option
+		if(iMapVotes[iOption] > g_iWinningMapVotes) {
+			g_iWinningMapVotes = iMapVotes[iOption];
+		}
+	}
+	
+	// Clear previous results
+	g_iWinningMapIndices_Len = 0;
+	for (int i=0; i< sizeof(g_iWinningMapIndices); i++) {
+		g_iWinningMapIndices[i] = 0;
+	}
+	
+	if (g_iWinningMapVotes == 0)
+		return;	// No one voted yet
+
+	for(int iOption = 0; iOption < iNumberOfOptions; iOption++) {
+		if (iMapVotes[iOption] == g_iWinningMapVotes) {
+			g_iWinningMapIndices[g_iWinningMapIndices_Len] = iOption;
+			g_iWinningMapIndices_Len++;
+		}
+	}
+}
+
 
 //Resets all the votes for every player
 void ResetAllVotes() {
@@ -1717,90 +2040,40 @@ void ResetAllVotes() {
 		//Reset so that the player can see the advertisement
 		g_bClientShownVoteAd[iClient] = false;
 	}
-	
+
 	//Reset the winning map to NULL
-	g_iWinningMapIndex = -1;
 	g_iWinningMapVotes = 0;
+	g_iWinningMapIndices_Len = 0;
+	for (int i = 0; i< sizeof(g_iWinningMapIndices); i++) {
+		g_iWinningMapIndices[i] = 0;
+	}
 }
 
 //Tally up all the votes and set the current winner
 void SetTheCurrentVoteWinner() {
-	int iNumberOfOptions;
-	
 	//Store the current winnder to see if there is a change
-	int iOldWinningMapIndex = g_iWinningMapIndex;
-	
-	//Get the total number of options for the current game mode
-	if(g_iGameMode == GAMEMODE_SCAVENGE)
-		iNumberOfOptions = LMM_GetMapUniqueIDCount(g_iGameMode);
-	else
-		iNumberOfOptions = LMM_GetNumberOfMissions(g_iGameMode);
-	
-	//Loop through all options and get the highest voted option	
-	int[] iMapVotes = new int[iNumberOfOptions];
-	int iCurrentlyWinningMapVoteCounts = 0;
-	bool bSomeoneHasVoted = false;
-	
-	for(int iOption = 0; iOption < iNumberOfOptions; iOption++) {
-		iMapVotes[iOption] = 0;
-		
-		//Tally votes for the current option
-		for(int iPlayer = 1; iPlayer <= MaxClients; iPlayer++)
-			if(g_iClientVote[iPlayer] == iOption)
-				iMapVotes[iOption]++;
-		
-		//Check if there is at least one vote, if so set the bSomeoneHasVoted to true
-		if(!bSomeoneHasVoted && iMapVotes[iOption] > 0)
-			bSomeoneHasVoted = true;
-		
-		//Check if the current option has more votes than the currently highest voted option
-		if(iMapVotes[iOption] > iCurrentlyWinningMapVoteCounts) {
-			iCurrentlyWinningMapVoteCounts = iMapVotes[iOption];
-			
-			g_iWinningMapIndex = iOption;
-			g_iWinningMapVotes = iMapVotes[iOption];
-		}
+	int oldWinners[MAXPLAYERS + 1];
+	int oldWinners_Len = g_iWinningMapIndices_Len;
+	for (int i = 0; i < oldWinners_Len; i++) {
+		oldWinners[i] = g_iWinningMapIndices[i];
 	}
-	
-	//If no one has voted, reset the winning option index and votes
-	//This is only for if someone votes then their vote is removed
-	if(!bSomeoneHasVoted) {
-		g_iWinningMapIndex = -1;
-		g_iWinningMapVotes = 0;
-	}
-	
-	//If the vote winner has changed then display the new winner to all the players
-	if(g_iWinningMapIndex > -1 && iOldWinningMapIndex != g_iWinningMapIndex) {
-		//Send sound notification to all players
-		if(g_hCVar_VoteWinnerSoundEnabled.BoolValue)
-			for(int iPlayer = 1; iPlayer <= MaxClients; iPlayer++)
-				if(IsClientInGame(iPlayer) && !IsFakeClient(iPlayer))
-					EmitSoundToClient(iPlayer, SOUND_NEW_VOTE_WINNER);
-		
-		char localizedName[LEN_MISSION_NAME];
-		char colorizedName[LEN_MISSION_NAME];
-		//Show message to all the players of the new vote winner
-		if(g_iGameMode == GAMEMODE_SCAVENGE) {
-			int missionIndex;
-			int mapIndex = LMM_DecodeMapUniqueID(g_iGameMode, missionIndex, g_iWinningMapIndex);
-			
-			for (int client = 1; client <= MaxClients; client++) {
-				if (IsClientInGame(client)) {
-					LMM_GetMapLocalizedName(g_iGameMode, missionIndex, mapIndex, localizedName, sizeof(localizedName), client);
-					Format(colorizedName, sizeof(colorizedName), "\x04%s\x05", localizedName);
-					PrintToChat(client,"\x03[提示]\x05 %t\x05", "Map is now winning the vote", colorizedName);
-				}
-			}
-		} else {
-			for (int client = 1; client <= MaxClients; client++) {
-				if (IsClientInGame(client)) {
-					LMM_GetMissionLocalizedName(g_iGameMode, g_iWinningMapIndex, localizedName, sizeof(localizedName), client);
-					Format(colorizedName, sizeof(colorizedName), "\x04%s\x05", localizedName);
-					PrintToChat(client,"\x03[提示]\x05 %t\x05", "Mission is now winning the vote", colorizedName);
-				}
+
+	//Loop through all options and get the highest voted option
+	findVoteWinner();
+
+	bool winnerChanged = false;
+	if (g_iWinningMapIndices_Len == oldWinners_Len) {
+		for (int i = 0; i < g_iWinningMapIndices_Len; i++) {
+			if (g_iWinningMapIndices[i] != oldWinners[i]) {
+				winnerChanged = true;
 			}
 		}
+	} else {
+		winnerChanged = true;
 	}
+
+	if (winnerChanged)
+		DisplayNextMapToAll();
 }
 
 //Check if the current map is the last in the campaign if not in the Scavenge game mode
@@ -1810,20 +2083,35 @@ bool OnFinaleOrScavengeMap() {
 	
 	if(g_iGameMode == GAMEMODE_SURVIVAL)
 		return false;
-	
+
 	// Coop or Versus
-	
 	char strCurrentMap[LEN_MAP_FILENAME];
-	GetCurrentMap(strCurrentMap, sizeof(strCurrentMap));			//Get the current map from the game
-	
+	GetCurrentMap(strCurrentMap, sizeof(strCurrentMap));	//Get the current map from the game
+	// Check if the current map is in the custom finale list
 	char lastMap[LEN_MAP_FILENAME];
-	//Run through all the maps, if the current map is a last campaign map, return true
+	if (g_iGameMode == LMM_GAMEMODE_COOP) {
+		for (int i=0; i<GetArraySize(g_hStr_MyCoopFinales); i++) {
+			g_hStr_MyCoopFinales.GetString(i, lastMap, sizeof(lastMap));
+			if(StrEqual(strCurrentMap, lastMap, false))
+				return true;
+		}
+	}
+
+	// Attempt to use SDKCall first
+	int sdkcall_ret = LMM_IsOnFinalMap();
+	if (sdkcall_ret > -1) {
+		// SDKCall succeed
+		return sdkcall_ret == 1;
+	}
+
+	// SDKCall failed due to possible signature change, fallback to our classic method
+	//Run through all the maps, if the current map is a finale map, return true
 	for(int cycleIndex = 0; cycleIndex < ACS_GetMissionCount(g_iGameMode); cycleIndex++) {
 		ACS_GetLastMapName(g_iGameMode, cycleIndex, lastMap, sizeof(lastMap));
 		if(StrEqual(strCurrentMap, lastMap, false))
 			return true;
 	}
-	
+
 	return false;
 }
 
