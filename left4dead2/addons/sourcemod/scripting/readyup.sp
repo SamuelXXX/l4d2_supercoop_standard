@@ -447,7 +447,7 @@ public Action Hide_Cmd(int client, int args)
 	{
 		hiddenPanel[client] = true;
 		hiddenManually[client] = true;
-		CPrintToChat(client, "[{olive}Readyup{default}] Panel is now {red}off{default}");
+		CPrintToChat(client, "[{olive}Readyup{default}] 面板{red}关闭{default}");
 		return Plugin_Handled;
 	}
 	return Plugin_Continue;
@@ -459,7 +459,7 @@ public Action Show_Cmd(int client, int args)
 	{
 		hiddenPanel[client] = false;
 		hiddenManually[client] = false;
-		CPrintToChat(client, "[{olive}Readyup{default}] Panel is now {blue}on{default}");
+		CPrintToChat(client, "[{olive}Readyup{default}] 面板{blue}开启{default}");
 		return Plugin_Handled;
 	}
 	return Plugin_Continue;
@@ -486,7 +486,7 @@ public Action ForceStart_Cmd(int client, int args)
 		if (id != INVALID_ADMIN_ID && GetAdminFlag(id, Admin_Ban)) // Check for specific admin flag
 		{
 			InitiateLiveCountdown();
-			CPrintToChatAll("[{green}!{default}] {blue}Game {default}start is {green}forced {default}by {blue}Admin {default}({olive}%N{default})", client);
+			CPrintToChatAll("[{green}!{default}] {blue}游戏由{blue}管理员{default}({olive}%N{green}强制{default}开始{default}.)", client);
 			return Plugin_Handled;
 		}
 		
@@ -497,7 +497,7 @@ public Action ForceStart_Cmd(int client, int args)
 		// Filter spectator
 		if (!IsPlayer(client))
 		{
-			CPrintToChat(client, "[{olive}Readyup{default}] {blue}Spectators {default}are not allowed to {green}force start{default}.");
+			CPrintToChat(client, "[{olive}Readyup{default}] {blue}旁观者{default}不允许{green}强制开始游戏{default}.");
 			return Plugin_Handled;
 		}
 		
@@ -505,7 +505,7 @@ public Action ForceStart_Cmd(int client, int args)
 		int playercount = GetTeamHumanCount(L4D2Team_Survivor) + GetTeamHumanCount(L4D2Team_Infected);
 		if (playercount == survivor_limit.IntValue + z_max_player_zombies.IntValue)
 		{
-			CPrintToChat(client, "[{olive}Readyup{default}] You are {red}not allowed {default}to call a vote for force start due to {green}full players{default}.");
+			CPrintToChat(client, "[{olive}Readyup{default}] {green}因为满人{default}你{red}不被允许{default}投票强制开始游戏{default}.");
 			return Plugin_Handled;
 		}
 		
@@ -526,12 +526,12 @@ void StartForceStartVote(int client)
 {
 	if (IsBuiltinVoteInProgress())
 	{
-		CPrintToChat(client, "[{olive}Readyup{default}] There's {olive}a vote {green}in progress{default}.");
+		CPrintToChat(client, "[{olive}Readyup{default}] 有{olive}投票{green}在进行中{default}.");
 		return;
 	}
 	if (CheckBuiltinVoteDelay() > 0)
 	{
-		CPrintToChat(client, "[{olive}Readyup{default}] Wait for another {blue}%is {default}to call a vote.", CheckBuiltinVoteDelay());
+		CPrintToChat(client, "[{olive}Readyup{default}] 等待{blue}%is{default}开始新的投票.", CheckBuiltinVoteDelay());
 		return;
 	}
 	
@@ -724,7 +724,7 @@ void UpdatePanel()
 			{
 				if (isPlayerReady[client])
 				{
-					if (!inLiveCountdown) PrintHintText(client, "You are ready.\nSay !unready / Press F2 to unready.");
+					if (!inLiveCountdown) PrintHintText(client, "准备完成.\n输入 !unready / 按下 F2 取消准备.");
 					Format(nameBuf, sizeof(nameBuf), "☑ %s\n", nameBuf);
 					GetClientTeam(client) == L4D2Team_Survivor ? StrCat(survivorBuffer, sizeof(survivorBuffer), nameBuf) : StrCat(infectedBuffer, sizeof(infectedBuffer), nameBuf);
 				}
@@ -732,7 +732,7 @@ void UpdatePanel()
 				{
 					if (GetClientTeam(client) != L4D2Team_Spectator)
 						if (!inLiveCountdown)
-							PrintHintText(client, "You are not ready.\nSay !ready / Press F1 to ready up.");
+							PrintHintText(client, "你还没有准备.\n输入 !ready / 按下 F1 准备.");
 							
 					Format(nameBuf, sizeof(nameBuf), "☐ %s%s\n", nameBuf, ( IsPlayerAfk(client, fTime) ? " [AFK]" : "" ));
 					GetClientTeam(client) == L4D2Team_Survivor ? StrCat(survivorBuffer, sizeof(survivorBuffer), nameBuf) : StrCat(infectedBuffer, sizeof(infectedBuffer), nameBuf);
@@ -846,15 +846,9 @@ void PrintCmd()
 {
 	switch (iCmd)
 	{
-		case 1: Format(sCmd, sizeof(sCmd), "->1. !ready|!r / !unready|!nr");
-		case 2: Format(sCmd, sizeof(sCmd), "->2. !slots #");
-		case 3: Format(sCmd, sizeof(sCmd), "->3. !voteboss <tank> <witch>");
-		case 4: Format(sCmd, sizeof(sCmd), "->4. !match / !rmatch");
-		case 5: Format(sCmd, sizeof(sCmd), "->5. !show / !hide");
-		case 6: Format(sCmd, sizeof(sCmd), "->6. !setscores <survs> <inf>");
-		case 7: Format(sCmd, sizeof(sCmd), "->7. !lerps");
-		case 8: Format(sCmd, sizeof(sCmd), "->8. !secondary");
-		case 9: Format(sCmd, sizeof(sCmd), "->9. !forcestart / !fs");
+		case 1: Format(sCmd, sizeof(sCmd), "->1. !ready|!r / !unready|!nr 切换准备状态");
+		case 2: Format(sCmd, sizeof(sCmd), "->2. !show / !hide 开关面板");
+		case 3: Format(sCmd, sizeof(sCmd), "->2. !fs / !forcestart 强制开始");
 	}
 }
 
@@ -911,7 +905,7 @@ void InitiateLiveCountdown()
 	{
 		ReturnTeamToSaferoom(L4D2Team_Survivor);
 		SetTeamFrozen(L4D2Team_Survivor, true);
-		PrintHintTextToAll("Going live!\nSay !unready / Press F2 to cancel");
+		PrintHintTextToAll("回合开始!\n输入 !unready / 按下 F2 来取消");
 		inLiveCountdown = true;
 		readyDelay = l4d_ready_delay.IntValue;
 		readyCountdownTimer = CreateTimer(1.0, ReadyCountdownDelay_Timer, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
@@ -922,7 +916,7 @@ public Action ReadyCountdownDelay_Timer(Handle timer)
 {
 	if (readyDelay == 0)
 	{
-		PrintHintTextToAll("Round is live!");
+		PrintHintTextToAll("回合开始!");
 		InitiateLive();
 		readyCountdownTimer = null;
 		if (l4d_ready_enable_sound.BoolValue)
@@ -937,7 +931,7 @@ public Action ReadyCountdownDelay_Timer(Handle timer)
 	}
 	else
 	{
-		PrintHintTextToAll("Live in: %d\nSay !unready / Press F2 to cancel", readyDelay);
+		PrintHintTextToAll("回合开始于: %d\n输入 !unready / 按下 F2 来取消", readyDelay);
 		if (l4d_ready_enable_sound.BoolValue)
 		{
 			EmitSoundToAll(countdownSound, _, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 0.5);
@@ -980,13 +974,13 @@ void CancelFullReady(int client, disruptType type)
 		inLiveCountdown = false;
 		KillTimer(readyCountdownTimer);
 		readyCountdownTimer = null;
-		PrintHintTextToAll("Countdown Cancelled!");
+		PrintHintTextToAll("倒计时取消!");
 		
 		switch (type)
 		{
-			case readyStatus: CPrintToChatAllEx(client, "{default}[{green}!{default}] {green}Countdown Cancelled! {default}({teamcolor}%N {green}marked unready{default})", client);
-			case teamShuffle: CPrintToChatAllEx(client, "{default}[{green}!{default}] {green}Countdown Cancelled! {default}({teamcolor}%N {olive}switched team{default})", client);
-			case playerDisconn: CPrintToChatAllEx(client, "{default}[{green}!{default}] {green}Countdown Cancelled! {default}({teamcolor}%N {green}disconnected{default})", client);
+			case readyStatus: CPrintToChatAllEx(client, "{default}[{green}!{default}] {green}倒计时取消!{default}({teamcolor}%N{green}标记为未准备{default})", client);
+			case teamShuffle: CPrintToChatAllEx(client, "{default}[{green}!{default}] {green}倒计时取消!{default}({teamcolor}%N{olive}切换队伍{default})", client);
+			case playerDisconn: CPrintToChatAllEx(client, "{default}[{green}!{default}] {green}倒计时取消!{default}({teamcolor}%N{green}掉线{default})", client);
 		}
 	}
 }
