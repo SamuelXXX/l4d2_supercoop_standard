@@ -322,7 +322,7 @@ public void Event_PlayerTeam(Event event, const char[] name, bool dontBroadcast)
 public Action ToggleSpecHudCmd(int client, int args) 
 {
 	bSpecHudActive[client] = !bSpecHudActive[client];
-	CPrintToChat(client, "<{olive}HUD{default}> Spectator HUD is now %s.", (bSpecHudActive[client] ? "{blue}on{default}" : "{red}off{default}"));
+	CPrintToChat(client, "<{olive}HUD{default}> 旁观HUD%s.", (bSpecHudActive[client] ? "{blue}开启{default}" : "{red}关闭{default}"));
 }
 
 #if DEBUG
@@ -395,7 +395,7 @@ public Action HudDrawTimer(Handle hTimer)
 			if (!bSpecHudHintShown[i])
 			{
 				bSpecHudHintShown[i] = true;
-				CPrintToChat(i, "<{olive}HUD{default}> Type {green}!spechud{default} into chat to toggle the {blue}Spectator HUD{default}.");
+				CPrintToChat(i, "<{olive}HUD{default}> 输入{green}!spechud{default}开关{blue}旁观HUD{default}.");
 			}
 		}
 		delete specHud;

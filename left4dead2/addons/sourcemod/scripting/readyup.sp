@@ -1,4 +1,4 @@
-#include <builtinvotes>
+﻿#include <builtinvotes>
 #include <colors>
 
 #pragma semicolon 1
@@ -486,7 +486,7 @@ public Action ForceStart_Cmd(int client, int args)
 		if (id != INVALID_ADMIN_ID && GetAdminFlag(id, Admin_Ban)) // Check for specific admin flag
 		{
 			InitiateLiveCountdown();
-			CPrintToChatAll("[{green}!{default}] {blue}游戏由{blue}管理员{default}({olive}%N{green}强制{default}开始{default}.)", client);
+			CPrintToChatAll("[{green}!{default}] {blue}游戏由管理员{default}({olive}%N{default}){green}强制{default}开始{default}.", client);
 			return Plugin_Handled;
 		}
 		
@@ -697,15 +697,15 @@ void UpdatePanel()
 	if (ServerNamer) ServerNamer.GetString(ServerName, sizeof(ServerName));
 	
 	l4d_ready_cfg_name.GetString(cfgName, sizeof(cfgName));
-	Format(ServerBuffer, sizeof(ServerBuffer), "▸ Server: %s \n▸ Slots: %d/%d\n▸ Config: %s", ServerName, GetSeriousClientCount(), FindConVar("sv_maxplayers").IntValue, cfgName);
+	Format(ServerBuffer, sizeof(ServerBuffer), "▸ 服务器: %s \n▸ 位置: %d/%d\n▸ 模组: %s", ServerName, GetSeriousClientCount(), FindConVar("sv_maxplayers").IntValue, cfgName);
 	menuPanel.DrawText(ServerBuffer);
 	
-	FormatTime(ServerBuffer, sizeof(ServerBuffer), "▸ %m/%d/%Y - %I:%M%p");
+	FormatTime(ServerBuffer, sizeof(ServerBuffer), "%m/%d/%Y - %I:%M%p");
 	Format(ServerBuffer, sizeof(ServerBuffer), "%s (%s%d:%s%d)", ServerBuffer, (iPassTime / 60 < 10) ? "0" : "", iPassTime / 60, (iPassTime % 60 < 10) ? "0" : "", iPassTime % 60);
 	menuPanel.DrawText(ServerBuffer);
 	
 	menuPanel.DrawText(" ");
-	menuPanel.DrawText("▸ Commands:");
+	menuPanel.DrawText("▸ 命令:");
 	menuPanel.DrawText(sCmd);
 	menuPanel.DrawText(" ");
 	
@@ -757,7 +757,7 @@ void UpdatePanel()
 		survivorBuffer[bufLen] = '\0';
 		ReplaceString(survivorBuffer, sizeof(survivorBuffer), "#buy", "<- TROLL");
 		ReplaceString(survivorBuffer, sizeof(survivorBuffer), "#", "_");
-		Format(nameBuf, sizeof(nameBuf), "->%d. Survivors", ++textCount);
+		Format(nameBuf, sizeof(nameBuf), "->%d. 生还者", ++textCount);
 		menuPanel.DrawText(nameBuf);
 		menuPanel.DrawText(survivorBuffer);
 	}
@@ -846,9 +846,9 @@ void PrintCmd()
 {
 	switch (iCmd)
 	{
-		case 1: Format(sCmd, sizeof(sCmd), "->1. !ready|!r / !unready|!nr 切换准备状态");
-		case 2: Format(sCmd, sizeof(sCmd), "->2. !show / !hide 开关面板");
-		case 3: Format(sCmd, sizeof(sCmd), "->2. !fs / !forcestart 强制开始");
+		case 1: Format(sCmd, sizeof(sCmd), "->1. !r/|!nr 切换准备状态");
+		case 2: Format(sCmd, sizeof(sCmd), "->2. !show/!hide 开关面板");
+		case 3: Format(sCmd, sizeof(sCmd), "->2. !fs 强制开始");
 	}
 }
 
