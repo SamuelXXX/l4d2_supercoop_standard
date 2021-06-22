@@ -849,6 +849,7 @@ void PrintCmd()
 		case 1: Format(sCmd, sizeof(sCmd), "->1. !r/|!nr 切换准备状态");
 		case 2: Format(sCmd, sizeof(sCmd), "->2. !show/!hide 开关面板");
 		case 3: Format(sCmd, sizeof(sCmd), "->2. !fs 强制开始");
+		case 4: Format(sCmd, sizeof(sCmd), "->2. !slots 调整玩家数");
 	}
 }
 
