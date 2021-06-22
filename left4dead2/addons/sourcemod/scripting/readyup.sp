@@ -538,7 +538,7 @@ void StartForceStartVote(int client)
 	g_hVote = CreateBuiltinVote(VoteActionHandler, BuiltinVoteType_Custom_YesNo, BuiltinVoteAction_Cancel | BuiltinVoteAction_VoteEnd | BuiltinVoteAction_End);
 
 	char sBuffer[128];
-	FormatEx(sBuffer, sizeof(sBuffer), "Force start the Game? (100%%%%)"); // kinda format :D
+	FormatEx(sBuffer, sizeof(sBuffer), "强制开始游戏? (100%%%%)"); // kinda format :D
 	SetBuiltinVoteArgument(g_hVote, sBuffer);
 	SetBuiltinVoteInitiator(g_hVote, client);
 	SetBuiltinVoteResultCallback(g_hVote, ForceStartVoteResultHandler);

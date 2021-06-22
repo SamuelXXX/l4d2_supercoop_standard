@@ -22,6 +22,7 @@ public OnPluginStart()
 {
 	RegConsoleCmd("sm_slots", SlotsRequest);
 	hMaxSlots = CreateConVar("sv_slots_vote_max", "12", "Maximum amount of slots you wish players to be able to vote for? (DON'T GO HIGHER THAN 30)");
+	SetConVarInt(FindConVar("sv_maxplayers"), 8);
 	MaxSlots = GetConVarInt(hMaxSlots);
 	HookConVarChange(hMaxSlots, CVarChanged);
 }
@@ -89,7 +90,7 @@ bool:StartSlotVote(client, String:Slots[])
 		
 		new String:sBuffer[64];
 		g_hVote = CreateBuiltinVote(VoteActionHandler, BuiltinVoteType_Custom_YesNo, BuiltinVoteAction_Cancel | BuiltinVoteAction_VoteEnd | BuiltinVoteAction_End);
-		Format(sBuffer, sizeof(sBuffer), "Limit Slots to '%s'?", Slots);
+		Format(sBuffer, sizeof(sBuffer), "限制位置为'%s'个?", Slots);
 		SetBuiltinVoteArgument(g_hVote, sBuffer);
 		SetBuiltinVoteInitiator(g_hVote, client);
 		SetBuiltinVoteResultCallback(g_hVote, SlotVoteResultHandler);

@@ -41,7 +41,7 @@ public Plugin myinfo =
 #define TEAM_SURVIVOR   2
 #define TEAM_INFECTED   3
 
-int g_iCoopRoundLiveCount;		//Number of times the Survivors have lost the current finale
+int iCoopRoundLiveCount;		//Number of times the Survivors have lost the current finale
 
 // ======================================================================
 //  Plugin Vars
@@ -182,7 +182,7 @@ void GetCurrentGameMode()
 	{
 		g_Gamemode = L4D2Gamemode_Coop;
 	}
-	if (strcmp(sGameMode, "scavenge") == 0)
+	else if (strcmp(sGameMode, "scavenge") == 0)
 	{
 		g_Gamemode = L4D2Gamemode_Scavenge;
 	}
@@ -271,7 +271,8 @@ public void OnClientDisconnect(int client)
 	#endif
 }
 
-public void OnMapStart() { g_iCoopRoundLiveCount = 1;}
+public void OnMapStart() { iCoopRoundLiveCount = 1;}
+
 public void OnRoundIsLive()
 {
 	FillReadyConfig();
@@ -286,12 +287,11 @@ public void OnRoundIsLive()
 // ======================================================================
 //  Events
 // ======================================================================
-public void Event_RoundEnd() { g_iCoopRoundLiveCount++;}
+public void Event_RoundEnd() { iCoopRoundLiveCount++;}
 
 public void Event_PlayerDeath(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"));
-	if (!client || !IsInfected(client)) return;
 }
 
 public void Event_PlayerTeam(Event event, const char[] name, bool dontBroadcast)
@@ -368,7 +368,7 @@ public Action HudDrawTimer(Handle hTimer)
 
 		FillHeaderInfo(specHud);
 		FillSurvivorInfo(specHud);
-		FillGameInfo(specHud);
+		//FillGameInfo(specHud);
 
 		#if DEBUG
 		for (int i = 1; i <= MaxClients; ++i)
@@ -515,12 +515,12 @@ void FillSurvivorInfo(Panel &hSpecHud)
 	{
 		case L4D2Gamemode_Coop:
 		{
-			FormatEx(info, sizeof info, "->1. Survivors [%d of %d]", g_iCoopRoundLiveCount);
+			FormatEx(info, sizeof(info), "->Survivors [[Round %d]", iCoopRoundLiveCount);
 		}
 
 		case L4D2Gamemode_Versus:
 		{
-			FormatEx(info, sizeof info, "->1. Survivors [%d of %d]", g_iCoopRoundLiveCount);
+			FormatEx(info, sizeof(info), "->Survivors [%d]", iCoopRoundLiveCount);
 		}
 	}
 	
@@ -586,16 +586,18 @@ void FillGameInfo(Panel &hSpecHud)
 	{
 		case L4D2Gamemode_Coop:
 		{
-			FormatEx(info, sizeof(info), "->3. %s (R#%d)", sReadyCfgName, g_iCoopRoundLiveCount);
+			FormatEx(info, sizeof(info), "->2. Config: %s [Round %d]", sReadyCfgName, iCoopRoundLiveCount);
+
 			DrawPanelText(hSpecHud, " ");
-			DrawPanelText(hSpecHud, info);	
+			DrawPanelText(hSpecHud, info);
 		}
 
 		case L4D2Gamemode_Versus:
 		{
-			FormatEx(info, sizeof(info), "->3. %s (R#%d)", sReadyCfgName, g_iCoopRoundLiveCount);
+			FormatEx(info, sizeof(info), "->2. Config: %s [Round: %d]", sReadyCfgName, iCoopRoundLiveCount);
+
 			DrawPanelText(hSpecHud, " ");
-			DrawPanelText(hSpecHud, info);	
+			DrawPanelText(hSpecHud, info);
 		}
 	}
 }
@@ -665,17 +667,9 @@ stock void BuildPlayerArrays()
 	{
 		if (!IsClientInGame(client)) continue;
 		
-		switch (GetClientTeam(client))
-		{
-			case TEAM_SURVIVOR:
-			{
+		if (GetClientTeam(client) == TEAM_SURVIVOR)
 				if (survivorCount < iSurvivorLimit)
 					iSurvivorArray[survivorCount++] = client;
-			}
-			case TEAM_INFECTED:
-			{
-			}
-		}
 	}
 	
 	iSurvivorArray[survivorCount] = 0;
@@ -798,11 +792,6 @@ stock int GetHighestSurvivorFlow()
 stock bool IsSurvivor(int client)
 {
 	return IsClientInGame(client) && GetClientTeam(client) == TEAM_SURVIVOR;
-}
-
-stock bool IsInfected(int client)
-{
-	return IsClientInGame(client) && GetClientTeam(client) == TEAM_INFECTED;
 }
 
 stock bool IsIncapacitated(int client)
