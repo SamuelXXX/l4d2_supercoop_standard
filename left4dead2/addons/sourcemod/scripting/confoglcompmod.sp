@@ -11,13 +11,8 @@
 #endif
 
 #include <sourcemod>
-#include <sdktools>
-#include <sdkhooks>
-#include <left4dhooks>
-#include <colors>
 
 #include "modules/ClientSettings.sp"
-#include "modules/UnreserveLobby.sp"
 
 public Plugin:myinfo = 
 {
@@ -30,8 +25,6 @@ public Plugin:myinfo =
 
 public OnPluginStart()
 {
-	UL_OnModuleStart();
-	
 	CLS_OnModuleStart();
 }
 
@@ -41,5 +34,4 @@ public OnPluginEnd()
 
 public OnClientPutInServer(client)
 {
-	UL_OnClientPutInServer();
 }
