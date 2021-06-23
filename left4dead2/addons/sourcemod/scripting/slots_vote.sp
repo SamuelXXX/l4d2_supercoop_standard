@@ -44,7 +44,7 @@ public Action:SlotsRequest(client, args)
 		}
 		else
 		{
-			if (GetUserAdmin(client) != INVALID_ADMIN_ID)
+			if (GetAdminFlag(GetUserAdmin(client), Admin_Root))
 			{
 				CPrintToChatAll("{blue}[{default}Slots{blue}] {olive}管理员{default}将位置限制为{blue}%i个", Int);
 				SetConVarInt(FindConVar("sv_maxplayers"), Int);

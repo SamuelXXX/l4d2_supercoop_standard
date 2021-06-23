@@ -41,8 +41,6 @@ public Plugin myinfo =
 #define TEAM_SURVIVOR   2
 #define TEAM_INFECTED   3
 
-int iCoopRoundLiveCount;		//Number of times the Survivors have lost the current finale
-
 // ======================================================================
 //  Plugin Vars
 // ======================================================================
@@ -92,7 +90,8 @@ ConVar cVarMinUpdateRate, cVarMaxUpdateRate, cVarMinInterpRatio, cVarMaxInterpRa
 float fMinUpdateRate, fMaxUpdateRate, fMinInterpRatio, fMaxInterpRatio;
 
 // Plugin Cvar
-ConVar hServerNamer, l4d_ready_cfg_name;
+ConVar g_iCoopRoundLiveCount, hServerNamer, l4d_ready_cfg_name;
+float g_fTime;
 
 // Plugin Var
 char sReadyCfgName[64], sHostname[64];
@@ -127,6 +126,8 @@ public void OnPluginStart()
 	(	cVarMinInterpRatio		= FindConVar("sv_client_min_interp_ratio")	).AddChangeHook(OnNetworkConVarChanged);
 	(	cVarMaxInterpRatio		= FindConVar("sv_client_max_interp_ratio")	).AddChangeHook(OnNetworkConVarChanged);
 	
+	g_iCoopRoundLiveCount	= CreateConVar("l4d_round_live_count", "1", "Number of rounds the Survivors are live in", FCVAR_NOTIFY|FCVAR_PRINTABLEONLY);
+
 	FillServerNamer();
 	FillReadyConfig();
 	
@@ -271,7 +272,11 @@ public void OnClientDisconnect(int client)
 	#endif
 }
 
-public void OnMapStart() { iCoopRoundLiveCount = 1;}
+public void OnMapStart()
+{
+	g_iCoopRoundLiveCount = 1;		//Reset the round live counter on every map start
+	SetConVarInt(FindConVar("l4d_round_live_count"), g_iCoopRoundLiveCount);
+}
 
 public void OnRoundIsLive()
 {
@@ -280,6 +285,11 @@ public void OnRoundIsLive()
 	bPendingArrayRefresh = true;
 	
 	GetCurrentGameMode();
+
+	if(FindConVar("l4d_round_live_count") == -1){
+		g_iCoopRoundLiveCount = 1;
+		SetConVarInt(FindConVar("l4d_round_live_count"), g_iCoopRoundLiveCount);
+	}
 }
 
 //public void L4D2_OnEndVersusModeRound_Post() { if (!InSecondHalfOfRound()) iFirstHalfScore = L4D_GetTeamScore(GetRealTeam(0) + 1); }
@@ -287,7 +297,10 @@ public void OnRoundIsLive()
 // ======================================================================
 //  Events
 // ======================================================================
-public void Event_RoundEnd() { iCoopRoundLiveCount++;}
+public void Event_RoundEnd(){
+	g_iCoopRoundLiveCount++;
+	SetConVarInt(FindConVar("l4d_round_live_count"), g_iCoopRoundLiveCount);
+}
 
 public void Event_PlayerDeath(Event event, const char[] name, bool dontBroadcast)
 {
@@ -367,6 +380,7 @@ public Action HudDrawTimer(Handle hTimer)
 		}
 
 		FillHeaderInfo(specHud);
+		FillTimeInfo(specHud);
 		FillSurvivorInfo(specHud);
 		//FillGameInfo(specHud);
 
@@ -421,6 +435,17 @@ void FillHeaderInfo(Panel &hSpecHud)
 	
 	static char buf[64];
 	Format(buf, sizeof(buf), "Server: %s [Slots %i/%i | %iT]", sHostname, GetRealClientCount(), iMaxPlayers, iTickrate);
+	DrawPanelText(hSpecHud, buf);
+}
+
+void FillTimeInfo(Panel &hSpecHud)
+{
+	static char buf[64];
+	float fTime = GetEngineTime();
+	int iPassTime = RoundToFloor(fTime - g_fTime);
+
+	FormatTime(buf, sizeof(buf), "时间: %m/%d/%Y - %I:%M%p");
+	Format(buf, sizeof(buf), "%s (%s%d:%s%d)", buf, (iPassTime / 60 < 10) ? "0" : "", iPassTime / 60, (iPassTime % 60 < 10) ? "0" : "", iPassTime % 60);
 	DrawPanelText(hSpecHud, buf);
 }
 
@@ -515,12 +540,12 @@ void FillSurvivorInfo(Panel &hSpecHud)
 	{
 		case L4D2Gamemode_Coop:
 		{
-			FormatEx(info, sizeof(info), "->Survivors [[Round %d]", iCoopRoundLiveCount);
+			FormatEx(info, sizeof(info), "生还者 [回合 %d]", g_iCoopRoundLiveCount);
 		}
 
 		case L4D2Gamemode_Versus:
 		{
-			FormatEx(info, sizeof(info), "->Survivors [%d]", iCoopRoundLiveCount);
+			FormatEx(info, sizeof(info), "生还者 [回合 %d]", g_iCoopRoundLiveCount);
 		}
 	}
 	
@@ -586,7 +611,7 @@ void FillGameInfo(Panel &hSpecHud)
 	{
 		case L4D2Gamemode_Coop:
 		{
-			FormatEx(info, sizeof(info), "->2. Config: %s [Round %d]", sReadyCfgName, iCoopRoundLiveCount);
+			FormatEx(info, sizeof(info), "->2. Config: %s [Round %d]", sReadyCfgName, g_iCoopRoundLiveCount);
 
 			DrawPanelText(hSpecHud, " ");
 			DrawPanelText(hSpecHud, info);
@@ -594,7 +619,7 @@ void FillGameInfo(Panel &hSpecHud)
 
 		case L4D2Gamemode_Versus:
 		{
-			FormatEx(info, sizeof(info), "->2. Config: %s [Round: %d]", sReadyCfgName, iCoopRoundLiveCount);
+			FormatEx(info, sizeof(info), "->2. Config: %s [Round: %d]", sReadyCfgName, g_iCoopRoundLiveCount);
 
 			DrawPanelText(hSpecHud, " ");
 			DrawPanelText(hSpecHud, info);

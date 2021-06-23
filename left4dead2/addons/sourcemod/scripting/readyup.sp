@@ -56,7 +56,7 @@ Handle blockSecretSpam[MAXPLAYERS+1];
 // Ready Panel
 Panel menuPanel;
 bool hiddenPanel[MAXPLAYERS+1], hiddenManually[MAXPLAYERS+1];
-char sCmd[32], readyFooter[MAX_FOOTERS][MAX_FOOTER_LEN];
+char sCmd[64], readyFooter[MAX_FOOTERS][MAX_FOOTER_LEN];
 int iCmd, footerCounter;
 float g_fTime;
 
@@ -111,7 +111,7 @@ public void OnPluginStart()
 	l4d_ready_enable_sound		= CreateConVar("l4d_ready_enable_sound", "1", "Enable sound during countdown & on live");
 	l4d_ready_countdown_sound	= CreateConVar("l4d_ready_countdown_sound", DEFAULT_COUNTDOWN_SOUND, "The sound that plays when a round goes on countdown");	
 	l4d_ready_live_sound		= CreateConVar("l4d_ready_live_sound", DEFAULT_LIVE_SOUND, "The sound that plays when a round goes live");
-	l4d_ready_chuckle			= CreateConVar("l4d_ready_chuckle", "0", "Enable random moustachio chuckle during countdown");
+	l4d_ready_chuckle			= CreateConVar("l4d_ready_chuckle", "1", "Enable random moustachio chuckle during countdown");
 	l4d_ready_secret			= CreateConVar("l4d_ready_secret", "1", "Play something suck", _, true, 0.0, true, 1.0);
 
 	HookEvent("round_start", RoundStart_Event, EventHookMode_PostNoCopy);
@@ -653,7 +653,7 @@ public Action MenuCmd_Timer(Handle timer)
 {
 	if (inReadyUp)
 	{
-		iCmd > 9 ? (iCmd = 1) : (iCmd += 1);
+		iCmd > 5 ? (iCmd = 1) : (iCmd += 1);
 		return Plugin_Continue;
 	}
 	return Plugin_Stop;
@@ -697,10 +697,10 @@ void UpdatePanel()
 	if (ServerNamer) ServerNamer.GetString(ServerName, sizeof(ServerName));
 	
 	l4d_ready_cfg_name.GetString(cfgName, sizeof(cfgName));
-	Format(ServerBuffer, sizeof(ServerBuffer), "▸ 服务器: %s \n▸ 位置: %d/%d\n▸ 模组: %s", ServerName, GetSeriousClientCount(), FindConVar("sv_maxplayers").IntValue, cfgName);
+	Format(ServerBuffer, sizeof(ServerBuffer), "服务器: %s \n位置: %d/%d\n模组: %s\n回合: %d", ServerName, GetSeriousClientCount(), FindConVar("sv_maxplayers").IntValue, cfgName, FindConVar("l4d_round_live_count").IntValue);
 	menuPanel.DrawText(ServerBuffer);
 	
-	FormatTime(ServerBuffer, sizeof(ServerBuffer), "%m/%d/%Y - %I:%M%p");
+	FormatTime(ServerBuffer, sizeof(ServerBuffer), "时间: %m/%d/%Y - %I:%M%p");
 	Format(ServerBuffer, sizeof(ServerBuffer), "%s (%s%d:%s%d)", ServerBuffer, (iPassTime / 60 < 10) ? "0" : "", iPassTime / 60, (iPassTime % 60 < 10) ? "0" : "", iPassTime % 60);
 	menuPanel.DrawText(ServerBuffer);
 	
@@ -757,20 +757,9 @@ void UpdatePanel()
 		survivorBuffer[bufLen] = '\0';
 		ReplaceString(survivorBuffer, sizeof(survivorBuffer), "#buy", "<- TROLL");
 		ReplaceString(survivorBuffer, sizeof(survivorBuffer), "#", "_");
-		Format(nameBuf, sizeof(nameBuf), "->%d. 生还者", ++textCount);
+		Format(nameBuf, sizeof(nameBuf), "生还者");
 		menuPanel.DrawText(nameBuf);
 		menuPanel.DrawText(survivorBuffer);
-	}
-
-	bufLen = strlen(infectedBuffer);
-	if (bufLen != 0)
-	{
-		infectedBuffer[bufLen] = '\0';
-		ReplaceString(infectedBuffer, sizeof(infectedBuffer), "#buy", "<- TROLL");
-		ReplaceString(infectedBuffer, sizeof(infectedBuffer), "#", "_");
-		Format(nameBuf, sizeof(nameBuf), "->%d. Infected", ++textCount);
-		menuPanel.DrawText(nameBuf);
-		menuPanel.DrawText(infectedBuffer);
 	}
 	
 	if (specCount && textCount) menuPanel.DrawText(" ");
@@ -847,9 +836,10 @@ void PrintCmd()
 	switch (iCmd)
 	{
 		case 1: Format(sCmd, sizeof(sCmd), "->1. !r/|!nr 切换准备状态");
-		case 2: Format(sCmd, sizeof(sCmd), "->2. !show/!hide 开关面板");
-		case 3: Format(sCmd, sizeof(sCmd), "->2. !fs 强制开始");
-		case 4: Format(sCmd, sizeof(sCmd), "->2. !slots 调整玩家数");
+		case 2: Format(sCmd, sizeof(sCmd), "->2. !show/!hide 开关准备面板");
+		case 3: Format(sCmd, sizeof(sCmd), "->3. !fs 强制开始");
+		case 4: Format(sCmd, sizeof(sCmd), "->4. !slots 调整最大玩家数");
+		case 5: Format(sCmd, sizeof(sCmd), "->5. !spechud 开关旁观面板");
 	}
 }
 
