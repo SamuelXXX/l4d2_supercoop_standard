@@ -1,3 +1,4 @@
+IncludeScript("VSLib");
 Msg("\n\n\n>>>>>>>>>>>>>>>>>>>>>>Common Coop Director Scripts Start Load<<<<<<<<<<<<<<<<<<<<<<<<\n");
 
 DirectorOptions <-
@@ -156,6 +157,35 @@ DirectorOptions <-
 	}
 }
 
+::RandomTime <- 0;
+::HFlow <- 0;
+
+function EasyLogic::Update::SpawnWitchWhenFlow ()
+{
+	local s = Players.SurvivorWithHighestFlow();
+	if ( s == null )
+		return;
+	local flow = s.GetFlowDistance();
+	if ( flow > HFlow )
+	{
+		local count = ((flow - HFlow) / 1000).tointeger();
+		for (; count > 0; count-- )
+		{
+			if(RandomTime == 0)
+			{
+				Convars.SetValue("sv_force_time_of_day","0")
+				RandomTime = 2;
+			}
+			else if(RandomTime == 2)
+			{
+				Convars.SetValue("sv_force_time_of_day","2")
+				RandomTime = 0;
+			}
+			HFlow += 1000;
+		}
+	}
+}
+
 Convars.SetValue("director_special_battlefield_respawn_interval",4) //防守时特感刷新的速度
 Convars.SetValue("director_custom_finale_tank_spacing",2) //终局tank出现的时间间隔
 Convars.SetValue("director_tank_checkpoint_interval",240)//允许tank出生的时间，自生还者离开安全屋开始计算
@@ -167,7 +197,7 @@ Convars.SetValue("director_threat_radius",0)
 Convars.SetValue("director_max_threat_areas",40)
 
 
-Convars.SetValue("director_force_tank",0) //是否走两步就刷tank
+Convars.SetValue("director_force_tank",0) //是否走两步就刷tank，应该是强制每个threat_area刷克，与director_max_threat_areas有关
 Convars.SetValue("director_force_witch",0)
 
 
