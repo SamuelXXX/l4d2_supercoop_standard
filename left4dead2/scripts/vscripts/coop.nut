@@ -52,8 +52,12 @@ DirectorOptions <-
 	weaponsToConvert =
 	{
 		weapon_vomitjar = "random_throwable"
-		weapon_rifle_m60 = "random_sniper"
-		weapon_grenade_launcher = "random_sniper"
+		weapon_sniper_awp = "random_sniper"
+		weapon_sniper_scout = "random_sniper"
+		weapon_rifle = "random_rifle"
+		weapon_rifle_ak47 = "random_rifle"
+		weapon_rifle_desert = "random_rifle"
+		weapon_rifle_sg552 = "random_rifle"
 	}
 
 	function ConvertWeaponSpawn( classname )
@@ -97,17 +101,35 @@ DirectorOptions <-
 					{
 						realConvertWeapon="weapon_sniper_awp_spawn"
 					}
-					else if(rv < 0.2)
+					else if(rv < 0.3)
 					{
 						realConvertWeapon="weapon_sniper_scout_spawn"
 					}
-					else if(rv < 0.8)
+					else if(rv < 0.65)
 					{
-						realConvertWeapon="weapon_rifle_ak47_spawn"
+						realConvertWeapon="weapon_sniper_military_spawn"
 					}
 					else
 					{
-						return 0;
+						realConvertWeapon="weapon_hunting_rifle_spawn"
+					}
+					break;
+				case "random_rifle":
+					if(rv < 0.27)
+					{
+						realConvertWeapon="weapon_rifle_spawn"
+					}
+					else if(rv < 0.54)
+					{
+						realConvertWeapon="weapon_rifle_ak47_spawn"
+					}
+					else if(rv < 0.81)
+					{
+						realConvertWeapon="weapon_rifle_desert_spawn"
+					}
+					else
+					{
+						realConvertWeapon="weapon_rifle_sg552_spawn"
 					}
 					break;
 				default:
