@@ -41,7 +41,7 @@ DirectorOptions <-
 	TankLimit=1  //战役模式不希望刷太多克，终局脚本改回来
 
 	//Tank相关设置
-	ZombieTankHealth=40000
+	ZombieTankHealth=50000
 	TankHitDamageModifierCoop = 5
 
 	//其它设置
