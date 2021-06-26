@@ -574,7 +574,7 @@ void FillSurvivorInfo(Panel &hSpecHud)
 				int activeWep = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 				GetLongWeaponName(IdentifyWeapon(activeWep), info, sizeof(info));
 				// Nick: <300HP@1st> [Deagle 8]
-				Format(info, sizeof(info), "%s: <%iHP@%s> [%s %i]", name, GetClientHealth(client), (GetSurvivorIncapCount(client) == 1 ? "2nd" : "1st"), info, GetWeaponClipAmmo(activeWep));
+				Format(info, sizeof(info), "%s: <%iHP@%s> [%s %i]", name, GetClientHealth(client), (GetSurvivorIncapCount(client) == 1 ? "2nd" :(GetSurvivorIncapCount(client) == 2 ? "B&W" : "1st")), info, GetWeaponClipAmmo(activeWep));
 			}
 			else
 			{
@@ -593,7 +593,7 @@ void FillSurvivorInfo(Panel &hSpecHud)
 				{
 					// Player ever incapped should always be bleeding.
 					// Nick: 99HP (#1st) [Chrome 8/72]
-					Format(info, sizeof(info), "%s: %iHP (#%s) [%s]", name, health, (incapCount == 2 ? "2nd" : "1st"), info);
+					Format(info, sizeof(info), "%s: %iHP (#%s) [%s]", name, health, (incapCount == 2 ? "2nd" :(incapCount == 3 ? "B&W" : "1st")), info);
 				}
 			}
 		}
