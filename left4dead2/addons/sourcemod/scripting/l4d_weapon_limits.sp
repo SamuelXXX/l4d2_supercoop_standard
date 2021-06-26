@@ -7,8 +7,6 @@
 #include <colors>
 
 #define MAX_WEAPON_NAME_LENGTH 32
-#define GAMEDATA_FILE          "l4d_wlimits"
-#define GAMEDATA_USE_AMMO      "CWeaponAmmoSpawn_Use"
 
 public Plugin:myinfo =
 {
@@ -22,37 +20,22 @@ public Plugin:myinfo =
 enum LimitArrayEntry
 {
 	LAE_iLimit,
-	LAE_iGiveAmmo,
 	LAE_WeaponArray[_:WeaponId/32+1]
 }
 
-new Handle:hSDKGiveDefaultAmmo;
 new Handle:hLimitArray;
 new bIsLocked;
 new bIsIncappedWithMelee[MAXPLAYERS + 1];
-new iAmmoPile;
 
 public OnPluginStart()
 {
 	hLimitArray = CreateArray(_:LimitArrayEntry);
 	L4D2Weapons_Init();
 
-	/* Preparing SDK Call */
-	/* {{{ */
-	new Handle:conf = LoadGameConfigFile(GAMEDATA_FILE);
-
-	if (conf == INVALID_HANDLE)
-		ThrowError("Gamedata missing: %s", GAMEDATA_FILE);
-
 	StartPrepSDKCall(SDKCall_Entity);
-
-	if (!PrepSDKCall_SetFromConf(conf, SDKConf_Signature, GAMEDATA_USE_AMMO))
-		ThrowError("Gamedata missing signature: %s", GAMEDATA_USE_AMMO);
 
 	// Client that used the ammo spawn
 	PrepSDKCall_AddParameter(SDKType_CBasePlayer, SDKPass_Pointer);
-	hSDKGiveDefaultAmmo = EndPrepSDKCall();
-	/* }}} */
 
 	RegServerCmd("l4d_wlimits_add", AddLimit_Cmd, "Add a weapon limit");
 	RegServerCmd("l4d_wlimits_lock", LockLimits_Cmd, "Locks the limits to improve search speeds");
@@ -91,16 +74,6 @@ public OnClientDisconnect(client)
 	SDKUnhook(client, SDKHook_WeaponCanUse, WeaponCanUse);
 }
 
-public RoundStart_Event(Handle:event, const String:name[], bool:dontBroadcast)
-{
-	CreateTimer(2.0, RoundStartDelay_Timer);
-}
-
-public Action:RoundStartDelay_Timer(Handle:timer)
-{
-	FindAmmoSpawn();
-}
-
 public Action:AddLimit_Cmd(args)
 {
 	if (bIsLocked)
@@ -108,9 +81,9 @@ public Action:AddLimit_Cmd(args)
 		PrintToServer("Limits have been locked");
 		return Plugin_Handled;
 	}
-	else if (args < 3)
+	else if (args < 2)
 	{
-		PrintToServer("Usage: l4d_wlimits_add <limit> <ammo> <weapon1> <weapon2> ... <weaponN>\nAmmo: -1: Given for primary weapon spawns only, 0: no ammo given ever, else: ammo always given");
+		PrintToServer("Usage: l4d_wlimits_add <limit> <weapon1> <weapon2> ... <weaponN>");
 		return Plugin_Handled;
 	}
 
@@ -121,10 +94,7 @@ public Action:AddLimit_Cmd(args)
 	decl WeaponId:wepid;
 	newEntry[LAE_iLimit] = StringToInt(sTempBuff);
 
-	GetCmdArg(2, sTempBuff, sizeof(sTempBuff));
-	newEntry[LAE_iGiveAmmo] = StringToInt(sTempBuff);
-
-	for (new i = 3; i <= args; ++i)
+	for (new i = 2; i <= args; ++i)
 	{
 		GetCmdArg(i, sTempBuff, sizeof(sTempBuff));
 		wepid = WeaponNameToId(sTempBuff);
@@ -174,7 +144,6 @@ public Action:WeaponCanUse(client, weapon)
 			player_wepid = IdentifyWeapon(player_weapon);
 			if (!player_wepid || wepid == player_wepid || !(arrayEntry[LAE_WeaponArray][_:player_wepid/32] & (1 << (_:player_wepid % 32))))
 			{
-				if ((wep_slot == 0 && arrayEntry[LAE_iGiveAmmo] == -1) || arrayEntry[LAE_iGiveAmmo] != 0) GiveDefaultAmmo(client);
 				if (player_wepid == WEPID_MELEE && wepid == WEPID_MELEE) return Plugin_Continue;
 				CPrintToChat(client, "{blue}[{default}Weapon Limits{blue}]{default} This weapon group has reached its max of {green}%d", arrayEntry[LAE_iLimit]);
 				EmitSoundToClient(client, "player/suit_denydevice.wav");
@@ -234,37 +203,4 @@ stock CloseLimits()
 {
 	if (hLimitArray != INVALID_HANDLE)
 		CloseHandle(hLimitArray)
-}
-
-stock GiveDefaultAmmo(client)
-{
-	if (iAmmoPile != -1)
-		SDKCall(hSDKGiveDefaultAmmo, iAmmoPile, client);
-}
-
-stock FindAmmoSpawn()
-{
-	new psychonic = GetEntityCount();
-	decl String:classname[64];
-	for (new i = MaxClients+1; i <= psychonic; ++i)
-	{
-		if (IsValidEntity(i))
-		{
-			GetEdictClassname(i, classname, sizeof(classname));
-			if (StrEqual(classname, "weapon_ammo_spawn"))
-			{
-				return i;
-			}
-		}
-	}
-	//We have to make an ammo pile!
-	return MakeAmmoPile();
-}
-
-stock MakeAmmoPile()
-{
-	new ammo = CreateEntityByName("weapon_ammo_spawn");
-	DispatchSpawn(ammo);
-	LogMessage("No ammo pile found, creating one: %d", iAmmoPile);
-	return ammo;
 }
