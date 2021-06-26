@@ -31,7 +31,7 @@ public Action:COLD_DOWN(Handle:timer,any:client)
 	LogMessage("Last one player left the server, Reset cvar now");
 	SetConVarInt(FindConVar("sv_maxplayers"), 8);
 	SetConVarInt(FindConVar("l4d_round_live_count"), -1);
-	ServerCommand("map c2m1_highway");
+	ServerCommand("map c5m1_waterfront");
 }
 
 bool:checkrealplayerinSV(client)
