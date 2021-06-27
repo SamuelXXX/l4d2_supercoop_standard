@@ -483,7 +483,7 @@ public Action ForceStart_Cmd(int client, int args)
 	{
 		// Check if admin always allowed to do so
 		AdminId id = GetUserAdmin(client);
-		if (id != INVALID_ADMIN_ID && GetAdminFlag(id, Admin_Ban)) // Check for specific admin flag
+		if (id != INVALID_ADMIN_ID && GetAdminFlag(id, Admin_Kick)) // Check for specific admin flag
 		{
 			InitiateLiveCountdown();
 			CPrintToChatAll("[{green}!{default}] {blue}游戏由管理员{default}({olive}%N{default}){green}强制{default}开始{default}.", client);
@@ -598,7 +598,7 @@ public void ForceStartVoteResultHandler(Handle vote, int num_votes, int num_clie
 			}
 			
 			char buffer[64];
-			FormatEx(buffer, sizeof(buffer), "Enforcing to Live...");
+			FormatEx(buffer, sizeof(buffer), "强制开始中...");
 			DisplayBuiltinVotePass(vote, buffer);
 			
 			float delay = FindConVar("sv_vote_command_delay").FloatValue;
