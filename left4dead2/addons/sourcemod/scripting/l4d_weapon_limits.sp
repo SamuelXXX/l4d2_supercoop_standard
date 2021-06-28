@@ -145,7 +145,7 @@ public Action:WeaponCanUse(client, weapon)
 			if (!player_wepid || wepid == player_wepid || !(arrayEntry[LAE_WeaponArray][_:player_wepid/32] & (1 << (_:player_wepid % 32))))
 			{
 				if (player_wepid == WEPID_MELEE && wepid == WEPID_MELEE) return Plugin_Continue;
-				CPrintToChat(client, "{blue}[{default}Weapon Limits{blue}]{default} This weapon group has reached its max of {green}%d", arrayEntry[LAE_iLimit]);
+				CPrintToChat(client, "{blue}[{default}Weapon Limits{blue}]{default} 团队已达到该武器最大装备数：{green}%d", arrayEntry[LAE_iLimit]);
 				EmitSoundToClient(client, "player/suit_denydevice.wav");
 				return Plugin_Handled;
 			}
