@@ -6,6 +6,7 @@ DirectorOptions <-
 	DominatorLimit = 8
 	ZombieTankHealth = 50000
 	WitchLimit = 0
+	TankLimit = 3
 	
 	weaponsToConvert =
 	{

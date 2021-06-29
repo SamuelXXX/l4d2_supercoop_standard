@@ -30,9 +30,8 @@ enum MainMenuItem
 	PMVoteKill=2,
 	PMVoteMap=3,
 	PMVoiceMute=4,
-	PMTakeOverBot=5,
-	PMKick=6,
-	PMSpawnWeapon=7
+	PMKick=5,
+	PMSpawnWeapon=6
 }
 
 bool menuOn=false;
@@ -41,14 +40,14 @@ void CreateMainMenu(int client)
 	Menu menu=CreateMenu(MainMenuHandler,MENU_ACTIONS_DEFAULT);
 	SetMenuTitle(menu,"主菜单");
 	AddMenuItem(menu,"1","踢人投票");
-	AddMenuItem(menu,"2","处死投票");
+	if(CheckCommandAccess(client,"sm_voteslay",ADMFLAG_KICK,false))
+		AddMenuItem(menu,"2","处死投票");
 	AddMenuItem(menu,"3","换图投票(限首关)");
 	AddMenuItem(menu,"4","静音玩家");
-	AddMenuItem(menu,"5","接管电脑");
 	if(CheckCommandAccess(client,"sm_kick",ADMFLAG_KICK,false))
-		AddMenuItem(menu,"6","踢出玩家（管理员）");
-	if(CheckCommandAccess(client,"sm_sw",ADMFLAG_SLAY,false))
-		AddMenuItem(menu,"7","刷枪（最高权限）");
+		AddMenuItem(menu,"5","踢出玩家（管理员）");
+	if(CheckCommandAccess(client,"sm_sw",ADMFLAG_ROOT,false))
+		AddMenuItem(menu,"6","刷枪（最高权限）");
 		
 	SetMenuExitButton(menu, true);
 	DisplayMenu(menu, client, MENU_TIME_FOREVER);
@@ -92,16 +91,10 @@ public int MainMenuHandler(Menu menu,MenuAction action,int param1,int param2)
 					{
 						CreatePlayerListMuteMenu(param1,"切换静音状态",8,HandlerVoiceMute,false);
 					}
-					case PMTakeOverBot:
-					{
-						FakeClientCommand(param1,"sm_pickbot");
-					}
-					
 					case PMKick:
 					{
 						CreatePlayerListMenu(param1,"选择踢出目标",8,HandlerKick,false);
 					}
-
 					case PMSpawnWeapon:
 					{
 						CreateWeaponMainMenu(param1,"选择武器类型");

@@ -56,8 +56,44 @@ native int LMM_GetNumberOfInvalidMissions();
 native int LMM_GetInvalidMissionName(int missionIndex, char[] mapName, int length);
 
 /**
+  Powered by SDKCall("CTerrorGameRules::IsMissionFinalMap").
+  Return 1 if the current map is the final of the campaign, return 0 if not.
+  Return -1 if SDKCall failed.
+**/
+native int LMM_IsOnFinalMap();
+
+/**
 	This forward is called during the OnPluginStart() phase.
 	Do NOT use any LMM APIs in OnPluginStart, due to the chance that your plugin is loaded prior to LMM.
 	LMM APIs become available in OnAllPluginsLoaded().
 **/
 forward void OnLMMUpdateList();
+
+/**
+	This can only work while a client is ingame.
+	To call while no clients are not in game requires a signiture @CDirector
+	
+	Call this before you force change level to close HSCRIPT.
+	Any other way of level changing is fine e.g. level transition L4D "callvote missionchange" ect.
+**/
+stock void ShutDownScriptedMode()
+{
+	int iClient = 0;
+	for(int i = 1; i <= MaxClients; i++) 
+	{
+		if(!IsClientInGame(i))
+			continue;
+		
+		iClient = i;
+		break;
+	}
+	
+	if(iClient < 1)
+		return;
+	
+	int iCmdFlags = GetCommandFlags("scripted_mode_shutdown");
+	PrintToServer("[MissionManager] EndingScripted Mode.");
+	SetCommandFlags("scripted_mode_shutdown", iCmdFlags & ~FCVAR_CHEAT);
+	FakeClientCommand(iClient, "scripted_mode_shutdown");
+	SetCommandFlags("scripted_mode_shutdown", iCmdFlags);
+}

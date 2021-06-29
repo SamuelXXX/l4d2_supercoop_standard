@@ -1,3 +1,4 @@
+IncludeScript("VSLib");
 Msg("\n\n\n>>>>>>>>>>>>>>>>>>>>>>Common Coop Director Scripts Start Load<<<<<<<<<<<<<<<<<<<<<<<<\n");
 
 DirectorOptions <-
@@ -41,7 +42,7 @@ DirectorOptions <-
 	TankLimit=1  //战役模式不希望刷太多克，终局脚本改回来
 
 	//Tank相关设置
-	ZombieTankHealth=40000
+	ZombieTankHealth=50000
 	TankHitDamageModifierCoop = 5
 
 	//其它设置
@@ -52,8 +53,12 @@ DirectorOptions <-
 	weaponsToConvert =
 	{
 		weapon_vomitjar = "random_throwable"
-		weapon_rifle_m60 = "random_sniper"
-		weapon_grenade_launcher = "random_sniper"
+		weapon_sniper_awp = "random_sniper"
+		weapon_sniper_scout = "random_sniper"
+		weapon_rifle = "random_rifle"
+		weapon_rifle_ak47 = "random_rifle"
+		weapon_rifle_desert = "random_rifle"
+		weapon_rifle_sg552 = "random_rifle"
 	}
 
 	function ConvertWeaponSpawn( classname )
@@ -97,17 +102,35 @@ DirectorOptions <-
 					{
 						realConvertWeapon="weapon_sniper_awp_spawn"
 					}
-					else if(rv < 0.2)
+					else if(rv < 0.3)
 					{
 						realConvertWeapon="weapon_sniper_scout_spawn"
 					}
-					else if(rv < 0.8)
+					else if(rv < 0.65)
 					{
-						realConvertWeapon="weapon_rifle_ak47_spawn"
+						realConvertWeapon="weapon_sniper_military_spawn"
 					}
 					else
 					{
-						return 0;
+						realConvertWeapon="weapon_hunting_rifle_spawn"
+					}
+					break;
+				case "random_rifle":
+					if(rv < 0.27)
+					{
+						realConvertWeapon="weapon_rifle_spawn"
+					}
+					else if(rv < 0.54)
+					{
+						realConvertWeapon="weapon_rifle_ak47_spawn"
+					}
+					else if(rv < 0.81)
+					{
+						realConvertWeapon="weapon_rifle_desert_spawn"
+					}
+					else
+					{
+						realConvertWeapon="weapon_rifle_sg552_spawn"
 					}
 					break;
 				default:
@@ -134,6 +157,35 @@ DirectorOptions <-
 	}
 }
 
+::RandomTime <- 0;
+::HFlow <- 0;
+
+function EasyLogic::Update::SpawnWitchWhenFlow ()
+{
+	local s = Players.SurvivorWithHighestFlow();
+	if ( s == null )
+		return;
+	local flow = s.GetFlowDistance();
+	if ( flow > HFlow )
+	{
+		local count = ((flow - HFlow) / 1000).tointeger();
+		for (; count > 0; count-- )
+		{
+			if(RandomTime == 0)
+			{
+				Convars.SetValue("sv_force_time_of_day","0")
+				RandomTime = 2;
+			}
+			else if(RandomTime == 2)
+			{
+				Convars.SetValue("sv_force_time_of_day","2")
+				RandomTime = 0;
+			}
+			HFlow += 1000;
+		}
+	}
+}
+
 Convars.SetValue("director_special_battlefield_respawn_interval",4) //防守时特感刷新的速度
 Convars.SetValue("director_custom_finale_tank_spacing",2) //终局tank出现的时间间隔
 Convars.SetValue("director_tank_checkpoint_interval",240)//允许tank出生的时间，自生还者离开安全屋开始计算
@@ -145,7 +197,7 @@ Convars.SetValue("director_threat_radius",0)
 Convars.SetValue("director_max_threat_areas",40)
 
 
-Convars.SetValue("director_force_tank",0) //是否走两步就刷tank
+Convars.SetValue("director_force_tank",0) //是否走两步就刷tank，应该是强制每个threat_area刷克，与director_max_threat_areas有关
 Convars.SetValue("director_force_witch",0)
 
 
