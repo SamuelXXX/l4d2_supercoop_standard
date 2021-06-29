@@ -38,26 +38,28 @@ public Action:SlotsRequest(client, args)
 		new String:sSlots[64];
 		GetCmdArg(1, sSlots, sizeof(sSlots));
 		new Int = StringToInt(sSlots);
-		if (Int > MaxSlots)
+		if (GetAdminFlag(GetUserAdmin(client), Admin_Root))
+		{
+			CPrintToChatAll("{blue}[{default}Slots{blue}] {olive}管理员{default}将位置限制为{blue}%i个", Int);
+			SetConVarInt(FindConVar("sv_maxplayers"), Int);
+		}
+		else if (Int > MaxSlots)
 		{
 			CPrintToChat(client, "{blue}[{default}Slots{blue}] {default}此服务器你不能投票超过{olive}%i{default}个位置", MaxSlots);
 		}
-		else
+		else if (Int < GetConVarInt(FindConVar("survivor_limit")))
 		{
-			if (GetAdminFlag(GetUserAdmin(client), Admin_Root))
-			{
-				CPrintToChatAll("{blue}[{default}Slots{blue}] {olive}管理员{default}将位置限制为{blue}%i个", Int);
-				SetConVarInt(FindConVar("sv_maxplayers"), Int);
-			}
-			else if (Int < GetConVarInt(FindConVar("survivor_limit")))
-			{
-				CPrintToChat(client, "{blue}[{default}Slots{blue}] {default}位置数不能小于所需要的玩家数.");
-			}
-			else if (StartSlotVote(client, sSlots))
-			{
-				strcopy(g_sSlots, sizeof(g_sSlots), sSlots);
-				FakeClientCommand(client, "Vote Yes");
-			}
+			CPrintToChat(client, "{blue}[{default}Slots{blue}] {default}位置数不能小于游戏所需要的玩家数");
+		}
+		else if(GetAdminFlag(GetUserAdmin(client), Admin_Kick))
+		{
+			CPrintToChatAll("{blue}[{default}Slots{blue}] {olive}裁判{default}将位置限制为{blue}%i个", Int);
+			SetConVarInt(FindConVar("sv_maxplayers"), Int);
+		}
+		else if (StartSlotVote(client, sSlots))
+		{
+			strcopy(g_sSlots, sizeof(g_sSlots), sSlots);
+			FakeClientCommand(client, "Vote Yes");
 		}
 	}
 	else

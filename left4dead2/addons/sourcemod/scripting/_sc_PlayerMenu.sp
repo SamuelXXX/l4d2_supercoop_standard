@@ -41,11 +41,11 @@ void CreateMainMenu(int client)
 	SetMenuTitle(menu,"主菜单");
 	AddMenuItem(menu,"1","踢人投票");
 	if(CheckCommandAccess(client,"sm_voteslay",ADMFLAG_KICK,false))
-		AddMenuItem(menu,"2","处死投票");
+		AddMenuItem(menu,"2","处死投票(裁判)");
 	AddMenuItem(menu,"3","换图投票(限首关)");
 	AddMenuItem(menu,"4","静音玩家");
 	if(CheckCommandAccess(client,"sm_kick",ADMFLAG_KICK,false))
-		AddMenuItem(menu,"5","踢出玩家（管理员）");
+		AddMenuItem(menu,"5","踢出玩家（裁判）");
 	if(CheckCommandAccess(client,"sm_sw",ADMFLAG_ROOT,false))
 		AddMenuItem(menu,"6","刷枪（最高权限）");
 		
