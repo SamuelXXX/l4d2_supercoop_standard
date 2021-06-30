@@ -37,7 +37,7 @@ public Plugin myinfo =
 };
 
 // Game Cvars
-ConVar	director_no_specials, god, sb_stop, survivor_limit, z_max_player_zombies, sv_infinite_primary_ammo, scavenge_round_setup_time;
+ConVar	director_no_specials, god, sb_stop, survivor_limit, sv_infinite_primary_ammo, scavenge_round_setup_time;
 
 // Plugin Cvars
 ConVar	l4d_ready_disable_spawns, l4d_ready_survivor_freeze,
@@ -121,7 +121,6 @@ public void OnPluginStart()
 	god = FindConVar("god");
 	sb_stop = FindConVar("sb_stop");
 	survivor_limit = FindConVar("survivor_limit");
-	z_max_player_zombies = FindConVar("z_max_player_zombies");
 	sv_infinite_primary_ammo = FindConVar("sv_infinite_primary_ammo");
 	scavenge_round_setup_time = FindConVar("scavenge_round_setup_time");
 
@@ -503,7 +502,7 @@ public Action ForceStart_Cmd(int client, int args)
 		
 		// No reason to call this when players are full
 		int playercount = GetTeamHumanCount(L4D2Team_Survivor) + GetTeamHumanCount(L4D2Team_Infected);
-		if (playercount == survivor_limit.IntValue + z_max_player_zombies.IntValue)
+		if (playercount == survivor_limit.IntValue)
 		{
 			CPrintToChat(client, "[{olive}Readyup{default}] {green}因为满人{default}你{red}不被允许{default}投票强制开始游戏{default}.");
 			return Plugin_Handled;
@@ -552,7 +551,7 @@ void StartForceStartVote(int client)
 			continue;
 			
 		AdminId id = GetUserAdmin(i);
-		if (!IsPlayer(i) && (id == INVALID_ADMIN_ID || !GetAdminFlag(id, Admin_Ban))) continue;
+		if (!IsPlayer(i) && (id == INVALID_ADMIN_ID || !GetAdminFlag(id, Admin_Root))) continue;
 		
 		players[total++] = i;
 	}
@@ -946,7 +945,7 @@ bool CheckFullReady()
 		}
 	}
 	
-	return readyCount >= GetConVarInt(survivor_limit) + GetConVarInt(z_max_player_zombies);
+	return readyCount >= GetConVarInt(survivor_limit);
 }
 
 void CancelFullReady(int client, disruptType type)
@@ -1242,7 +1241,7 @@ stock bool IsPlayerAfk(int client, float fTime)
 stock bool IsPlayer(int client)
 {
 	int team = GetClientTeam(client);
-	return (team == L4D2Team_Survivor || team == L4D2Team_Infected);
+	return (team == L4D2Team_Survivor);
 }
 
 stock int GetTeamHumanCount(int team)

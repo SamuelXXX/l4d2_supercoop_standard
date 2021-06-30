@@ -6,7 +6,7 @@ DirectorOptions <-
 	DominatorLimit = 8
 	ZombieTankHealth = 50000
 	WitchLimit = 0
-	TankLimit = 3
+	TankLimit = 4
 	
 	weaponsToConvert =
 	{
@@ -22,3 +22,4 @@ DirectorOptions <-
 
 Msg("###Relax Max Flow Travel:"+DirectorOptions.RelaxMaxFlowTravel);
 Convars.SetValue("z_witch_always_kills","1")
+Convars.SetValue("z_tank_speed",210)

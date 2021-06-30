@@ -53,6 +53,8 @@ DirectorOptions <-
 	TankLimit = 24
 }
 
+Convars.SetValue("z_tank_speed",210)
+
 local difficulty = Convars.GetStr( "z_difficulty" ).tolower();
 
 if ( Director.GetGameModeBase() == "versus" )

@@ -168,20 +168,25 @@ function EasyLogic::Update::SpawnWitchWhenFlow ()
 	local flow = s.GetFlowDistance();
 	if ( flow > HFlow )
 	{
-		local count = ((flow - HFlow) / 1000).tointeger();
+		local count = ((flow - HFlow) / 240).tointeger();
 		for (; count > 0; count-- )
 		{
 			if(RandomTime == 0)
 			{
 				Convars.SetValue("sv_force_time_of_day","0")
+				RandomTime = 1;
+			}
+			else if(RandomTime == 1)
+			{
+				Convars.SetValue("sv_force_time_of_day","2")
 				RandomTime = 2;
 			}
 			else if(RandomTime == 2)
 			{
-				Convars.SetValue("sv_force_time_of_day","2")
+				Convars.SetValue("sv_force_time_of_day","1")
 				RandomTime = 0;
 			}
-			HFlow += 1000;
+			HFlow += 240;
 		}
 	}
 }
@@ -195,6 +200,7 @@ Convars.SetValue("director_threat_max_separation",1)
 Convars.SetValue("director_threat_min_separation",0) 
 Convars.SetValue("director_threat_radius",0)
 Convars.SetValue("director_max_threat_areas",40)
+Convars.SetValue("z_tank_speed",250)
 
 
 Convars.SetValue("director_force_tank",0) //是否走两步就刷tank，应该是强制每个threat_area刷克，与director_max_threat_areas有关
