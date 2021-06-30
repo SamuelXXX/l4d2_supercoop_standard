@@ -5,3 +5,5 @@ DirectorOptions <-
 	cm_MaxSpecials = 9
 	DominatorLimit = 6
 }
+
+Convars.SetValue("sv_rescue_disabled",1)

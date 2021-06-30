@@ -4,7 +4,7 @@ Msg("\n\n\n");
 
 DirectorOptions <-
 {
-	ProhibitBosses = false
+	ProhibitBosses = true
 	SpecialRespawnInterval = 999999
 	CommonLimit = 0
 }

@@ -10,3 +10,5 @@ DirectorOptions <-
 	RelaxMinInterval = 120
 	RelaxMaxInterval = 120
 }
+
+Convars.SetValue("sv_rescue_disabled",1)

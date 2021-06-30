@@ -13,3 +13,5 @@ Convars.SetValue("z_witch_always_kills","0")
 
 Convars.SetValue("min_time_spawn_tank",9999)
 Convars.SetValue("max_time_spawn_tank",9999)
+
+Convars.SetValue("sv_rescue_disabled",1)

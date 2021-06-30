@@ -46,6 +46,7 @@ DirectorOptions <-
 	TankHitDamageModifierCoop = 5
 
 	//其它设置
+	AllowWitchesInCheckpoints = true
 	PreferredMobDirection = SPAWN_IN_FRONT_OF_SURVIVORS
 	PreferredSpecialDirection = SPAWN_SPECIALS_IN_FRONT_OF_SURVIVORS
 
@@ -54,7 +55,6 @@ DirectorOptions <-
 	{
 		weapon_vomitjar = "random_throwable"
 		weapon_sniper_awp = "random_sniper"
-		weapon_sniper_scout = "random_sniper"
 		weapon_rifle = "random_rifle"
 		weapon_rifle_ak47 = "random_rifle"
 		weapon_rifle_desert = "random_rifle"
@@ -98,15 +98,11 @@ DirectorOptions <-
 					}
 					break;
 				case "random_sniper":
-					if(rv < 0.1)
-					{
-						realConvertWeapon="weapon_sniper_awp_spawn"
-					}
-					else if(rv < 0.3)
+					if(rv < 0.2)
 					{
 						realConvertWeapon="weapon_sniper_scout_spawn"
 					}
-					else if(rv < 0.65)
+					else if(rv < 0.6)
 					{
 						realConvertWeapon="weapon_sniper_military_spawn"
 					}
@@ -140,6 +136,22 @@ DirectorOptions <-
 			return realConvertWeapon;
 		}
 		return 0;
+	}
+
+	weaponsToRemove =
+	{
+		weapon_sniper_awp = 0
+		weapon_rifle_m60 = 0
+		weapon_grenade_launcher = 0
+	}
+
+	function AllowWeaponSpawn( classname )
+	{
+		if ( classname in weaponsToRemove )
+		{
+			return false;
+		}
+		return true;
 	}
 
 	function KillAllSpecialInfected()
@@ -201,6 +213,7 @@ Convars.SetValue("director_threat_min_separation",0)
 Convars.SetValue("director_threat_radius",0)
 Convars.SetValue("director_max_threat_areas",40)
 Convars.SetValue("z_tank_speed",250)
+Convars.SetValue("sv_rescue_disabled",0)
 
 
 Convars.SetValue("director_force_tank",0) //是否走两步就刷tank，应该是强制每个threat_area刷克，与director_max_threat_areas有关
