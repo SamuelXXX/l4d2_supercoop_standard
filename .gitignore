@@ -24,6 +24,9 @@
 /left4dead2/addons/sourcemod/data
 #忽略所有带有-ignore标记的vpk格式的mod,比如三方图的vpk
 /left4dead2/addons/*-ignore.vpk
+#忽略由mm插件自动生成的mission list文件
+/left4dead2/addons/sourcemod/configs/missioncycle.*.txt
+!/left4dead2/addons/sourcemod/configs/missioncycle.coop.txt
 #忽略debug专用的插件以及插件源代码，比如一键杀死所有特感并统计特感数量的插件
 /left4dead2/addons/sourcemod/plugins/*-debug.smx
 /left4dead2/addons/sourcemod/scripting/*-debug.sp
