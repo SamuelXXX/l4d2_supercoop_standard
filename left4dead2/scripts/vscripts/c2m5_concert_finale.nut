@@ -70,6 +70,7 @@ Convars.SetValue("director_relax_max_interval","120")
 Convars.SetValue("tongue_victim_max_speed","700")
 Convars.SetValue("tongue_range","2000")
 Convars.SetValue("z_tank_speed",210)
+Convars.SetValue("l4d2_tankfire_boost_enable",1)
 
 function OnBeginCustomFinaleStage( num, type )
 {

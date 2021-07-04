@@ -214,6 +214,7 @@ Convars.SetValue("director_threat_radius",0)
 Convars.SetValue("director_max_threat_areas",40)
 Convars.SetValue("z_tank_speed",250)
 Convars.SetValue("sv_rescue_disabled",0)
+Convars.SetValue("l4d2_tankfire_boost_enable",0)
 
 
 Convars.SetValue("director_force_tank",0) //是否走两步就刷tank，应该是强制每个threat_area刷克，与director_max_threat_areas有关
