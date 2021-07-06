@@ -129,6 +129,20 @@ DirectorOptions <-
 						realConvertWeapon="weapon_rifle_sg552_spawn"
 					}
 					break;
+				case "other_supply":
+					if(rv < 0.33)
+					{
+						realConvertWeapon="weapon_first_aid_kit_spawn"
+					}
+					else if(rv < 0.66)
+					{
+						realConvertWeapon="weapon_adranaline_spawn"
+					}
+					else
+					{
+						realConvertWeapon="weapon_pain_pills_spawn"
+					}
+					break;
 				default:
 					break;
 			}

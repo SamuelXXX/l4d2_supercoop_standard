@@ -7,6 +7,11 @@ DirectorOptions <-
 	DominatorLimit = 5
 
 	ZombieTankHealth=30000
+
+	weaponsToConvert =
+	{
+		weapon_defibrillator = "other_supply"
+	}
 }
 
 Convars.SetValue("z_witch_always_kills","0")
