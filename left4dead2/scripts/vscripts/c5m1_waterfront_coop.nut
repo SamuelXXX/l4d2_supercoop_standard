@@ -7,6 +7,7 @@ DirectorOptions <-
 	DominatorLimit = 5
 
 	ZombieTankHealth=30000
+	RelaxMaxFlowTravel = 400
 
 	weaponsToConvert =
 	{
