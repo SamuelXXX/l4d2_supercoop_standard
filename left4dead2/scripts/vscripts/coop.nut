@@ -80,21 +80,25 @@ DirectorOptions <-
 					}
 					break;
 				case "random_supply":
-					if(rv < 0.25)
+					if(rv < 0.2)
 					{
-						realConvertWeapon="weapon_defibrillator_spawn"
+						realConvertWeapon="weapon_adrenaline_spawn"
 					}
-					else if(rv < 0.5)
+					else if(rv < 0.4)
 					{
 						realConvertWeapon="weapon_first_aid_kit_spawn"
 					}
-					else if(rv < 0.75)
+					else if(rv < 0.6)
 					{
 						realConvertWeapon="weapon_pain_pills_spawn"
 					}
+					else if(rv < 0.8)
+					{
+						realConvertWeapon="weapon_molotov_spawn"
+					}
 					else
 					{
-						realConvertWeapon="weapon_adrenaline_spawn"
+						realConvertWeapon="weapon_pipe_bomb_spawn"
 					}
 					break;
 				case "random_sniper":
