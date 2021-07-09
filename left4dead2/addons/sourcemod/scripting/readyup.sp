@@ -37,7 +37,7 @@ public Plugin myinfo =
 };
 
 // Game Cvars
-ConVar	director_no_specials, sb_stop, survivor_limit, pain_pills_decay_rate, scavenge_round_setup_time;
+ConVar	director_no_specials, director_no_bosses, sb_stop, survivor_limit, pain_pills_decay_rate, scavenge_round_setup_time;
 
 // Plugin Cvars
 ConVar	l4d_ready_disable_spawns, l4d_ready_survivor_freeze,
@@ -118,6 +118,7 @@ public void OnPluginStart()
 	HookEvent("player_team", PlayerTeam_Event, EventHookMode_Pre);
 
 	director_no_specials = FindConVar("director_no_specials");
+	director_no_bosses = FindConVar("director_no_bosses");
 	sb_stop = FindConVar("sb_stop");
 	survivor_limit = FindConVar("survivor_limit");
 	pain_pills_decay_rate = FindConVar("pain_pills_decay_rate");
@@ -340,6 +341,7 @@ public Action L4D_OnFirstSurvivorLeftSafeArea(int client)
 		ReturnPlayerToSaferoom(client, false);
 		return Plugin_Handled;
 	}
+	director_no_bosses.SetBool(false);
 	return Plugin_Continue;
 }
 
@@ -812,6 +814,7 @@ void InitiateReadyUp()
 	if (l4d_ready_disable_spawns.BoolValue)
 	{
 		director_no_specials.SetBool(true);
+		director_no_bosses.SetBool(true);
 	}
 
 	pain_pills_decay_rate.FloatValue = 0.0;
