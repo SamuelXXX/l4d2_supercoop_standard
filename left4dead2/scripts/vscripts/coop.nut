@@ -82,18 +82,6 @@ DirectorOptions <-
 				case "random_supply":
 					if(rv < 0.2)
 					{
-						realConvertWeapon="weapon_adrenaline_spawn"
-					}
-					else if(rv < 0.4)
-					{
-						realConvertWeapon="weapon_first_aid_kit_spawn"
-					}
-					else if(rv < 0.6)
-					{
-						realConvertWeapon="weapon_pain_pills_spawn"
-					}
-					else if(rv < 0.8)
-					{
 						realConvertWeapon="weapon_molotov_spawn"
 					}
 					else
