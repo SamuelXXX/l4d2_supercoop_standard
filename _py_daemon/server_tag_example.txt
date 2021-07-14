@@ -1,3 +1,3 @@
 Super Coop Test Server
 127.0.0.1
-..\srcds.exe -console -game left4dead2 -secure +hostport 27015 +map c5m1 -tickrate 50 +hostname "Super Coop VS Server"
+..\srcds.exe -console -game left4dead2 -secure +hostport 27015 +map c5m1 -tickrate 30 +hostname "Super Coop VS Server"
