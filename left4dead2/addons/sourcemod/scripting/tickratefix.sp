@@ -93,7 +93,7 @@ public OnPluginStart()
     HookEvent("weapon_fire", Event_WeaponFire);
 
     // Slow Doors
-    hCvarDoorSpeed     = CreateConVar("tick_door_speed",        "1.3", "Sets the speed of all prop_door entities on a map. 1.05 means = 105% speed", FCVAR_NONE);
+    hCvarDoorSpeed     = CreateConVar("tick_door_speed",        "1.09", "Sets the speed of all prop_door entities on a map. 1.05 means = 105% speed", FCVAR_NONE);
     fDoorSpeed         = GetConVarFloat(hCvarDoorSpeed);
     
     HookConVarChange(hCvarDoorSpeed, cvarChanged);

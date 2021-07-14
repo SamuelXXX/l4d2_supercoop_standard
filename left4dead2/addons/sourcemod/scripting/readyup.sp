@@ -37,7 +37,7 @@ public Plugin myinfo =
 };
 
 // Game Cvars
-ConVar	director_no_specials, god, sb_stop, survivor_limit, z_max_player_zombies, sv_infinite_primary_ammo, scavenge_round_setup_time;
+ConVar	director_no_specials, director_no_bosses, sb_stop, survivor_limit, pain_pills_decay_rate, scavenge_round_setup_time;
 
 // Plugin Cvars
 ConVar	l4d_ready_disable_spawns, l4d_ready_survivor_freeze,
@@ -118,11 +118,10 @@ public void OnPluginStart()
 	HookEvent("player_team", PlayerTeam_Event, EventHookMode_Pre);
 
 	director_no_specials = FindConVar("director_no_specials");
-	god = FindConVar("god");
+	director_no_bosses = FindConVar("director_no_bosses");
 	sb_stop = FindConVar("sb_stop");
 	survivor_limit = FindConVar("survivor_limit");
-	z_max_player_zombies = FindConVar("z_max_player_zombies");
-	sv_infinite_primary_ammo = FindConVar("sv_infinite_primary_ammo");
+	pain_pills_decay_rate = FindConVar("pain_pills_decay_rate");
 	scavenge_round_setup_time = FindConVar("scavenge_round_setup_time");
 
 	// Ready Commands
@@ -342,6 +341,7 @@ public Action L4D_OnFirstSurvivorLeftSafeArea(int client)
 		ReturnPlayerToSaferoom(client, false);
 		return Plugin_Handled;
 	}
+	director_no_bosses.SetBool(false);
 	return Plugin_Continue;
 }
 
@@ -503,9 +503,9 @@ public Action ForceStart_Cmd(int client, int args)
 		
 		// No reason to call this when players are full
 		int playercount = GetTeamHumanCount(L4D2Team_Survivor) + GetTeamHumanCount(L4D2Team_Infected);
-		if (playercount == survivor_limit.IntValue + z_max_player_zombies.IntValue)
+		if (playercount == survivor_limit.IntValue)
 		{
-			CPrintToChat(client, "[{olive}Readyup{default}] {green}因为满人{default}你{red}不被允许{default}投票强制开始游戏{default}.");
+			CPrintToChat(client, "[{olive}Readyup{default}] {green}因为生还者团队满员{default}你{red}不被允许{default}投票强制开始游戏{default}.");
 			return Plugin_Handled;
 		}
 		
@@ -552,7 +552,7 @@ void StartForceStartVote(int client)
 			continue;
 			
 		AdminId id = GetUserAdmin(i);
-		if (!IsPlayer(i) && (id == INVALID_ADMIN_ID || !GetAdminFlag(id, Admin_Ban))) continue;
+		if (!IsPlayer(i) && (id == INVALID_ADMIN_ID || !GetAdminFlag(id, Admin_Root))) continue;
 		
 		players[total++] = i;
 	}
@@ -814,14 +814,10 @@ void InitiateReadyUp()
 	if (l4d_ready_disable_spawns.BoolValue)
 	{
 		director_no_specials.SetBool(true);
+		director_no_bosses.SetBool(true);
 	}
 
-	sv_infinite_primary_ammo.Flags &= ~FCVAR_NOTIFY;
-	sv_infinite_primary_ammo.SetBool(true);
-	sv_infinite_primary_ammo.Flags |= FCVAR_NOTIFY;
-	god.Flags &= ~FCVAR_NOTIFY;
-	god.SetBool(true);
-	god.Flags |= FCVAR_NOTIFY;
+	pain_pills_decay_rate.FloatValue = 0.0;
 	sb_stop.SetBool(true);
 
 	if (IsScavenge()) {
@@ -850,13 +846,8 @@ void InitiateLive(bool real = true)
 
 	SetTeamFrozen(L4D2Team_Survivor, false);
 
-	sv_infinite_primary_ammo.Flags &= ~FCVAR_NOTIFY;
-	sv_infinite_primary_ammo.SetBool(false);
-	sv_infinite_primary_ammo.Flags |= FCVAR_NOTIFY;
+	pain_pills_decay_rate.FloatValue = 0.27;
 	director_no_specials.SetBool(false);
-	god.Flags &= ~FCVAR_NOTIFY;
-	god.SetBool(false);
-	god.Flags |= FCVAR_NOTIFY;
 	sb_stop.SetBool(false);
 	
 	if (IsScavenge()) {
@@ -946,7 +937,7 @@ bool CheckFullReady()
 		}
 	}
 	
-	return readyCount >= GetConVarInt(survivor_limit) + GetConVarInt(z_max_player_zombies);
+	return readyCount >= GetConVarInt(survivor_limit);
 }
 
 void CancelFullReady(int client, disruptType type)
@@ -1242,7 +1233,7 @@ stock bool IsPlayerAfk(int client, float fTime)
 stock bool IsPlayer(int client)
 {
 	int team = GetClientTeam(client);
-	return (team == L4D2Team_Survivor || team == L4D2Team_Infected);
+	return (team == L4D2Team_Survivor);
 }
 
 stock int GetTeamHumanCount(int team)

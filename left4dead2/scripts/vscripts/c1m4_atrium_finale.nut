@@ -127,6 +127,8 @@ SharedOptions <-
 	TankLimit=24
 } 
 
+Convars.SetValue("z_tank_speed",210)
+
 InitialOnslaughtOptions <-
 {
     LockTempo = 0

@@ -114,7 +114,7 @@ CommonFinaleOptions <-
 	SpecialRespawnInterval = 2
 	cm_SpecialRespawnInterval=2
 	TankHitDamageModifierCoop = 5
-	ZombieTankHealth = 20000
+	ZombieTankHealth = 50000
 
 	HordeEscapeCommonLimit = 30
 	

@@ -18,7 +18,7 @@
 
 
 
-#define PLUGIN_VERSION		"1.42"
+#define PLUGIN_VERSION		"1.47"
 
 #define DEBUG				0
 // #define DEBUG			1	// Prints addresses + detour info (only use for debugging, slows server down)
@@ -27,6 +27,8 @@
 // #define DETOUR_ALL		1	// Enable all detours, for testing.
 
 #define KILL_VSCRIPT		0	// 0=Keep VScript entity after using for "GetVScriptOutput". 1=Kill the entity after use.
+
+
 
 /*======================================================================================
 	Plugin Info:
@@ -40,8 +42,39 @@
 ========================================================================================
 	Change Log:
 
+1.47 (10-Jul-2021)
+	- Fixed "Trying to get value for null pointer" in the "L4D_OnVomitedUpon" forward. Thanks to "Shadowart" for reporting.
+
+1.46 (09-Jul-2021)
+	- L4D2: Added native "L4D2_ExecVScriptCode" to exec VScript code instead of having to create an entity to fire code.
+	- L4D2: Fixed GameData file from the "2.2.2.0" game update.
+
+1.45 (04-Jul-2021)
+	- Fixed bad description for "L4D_SetHumanSpec" and "L4D_TakeOverBot" in the Include file.
+	- L4D1: Fixed forward "L4D_OnVomitedUpon" crashing. GameData file updated. Thanks to "Crasher_3637" for reporting.
+
+1.44 (01-Jul-2021)
+	- Fixed forward "L4D_OnMaterializeFromGhost" not firing. Thanks to "ProjectSky" for reporting.
+	- Fixed changelog description. Thanks to "Spirit_12" for reporting.
+
+1.43 (01-Jul-2021)
+	- L4D1 & L4D2 update:
+	- Added forward "L4D_OnMaterializeFromGhostPre" and "L4D_OnMaterializeFromGhost" when a client spawns out of ghost mode. Thanks to "ProjectSky" and "sorallll" and for suggesting.
+
+	- Added native "L4D_RespawnPlayer" to respawn a dead player.
+	- Added native "L4D_SetHumanSpec" to takeover a bot.
+	- Added native "L4D_TakeOverBot" to takeover a bot.
+	- Added native "L4D_CanBecomeGhost" to determine when someone is about to enter ghost mode.
+	- Added native "L4D2_AreWanderersAllowed" to determine if Witches can wander.
+	- Added native "L4D_IsFinaleEscapeInProgress" to determine when the rescue vehicle is leaving until.
+	- Added native "L4D_GetLastKnownArea" to retrieve a clients last known nav area.
+
+	- Added missing "ACT_ITEM2_VM_LOWERED_TO_IDLE" to the "data/left4dhooks.l4d2.cfg" config.
+
+	- Updated: Plugin, Test plugin, Include file, GameData files and "data/left4dhooks.l4d2.cfg" config.
+
 1.42 (23-Jun-2021)
-	- L4D & L4D2 update:
+	- L4D1 & L4D2 update:
 	- Added forward "L4D_OnVomitedUpon" when client is covered in vomit.
 	- Added forward "L4D_OnEnterGhostStatePre" with the ability to block entering ghost state.
 	- Changed 2 signatures to be compatible with detouring: "CTerrorPlayer::OnStaggered" and "CTerrorPlayer::OnVomitedUpon".
@@ -66,7 +99,7 @@
 		"L4D2_VScriptWrapper_NavAreaBuildPath"
 		"L4D2_VScriptWrapper_NavAreaTravelDistance" // Added as a demonstration and test, SDKCall is available, use "L4D2_NavAreaTravelDistance" instead.
 
-	- Updated: Plugin, GameData and Include file. Both L4D1 and L4D2.
+	- Updated: Plugin, Test plugin, GameData and Include file. Both L4D1 and L4D2.
 	- Thanks to "Eärendil" for showing me how to call some VScript functions.
 
 1.41 (18-Jun-2021)
@@ -590,6 +623,8 @@ GlobalForward g_hForward_OnReplaceTank;
 GlobalForward g_hForward_OnUseHealingItems;
 GlobalForward g_hForward_OnFindScavengeItem;
 GlobalForward g_hForward_OnChooseVictim;
+GlobalForward g_hForward_OnMaterializeFromGhostPre;
+GlobalForward g_hForward_OnMaterializeFromGhost;
 GlobalForward g_hForward_OnVomitedUpon;
 GlobalForward g_hForward_OnHitByVomitJar;
 GlobalForward g_hForward_InfernoSpread;
@@ -616,6 +651,12 @@ Handle g_hSDK_Call_HasPlayerControlledZombies;
 Handle g_hSDK_Call_PipeBombPrj;
 Handle g_hSDK_Call_SpitterPrj;
 Handle g_hSDK_Call_OnAdrenalineUsed;
+Handle g_hSDK_Call_RoundRespawn;
+Handle g_hSDK_Call_SetHumanSpec;
+Handle g_hSDK_Call_TakeOverBot;
+Handle g_hSDK_Call_CanBecomeGhost;
+Handle g_hSDK_Call_AreWanderersAllowed;
+Handle g_hSDK_Call_IsFinaleEscapeInProgress;
 Handle g_hSDK_Call_ForceNextStage;
 Handle g_hSDK_Call_IsTankInPlay;
 Handle g_hSDK_Call_GetFurthestSurvivorFlow;
@@ -664,7 +705,6 @@ Handle g_hSDK_Call_CTerrorPlayer_OnHitByVomitJar;
 Handle g_hSDK_Call_Infected_OnHitByVomitJar;
 Handle g_hSDK_Call_Fling;
 Handle g_hSDK_Call_CancelStagger;
-// Handle g_hSDK_Call_RoundRespawn;
 Handle g_hSDK_Call_CreateRescuableSurvivors;
 Handle g_hSDK_Call_OnRevived;
 Handle g_hSDK_Call_GetVersusCompletionPlayer;
@@ -856,6 +896,8 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 	g_hForward_OnUseHealingItems				= new GlobalForward("L4D2_OnUseHealingItems",					ET_Event, Param_Cell);
 	g_hForward_OnFindScavengeItem				= new GlobalForward("L4D2_OnFindScavengeItem",					ET_Event, Param_Cell, Param_CellByRef);
 	g_hForward_OnChooseVictim					= new GlobalForward("L4D2_OnChooseVictim",						ET_Event, Param_Cell, Param_CellByRef);
+	g_hForward_OnMaterializeFromGhostPre		= new GlobalForward("L4D_OnMaterializeFromGhostPre",			ET_Event, Param_Cell);
+	g_hForward_OnMaterializeFromGhost			= new GlobalForward("L4D_OnMaterializeFromGhost",				ET_Event, Param_Cell);
 	g_hForward_OnVomitedUpon					= new GlobalForward("L4D_OnVomitedUpon",						ET_Event, Param_Cell, Param_CellByRef, Param_CellByRef);
 	// g_hForward_InfectedShoved					= new GlobalForward("L4D_OnInfectedShoved",						ET_Event, Param_Cell, Param_Cell);
 	// g_hForward_OnWaterMove						= new GlobalForward("L4D2_OnWaterMove",							ET_Event, Param_Cell);
@@ -880,8 +922,8 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 
 	// ====================================================================================================
 	//									NATIVES
-	// L4D1 = 12 [left4downtown] + 43 - 0 (deprecated) [l4d_direct] + 15 [l4d2addresses] + 14 [silvers - mine!] + 4 [anim] = 88
-	// L4D2 = 52 [left4downtown] + 62 - 1 (deprecated) [l4d_direct] + 26 [l4d2addresses] + 35 [silvers - mine!] + 4 [anim] = 177
+	// L4D1 = 12 [left4downtown] + 43 - 0 (deprecated) [l4d_direct] + 15 [l4d2addresses] + 15 [silvers - mine!] + 4 [anim] = 94
+	// L4D2 = 52 [left4downtown] + 62 - 1 (deprecated) [l4d_direct] + 26 [l4d2addresses] + 37 [silvers - mine!] + 4 [anim] = 185
 	// ====================================================================================================
 	// ANIMATION HOOK
 	CreateNative("AnimHookEnable",		 							Native_AnimHookEnable);
@@ -899,8 +941,9 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 	CreateNative("L4D_OnITExpired",		 							Native_OnITExpired);
 	CreateNative("L4D_AngularVelocity",		 						Native_AngularVelocity);
 	CreateNative("L4D_GetRandomPZSpawnPosition",		 			Native_GetRandomPZSpawnPosition);
-	CreateNative("L4D_GetNearestNavArea",		 					Native_GetNearestNavArea);
 	CreateNative("L4D_FindRandomSpot",		 						Native_FindRandomSpot);
+	CreateNative("L4D_GetNearestNavArea",		 					Native_GetNearestNavArea);
+	CreateNative("L4D_GetLastKnownArea",		 					Native_GetLastKnownarea);
 	CreateNative("L4D_HasAnySurvivorLeftSafeArea",		 			Native_HasAnySurvivorLeftSafeArea);
 	CreateNative("L4D_IsAnySurvivorInStartArea",		 			Native_IsAnySurvivorInStartArea);
 	CreateNative("L4D_IsAnySurvivorInCheckpoint",		 			Native_IsAnySurvivorInCheckpoint);
@@ -909,8 +952,15 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 	CreateNative("L4D_HasPlayerControlledZombies",		 			Native_HasPlayerControlledZombies);
 	CreateNative("L4D_PipeBombPrj",		 							Native_PipeBombPrj);
 
+	CreateNative("L4D_SetHumanSpec",								Native_SetHumanSpec);
+	CreateNative("L4D_TakeOverBot",									Native_TakeOverBot);
+	CreateNative("L4D_CanBecomeGhost",								Native_CanBecomeGhost);
+	CreateNative("L4D_IsFinaleEscapeInProgress",					Native_IsFinaleEscapeInProgress);
+
 	if( g_bLeft4Dead2 )
 	{
+		CreateNative("L4D2_AreWanderersAllowed",					Native_AreWanderersAllowed);
+		CreateNative("L4D2_ExecVScriptCode",						Native_ExecVScriptCode);
 		CreateNative("L4D2_GetVScriptOutput",						Native_GetVScriptOutput);
 		CreateNative("L4D2_SpitterPrj",		 						Native_SpitterPrj);
 		CreateNative("L4D2_UseAdrenaline",		 					Native_OnAdrenalineUsed);
@@ -920,7 +970,6 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 		CreateNative("L4D2_IsReachable",		 					Native_IsReachable);
 		CreateNative("L4D2_GetFurthestSurvivorFlow",		 		Native_GetFurthestSurvivorFlow);
 		CreateNative("L4D2_GetScriptValueInt",						Native_GetScriptValueInt);
-
 		CreateNative("L4D2_NavAreaTravelDistance",		 			Native_NavAreaTravelDistance);
 
 		CreateNative("L4D2_VScriptWrapper_GetMapNumber",			Native_VS_GetMapNumber);
@@ -1090,7 +1139,7 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 	// =========================
 	CreateNative("L4D_CTerrorPlayer_OnVomitedUpon",					Native_CTerrorPlayer_OnVomitedUpon);
 	CreateNative("L4D_CancelStagger",								Native_CancelStagger);
-	// CreateNative("L4D_RespawnPlayer",								Native_RespawnPlayer); // Future addition maybe
+	CreateNative("L4D_RespawnPlayer",								Native_RespawnPlayer);
 	CreateNative("L4D_CreateRescuableSurvivors",					Native_CreateRescuableSurvivors);
 	CreateNative("L4D_ReviveSurvivor",								Native_OnRevived);
 	CreateNative("L4D_GetHighestFlowSurvivor",						Native_GetHighestFlowSurvivor);
@@ -2118,6 +2167,8 @@ void SetupDetours(GameData hGameData = null)
 	CreateDetour(hGameData, OnUseHealingItems,					INVALID_FUNCTION,		"UseHealingItems",						"L4D2_OnUseHealingItems");
 	CreateDetour(hGameData, OnFindScavengeItemPre,				OnFindScavengeItem,		"FindScavengeItem",						"L4D2_OnFindScavengeItem");
 	CreateDetour(hGameData, OnChooseVictimPre,					OnChooseVictim,			"ChooseVictim",							"L4D2_OnChooseVictim");
+	CreateDetour(hGameData, OnMaterializeFromGhostPre,			OnMaterialize,			"OnMaterializeFromGhost",				"L4D_OnMaterializeFromGhostPre");
+	CreateDetour(hGameData, OnMaterializeFromGhostPre,			OnMaterialize,			"OnMaterializeFromGhost",				"L4D_OnMaterializeFromGhost", true);
 	CreateDetour(hGameData, OnVomitedUpon,						INVALID_FUNCTION,		"OnVomitedUpon",						"L4D_OnVomitedUpon");
 
 	if( !g_bLeft4Dead2 )
@@ -2970,6 +3021,53 @@ void LoadGameData()
 	}
 
 	StartPrepSDKCall(SDKCall_Raw);
+	if( PrepSDKCall_SetFromConf(hGameData, SDKConf_Signature, "IsFinaleEscapeInProgress") == false )
+	{
+		LogError("Failed to find signature: IsFinaleEscapeInProgress");
+	} else {
+		PrepSDKCall_SetReturnInfo(SDKType_Bool, SDKPass_Plain);
+		g_hSDK_Call_IsFinaleEscapeInProgress = EndPrepSDKCall();
+		if( g_hSDK_Call_IsFinaleEscapeInProgress == null )
+			LogError("Failed to create SDKCall: IsFinaleEscapeInProgress");
+	}
+
+	StartPrepSDKCall(SDKCall_Player);
+	if( PrepSDKCall_SetFromConf(hGameData, SDKConf_Signature, "SetHumanSpec") == false )
+	{
+		LogError("Failed to find signature: SetHumanSpec");
+	} else {
+		PrepSDKCall_AddParameter(SDKType_CBasePlayer, SDKPass_Pointer);
+		PrepSDKCall_SetReturnInfo(SDKType_Bool, SDKPass_Plain);
+		g_hSDK_Call_SetHumanSpec = EndPrepSDKCall();
+		if( g_hSDK_Call_SetHumanSpec == null )
+			LogError("Failed to create SDKCall: SetHumanSpec");
+	}
+
+	StartPrepSDKCall(SDKCall_Player);
+	if( PrepSDKCall_SetFromConf(hGameData, SDKConf_Signature, "TakeOverBot") == false )
+	{
+		LogError("Failed to find signature: TakeOverBot");
+	} else {
+		PrepSDKCall_AddParameter(SDKType_Bool, SDKPass_Plain);
+		PrepSDKCall_SetReturnInfo(SDKType_Bool, SDKPass_Plain);
+		g_hSDK_Call_TakeOverBot = EndPrepSDKCall();
+		if( g_hSDK_Call_TakeOverBot == null )
+			LogError("Failed to create SDKCall: TakeOverBot");
+	}
+
+	StartPrepSDKCall(SDKCall_Player);
+	if( PrepSDKCall_SetFromConf(hGameData, SDKConf_Signature, "CanBecomeGhost") == false )
+	{
+		LogError("Failed to find signature: CanBecomeGhost");
+	} else {
+		PrepSDKCall_AddParameter(SDKType_Bool, SDKPass_Plain);
+		PrepSDKCall_SetReturnInfo(SDKType_Bool, SDKPass_Plain);
+		g_hSDK_Call_CanBecomeGhost = EndPrepSDKCall();
+		if( g_hSDK_Call_CanBecomeGhost == null )
+			LogError("Failed to create SDKCall: CanBecomeGhost");
+	}
+
+	StartPrepSDKCall(SDKCall_Raw);
 	if( PrepSDKCall_SetFromConf(hGameData, SDKConf_Signature, "TryOfferingTankBot") == false )
 	{
 		LogError("Failed to find signature: TryOfferingTankBot");
@@ -2984,31 +3082,40 @@ void LoadGameData()
 
 	StartPrepSDKCall(SDKCall_Raw);
 	if( PrepSDKCall_SetFromConf(hGameData, SDKConf_Signature, "GetNavArea") == false )
-		SetFailState("Failed to find signature: GetNavArea");
-	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef);
-	PrepSDKCall_AddParameter(SDKType_Float, SDKPass_Plain);
-	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
-	g_hSDK_Call_GetNavArea = EndPrepSDKCall();
-	if( g_hSDK_Call_GetNavArea == null )
-		SetFailState("Failed to create SDKCall: GetNavArea");
+	{
+		LogError("Failed to find signature: GetNavArea");
+	} else {
+		PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef);
+		PrepSDKCall_AddParameter(SDKType_Float, SDKPass_Plain);
+		PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
+		g_hSDK_Call_GetNavArea = EndPrepSDKCall();
+		if( g_hSDK_Call_GetNavArea == null )
+			SetFailState("Failed to create SDKCall: GetNavArea");
+	}
 
 	StartPrepSDKCall(SDKCall_Player);
 	if( PrepSDKCall_SetFromConf(hGameData, SDKConf_Signature, "GetFlowDistance") == false )
-		SetFailState("Failed to find signature: GetFlowDistance");
-	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);
-	PrepSDKCall_SetReturnInfo(SDKType_Float, SDKPass_Plain);
-	g_hSDK_Call_GetFlowDistance = EndPrepSDKCall();
-	if( g_hSDK_Call_GetFlowDistance == null )
-		SetFailState("Failed to create SDKCall: GetFlowDistance");
+	{
+		LogError("Failed to find signature: GetFlowDistance");
+	} else {
+		PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);
+		PrepSDKCall_SetReturnInfo(SDKType_Float, SDKPass_Plain);
+		g_hSDK_Call_GetFlowDistance = EndPrepSDKCall();
+		if( g_hSDK_Call_GetFlowDistance == null )
+			SetFailState("Failed to create SDKCall: GetFlowDistance");
+	}
 
 	StartPrepSDKCall(SDKCall_Player);
 	if( PrepSDKCall_SetFromConf(hGameData, SDKConf_Virtual, "DoAnimationEvent") == false )
-		SetFailState("Failed to find signature: DoAnimationEvent");
-	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);
-	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);
-	g_hSDK_Call_DoAnimationEvent = EndPrepSDKCall();
-	if( g_hSDK_Call_DoAnimationEvent == null )
-		SetFailState("Failed to create SDKCall: DoAnimationEvent");
+	{
+		LogError("Failed to find signature: DoAnimationEvent");
+	} else {
+		PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);
+		PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);
+		g_hSDK_Call_DoAnimationEvent = EndPrepSDKCall();
+		if( g_hSDK_Call_DoAnimationEvent == null )
+			SetFailState("Failed to create SDKCall: DoAnimationEvent");
+	}
 
 
 
@@ -3075,7 +3182,19 @@ void LoadGameData()
 			if( g_hSDK_Call_SpawnWitchBride == null )
 				LogError("Failed to create SDKCall: SpawnWitchBride");
 		}
+
+		StartPrepSDKCall(SDKCall_Raw);
+		if( PrepSDKCall_SetFromConf(hGameData, SDKConf_Signature, "AreWanderersAllowed") == false )
+		{
+			LogError("Failed to find signature: AreWanderersAllowed");
+		} else {
+			PrepSDKCall_SetReturnInfo(SDKType_Bool, SDKPass_Plain);
+			g_hSDK_Call_AreWanderersAllowed = EndPrepSDKCall();
+			if( g_hSDK_Call_AreWanderersAllowed == null )
+				LogError("Failed to create SDKCall: AreWanderersAllowed");
+		}
 	} else {
+	// L4D1 only:
 		StartPrepSDKCall(SDKCall_Raw);
 		if( PrepSDKCall_SetFromConf(hGameData, SDKConf_Signature, "SpawnHunter") == false )
 		{
@@ -3143,7 +3262,6 @@ void LoadGameData()
 			LogError("Failed to create SDKCall: CancelStagger");
 	}
 
-	/* Future addition maybe
 	StartPrepSDKCall(SDKCall_Player);
 	if( PrepSDKCall_SetFromConf(hGameData, SDKConf_Signature, "RoundRespawn") == false )
 	{
@@ -3153,7 +3271,6 @@ void LoadGameData()
 		if( g_hSDK_Call_RoundRespawn == null )
 			LogError("Failed to create SDKCall: RoundRespawn");
 	}
-	// */
 
 	StartPrepSDKCall(SDKCall_Raw);
 	if( PrepSDKCall_SetFromConf(hGameData, SDKConf_Signature, "CreateRescuableSurvivors") == false )
@@ -3842,6 +3959,19 @@ void ValidateOffset(int test, const char[] name, bool check = true)
 // ==================================================
 // Silvers Natives
 // ==================================================
+public int Native_ExecVScriptCode(Handle plugin, int numParams)
+{
+	int maxlength;
+	GetNativeStringLength(1, maxlength);
+	maxlength += 1;
+	char[] code = new char[maxlength];
+	GetNativeString(1, code, maxlength);
+
+	bool success = ExecVScriptCode(code);
+
+	return success;
+}
+
 public int Native_GetVScriptOutput(Handle plugin, int numParams)
 {
 	int maxlength;
@@ -3946,6 +4076,16 @@ public int Native_GetNearestNavArea(Handle plugin, int numParams)
 	//PrintToServer("#### CALL Native_GetNearestNavArea");
 	int result = SDKCall(g_hSDK_Call_GetNearestNavArea, g_pNavMesh, vPos, 0, 10000.0, 0, 1, 0);
 	return result;
+}
+
+public int Native_GetLastKnownarea(Handle plugin, int numParams)
+{
+	ValidateNatives(g_hSDK_Call_GetLastKnownArea, "GetLastKnownArea");
+
+	int client = GetNativeCell(1);
+
+	//PrintToServer("#### CALL g_hSDK_Call_GetLastKnownArea");
+	return SDKCall(g_hSDK_Call_GetLastKnownArea, client);
 }
 
 public int Native_FindRandomSpot(Handle plugin, int numParams)
@@ -4395,9 +4535,10 @@ public int Native_IsFirstMapInScenario(Handle plugin, int numParams)
 
 		if( keyvalue )
 		{
-			GetCurrentMap(sMap, sizeof(sMap));
 			//PrintToServer("#### CALL SDK_KV_GetString");
 			SDKCall(SDK_KV_GetString, keyvalue, check, sizeof(check), "map", "N/A");
+
+			GetCurrentMap(sMap, sizeof(sMap));
 			return strcmp(sMap, check) == 0;
 		}
 
@@ -5027,7 +5168,7 @@ public int Native_GetTankCount(Handle plugin, int numParams)
 	} else {
 		for( int i = 1; i <= MaxClients; i++ )
 		{
-			if( IsClientInGame(i) && GetClientTeam(i) == 3 && GetEntProp(i, Prop_Send, "m_zombieClass") == 5 )
+			if( IsClientInGame(i) && GetClientTeam(i) == 3 && GetEntProp(i, Prop_Send, "m_zombieClass") == g_iClassTank )
 			{
 				val++;
 			}
@@ -5055,6 +5196,50 @@ public int Native_GetWitchCount(Handle plugin, int numParams)
 	}
 
 	return val;
+}
+
+public int Native_IsFinaleEscapeInProgress(Handle plugin, int numParams)
+{
+	ValidateNatives(g_hSDK_Call_IsFinaleEscapeInProgress, "g_hSDK_Call_IsFinaleEscapeInProgress");
+	ValidateAddress(g_pDirector, "g_pDirector");
+
+	return SDKCall(g_hSDK_Call_IsFinaleEscapeInProgress, g_pDirector);
+}
+
+public int Native_SetHumanSpec(Handle plugin, int numParams)
+{
+	ValidateNatives(g_hSDK_Call_SetHumanSpec, "g_hSDK_Call_SetHumanSpec");
+
+	int bot = GetNativeCell(1);
+	int client = GetNativeCell(2);
+
+	return SDKCall(g_hSDK_Call_SetHumanSpec, bot, client);
+}
+
+public int Native_TakeOverBot(Handle plugin, int numParams)
+{
+	ValidateNatives(g_hSDK_Call_TakeOverBot, "g_hSDK_Call_TakeOverBot");
+
+	int client = GetNativeCell(1);
+
+	return SDKCall(g_hSDK_Call_TakeOverBot, client, true);
+}
+
+public int Native_CanBecomeGhost(Handle plugin, int numParams)
+{
+	ValidateNatives(g_hSDK_Call_CanBecomeGhost, "g_hSDK_Call_CanBecomeGhost");
+
+	int client = GetNativeCell(1);
+
+	return SDKCall(g_hSDK_Call_CanBecomeGhost, client, true);
+}
+
+public int Native_AreWanderersAllowed(Handle plugin, int numParams)
+{
+	ValidateNatives(g_hSDK_Call_AreWanderersAllowed, "g_hSDK_Call_AreWanderersAllowed");
+	ValidateAddress(g_pDirector, "g_pDirector");
+
+	return SDKCall(g_hSDK_Call_AreWanderersAllowed, g_pDirector);
 }
 
 public int Native_GetVersusCampaignScores(Handle plugin, int numParams)
@@ -5939,7 +6124,6 @@ public int Native_CancelStagger(Handle plugin, int numParams)
 	SDKCall(g_hSDK_Call_CancelStagger, client);
 }
 
-/* Future addition maybe
 public int Native_RespawnPlayer(Handle plugin, int numParams)
 {
 	ValidateNatives(g_hSDK_Call_RoundRespawn, "g_hSDK_Call_RoundRespawn");
@@ -5947,7 +6131,6 @@ public int Native_RespawnPlayer(Handle plugin, int numParams)
 	int client = GetNativeCell(1);
 	SDKCall(g_hSDK_Call_RoundRespawn, client);
 }
-// */
 
 public int Native_CreateRescuableSurvivors(Handle plugin, int numParams)
 {
@@ -7308,9 +7491,39 @@ public MRESReturn OnChooseVictim(int client, Handle hReturn)
 	return MRES_Ignored;
 }
 
+public MRESReturn OnMaterializeFromGhostPre(int client)
+{
+	//PrintToServer("##### DTR OnMaterializeFromGhostPre");
+
+	Action aResult = Plugin_Continue;
+	Call_StartForward(g_hForward_OnMaterializeFromGhostPre);
+	Call_PushCell(client);
+	Call_Finish(aResult);
+
+	if( aResult == Plugin_Handled )
+	{
+		return MRES_Supercede;
+	}
+
+	return MRES_Ignored;
+}
+
+public MRESReturn OnMaterialize(int client)
+{
+	//PrintToServer("##### DTR OnMaterializeFromGhost");
+
+	Call_StartForward(g_hForward_OnMaterializeFromGhost);
+	Call_PushCell(client);
+	Call_Finish();
+
+	return MRES_Ignored;
+}
+
 public MRESReturn OnVomitedUpon(int client, Handle hReturn, Handle hParams)
 {
 	// PrintToServer("##### DTR OnVomitedUpon");
+
+	if( DHookIsNullParam(hParams, 1) || DHookIsNullParam(hParams, 2) ) return MRES_Ignored;
 
 	int a1 = DHookGetParam(hParams, 1);
 	int a2 = DHookGetParam(hParams, 2);
@@ -7552,58 +7765,46 @@ public int Native_VS_UseAdrenaline(Handle plugin, int numParams)
 {
 	// Vars
 	char code[256];
-	char buffer[8];
 
 	int client = GetNativeCell(1);
 	client = GetClientUserId(client);
 	float fTime = GetNativeCell(2);
 
 	// Code
-	FormatEx(code, sizeof(code), "GetPlayerFromUserID(%d).UseAdrenaline(%f); <RETURN>1</RETURN>", client, fTime);
+	FormatEx(code, sizeof(code), "GetPlayerFromUserID(%d).UseAdrenaline(%f);", client, fTime);
 
 	// Exec
-	if( GetVScriptOutput(code, buffer, sizeof(buffer)) )
-		return true;
-	else
-		return false;
+	return ExecVScriptCode(code);
 }
 
 public int Native_VS_ReviveByDefib(Handle plugin, int numParams)
 {
 	// Vars
 	char code[256];
-	char buffer[8];
 
 	int client = GetNativeCell(1);
 	client = GetClientUserId(client);
 
 	// Code
-	FormatEx(code, sizeof(code), "GetPlayerFromUserID(%d).ReviveByDefib(); <RETURN>1</RETURN>", client);
+	FormatEx(code, sizeof(code), "GetPlayerFromUserID(%d).ReviveByDefib();", client);
 
 	// Exec
-	if( GetVScriptOutput(code, buffer, sizeof(buffer)) )
-		return true;
-	else
-		return false;
+	return ExecVScriptCode(code);
 }
 
 public int Native_VS_ReviveFromIncap(Handle plugin, int numParams)
 {
 	// Vars
 	char code[256];
-	char buffer[8];
 
 	int client = GetNativeCell(1);
 	client = GetClientUserId(client);
 
 	// Code
-	FormatEx(code, sizeof(code), "GetPlayerFromUserID(%d).ReviveFromIncap(); <RETURN>1</RETURN>", client);
+	FormatEx(code, sizeof(code), "GetPlayerFromUserID(%d).ReviveFromIncap();", client);
 
 	// Exec
-	if( GetVScriptOutput(code, buffer, sizeof(buffer)) )
-		return true;
-	else
-		return false;
+	return ExecVScriptCode(code);
 }
 
 public int Native_VS_GetSenseFlags(Handle plugin, int numParams)
@@ -7697,24 +7898,46 @@ public any Native_VS_NavAreaTravelDistance(Handle plugin, int numParams)
 // ====================================================================================================
 //										HELPERS
 // ====================================================================================================
-bool GetVScriptOutput(char[] code, char[] ret, int maxlength)
+int g_iLogicScript;
+
+bool GetVScriptEntity()
 {
-	static int logic;
-
-	if( !logic || EntRefToEntIndex(logic) == INVALID_ENT_REFERENCE )
+	if( !g_iLogicScript || EntRefToEntIndex(g_iLogicScript) == INVALID_ENT_REFERENCE )
 	{
-		logic = CreateEntityByName("logic_script");
+		g_iLogicScript = CreateEntityByName("logic_script");
 
-		if( logic == INVALID_ENT_REFERENCE || !IsValidEntity(logic) )
+		if( g_iLogicScript == INVALID_ENT_REFERENCE || !IsValidEntity(g_iLogicScript) )
 		{
 			LogError("Could not create 'logic_script'");
 			return false;
 		}
 
-		DispatchSpawn(logic);
+		DispatchSpawn(g_iLogicScript);
 
-		logic = EntIndexToEntRef(logic);
+		g_iLogicScript = EntIndexToEntRef(g_iLogicScript);
 	}
+
+	return true;
+}
+
+bool ExecVScriptCode(char[] code)
+{
+	if( !GetVScriptEntity() ) return false;
+
+	// Run code
+	SetVariantString(code);
+	AcceptEntityInput(g_iLogicScript, "RunScriptCode");
+
+	#if KILL_VSCRIPT
+	AcceptEntityInput(g_iLogicScript, "Kill");
+	#endif
+
+	return true;
+}
+
+bool GetVScriptOutput(char[] code, char[] ret, int maxlength)
+{
+	if( !GetVScriptEntity() ) return false;
 
 	// Return values between <RETURN> </RETURN>
 	int length = strlen(code) + 256;
@@ -7734,10 +7957,10 @@ bool GetVScriptOutput(char[] code, char[] ret, int maxlength)
 
 	// Run code
 	SetVariantString(buffer);
-	AcceptEntityInput(logic, "RunScriptCode");
+	AcceptEntityInput(g_iLogicScript, "RunScriptCode");
 
 	#if KILL_VSCRIPT
-	AcceptEntityInput(logic, "Kill");
+	AcceptEntityInput(g_iLogicScript, "Kill");
 	#endif
 
 	// Retrieve value and return to buffer

@@ -7,9 +7,14 @@ DirectorOptions <-
 	DominatorLimit = 5
 
 	ZombieTankHealth=30000
+	RelaxMaxFlowTravel = 400
+
+	weaponsToConvert =
+	{
+		weapon_defibrillator = "other_supply"
+	}
 }
 
 Convars.SetValue("z_witch_always_kills","0")
 
-Convars.SetValue("min_time_spawn_tank",9999)
-Convars.SetValue("max_time_spawn_tank",9999)
+Convars.SetValue("sv_rescue_disabled",1)

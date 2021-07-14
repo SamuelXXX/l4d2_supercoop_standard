@@ -9,4 +9,11 @@ DirectorOptions <-
 	//中途有机关，保险起见防止build up持续时间过长
 	RelaxMinInterval = 120
 	RelaxMaxInterval = 120
+
+	weaponsToConvert =
+	{
+		weapon_defibrillator = "other_supply"
+	}
 }
+
+Convars.SetValue("sv_rescue_disabled",1)

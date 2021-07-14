@@ -10,7 +10,8 @@ DirectorOptions <-
 	
 	weaponsToConvert =
 	{
-		weapon_vomitjar = "random_supply"
+		weapon_vomitjar = "other_supply"
+		weapon_defibrillator = "other_supply"
 	}
 
 	PreferredMobDirection = SPAWN_IN_FRONT_OF_SURVIVORS
@@ -22,3 +23,5 @@ DirectorOptions <-
 
 Msg("###Relax Max Flow Travel:"+DirectorOptions.RelaxMaxFlowTravel);
 Convars.SetValue("z_witch_always_kills","1")
+Convars.SetValue("z_tank_speed",210)
+Convars.SetValue("sv_rescue_disabled",0)

@@ -7,7 +7,10 @@ DirectorOptions <-
 
 	weaponsToConvert =
 	 {
+		weapon_molotov = "random_supply"
 		weapon_vomitjar = "random_supply"
+		weapon_pipe_bomb = "random_supply"
+		weapon_pistol = "weapon_pistol_magnum_spawn"
 	 }
 }
 
