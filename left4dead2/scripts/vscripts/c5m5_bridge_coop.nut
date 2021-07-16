@@ -14,6 +14,11 @@ DirectorOptions <-
 		weapon_defibrillator = "other_supply"
 	}
 
+	weaponsToRemove =
+	{
+		weapon_defibrillator = 0
+	}
+
 	PreferredMobDirection = SPAWN_IN_FRONT_OF_SURVIVORS
 	PreferredSpecialDirection = SPAWN_SPECIALS_IN_FRONT_OF_SURVIVORS
 	RelaxMaxFlowTravel = 100

@@ -9,6 +9,11 @@ DirectorOptions <-
 	{
 		weapon_defibrillator = "other_supply"
 	}
+
+	weaponsToRemove =
+	{
+		weapon_defibrillator = 0
+	}
 }
 
 Convars.SetValue("sv_rescue_disabled",1)
