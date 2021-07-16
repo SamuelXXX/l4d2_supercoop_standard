@@ -11,7 +11,7 @@ DirectorOptions <-
 	 A_CustomFinaleValue1 = "c2m5_1.nut"
 
 	 A_CustomFinale2 = PANIC
-	 A_CustomFinaleValue2 = GetFinalePanicWaveCount()	 
+	 A_CustomFinaleValue2 = GetFinalePanicWaveCount()
 
 	 A_CustomFinale3 = SCRIPTED
 	 A_CustomFinaleValue3 = "off.nut" 
@@ -19,8 +19,6 @@ DirectorOptions <-
 	 A_CustomFinale4 = TANK
 	 A_CustomFinaleValue4 = 3
 
-
- 
 	 A_CustomFinale5 = SCRIPTED
 	 A_CustomFinaleValue5 = "c2m5_2.nut"
  
@@ -33,8 +31,6 @@ DirectorOptions <-
 	 A_CustomFinale8 = TANK
 	 A_CustomFinaleValue8 = 5 
 
-
- 
 	 A_CustomFinale9 = SCRIPTED
 	 A_CustomFinaleValue9 = "c2m5_3.nut" 
 
@@ -55,10 +51,9 @@ DirectorOptions <-
 
 	 A_CustomFinale15 = SCRIPTED
 	 A_CustomFinaleValue15 = "c2m5_4.nut"
-	 
+
 	 PreferredMobDirection = SPAWN_NO_PREFERENCE
 	 PreferredSpecialDirection = SPAWN_NO_PREFERENCE
-
 }
 
 ApplyCommonFinaleOptions(DirectorOptions)
