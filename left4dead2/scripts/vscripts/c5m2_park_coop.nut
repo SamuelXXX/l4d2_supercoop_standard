@@ -13,6 +13,9 @@ DirectorOptions <-
 	weaponsToRemove =
 	{
 		weapon_defibrillator = 0
+		weapon_sniper_awp = 0
+		weapon_rifle_m60 = 0
+		weapon_grenade_launcher = 0
 	}
 }
 

@@ -17,6 +17,9 @@ DirectorOptions <-
 	weaponsToRemove =
 	{
 		weapon_defibrillator = 0
+		weapon_sniper_awp = 0
+		weapon_rifle_m60 = 0
+		weapon_grenade_launcher = 0
 	}
 
 	PreferredMobDirection = SPAWN_IN_FRONT_OF_SURVIVORS
