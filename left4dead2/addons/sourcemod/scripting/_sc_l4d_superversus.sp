@@ -74,7 +74,7 @@ public void OnPluginStart()
 	GetGameFolderName(gameName, sizeof(gameName));
 
 	CreateConVar("sm_superversus_version", PLUGIN_VERSION, "L4D Super Versus", CVAR_FLAGS|FCVAR_DONTRECORD);
-	
+
 	L4DSurvivorLimit = FindConVar("survivor_limit");
 	SurvivorLimit = CreateConVar("l4d_survivor_limit", "8", "Maximum amount of survivors", CVAR_FLAGS,true, 1.00, true, 24.00);
 	cvar_minsurvivor = CreateConVar("l4d_static_minimum_survivor", "8", "Static minimum amount of team survivor", CVAR_FLAGS, true, 4.00, true, 24.00);
@@ -82,17 +82,18 @@ public void OnPluginStart()
 	// Remove limits for survivor/infected
 	SetConVarBounds(L4DSurvivorLimit, ConVarBound_Upper, true, 24.0);
 	HookConVarChange(SurvivorLimit, OnSurvivorChanged);	HookConVarChange(L4DSurvivorLimit, OnSurvivorChanged);
-	
+
+	RespawnJoin = CreateConVar("l4d_respawn_on_join", "0" , "Respawn alive when joining as an extra survivor? 0: No, 1: Yes (first time only)", CVAR_FLAGS, true, 0.0, true, 1.0);
 	AfkMode =  CreateConVar("l4d_versus_afk", "1" , "If player is afk on versus, 0: Do nothing, 1: Become idle, 2: Become spectator, 3: Kicked", CVAR_FLAGS, true, 0.0, true, 3.0);
 	AutoJoin = CreateConVar("l4d_autojoin", "2" , "Once a player connects, 3: Put them in Spectate. 2: In Co-op will put them on Survivor team, In Versus, will put them on a random team. 1: Show teammenu, 0: Do nothing", CVAR_FLAGS, true, 0.0, true, 3.0);
 	Management = CreateConVar("l4d_management", "3", "3: Enable teammenu & commands, 2: commands only, 1: !infected,!survivor,!join only, 0: Nothing", CVAR_FLAGS, true, 0.0, true, 4.0);
-	
+
 	//Cache CVArs
 	AfkTimeout = FindConVar("director_afk_timeout");
 	GameType = FindConVar("mp_gamemode");
 	SurvMaxIncap = FindConVar("survivor_max_incapacitated_count");
 	PainPillsDR = FindConVar("pain_pills_decay_rate");
-	
+
 	RegConsoleCmd("sm_join", Join_Game, "Join Survivor or Infected team");
 	RegConsoleCmd("sm_survivor", Join_Survivor, "Join Survivor Team");
 	RegConsoleCmd("sm_spectate", Join_Spectator, "Join Spectator Team");
@@ -210,7 +211,6 @@ public void Event_PlayerSpawn(Event event, const char[] name, bool dontBroadcast
 	}
 }
 
-
 public int GetClientZC(int client)
 {
 
@@ -280,7 +280,6 @@ void SpawnCheck()
 // ------------------------------------------------------------------------
 // Kick an unused survivor bot
 // ------------------------------------------------------------------------
-
 stock bool IsValidSurvivorBot(int client)
 {
 	if (!client) return false;
@@ -289,10 +288,10 @@ stock bool IsValidSurvivorBot(int client)
 	if (GetClientTeam(client) != TEAM_SURVIVOR) return false;
 	return true;
 }
+
 // ------------------------------------------------------------------------
 // Spawn a survivor bot
 // ------------------------------------------------------------------------
-
 bool SpawnFakeSurvivorClient()
 {
 	int ClientsCount = GetSurvivorTeam();
@@ -329,7 +328,6 @@ bool SpawnFakeSurvivorClient()
 	}
 	return fakeclientKicked;
 }
-
 
 // ------------------------------------------------------------------------
 // Autojoin survivors if coop & spectator
@@ -864,7 +862,6 @@ stock int CountBots(int team)
 // *********************************************************************************
 // TEAM MENU
 // *********************************************************************************
-
 void DisplayTeamMenu(int client)
 {
 	Handle TeamPanel = CreatePanel();
@@ -1002,7 +999,6 @@ int GetClientRealHealth(int client)
 // *********************************************************************************
 // SIGNATURE METHODS
 // *********************************************************************************
-
 void Respawn(int client)
 {
 	static Handle hRoundRespawn;
@@ -1053,7 +1049,6 @@ void TakeOverBot(int client)
 // *********************************************************************************
 // CHEAT METHODS
 // *********************************************************************************
-
 void CheatCommand(int client, const char[] command, const char[] argument1, const char[] argument2)
 {
 	int userFlags = GetUserFlagBits(client);
@@ -1109,6 +1104,7 @@ char tier1_weapons[5][] =
 	"weapon_shotgun_chrome",	// L4D2 only
 	"weapon_smg_mp5"			// International only
 };
+
 bool IsWeaponTier1(int iWeapon)
 {
 	char sWeapon[128];
@@ -1119,6 +1115,7 @@ bool IsWeaponTier1(int iWeapon)
 	}
 	return false;
 }
+
 void GiveAverageWeapon(int client)
 {
 	if (!IsClientInGame(client) || GetClientTeam(client) != TEAM_SURVIVOR || !IsPlayerAlive(client)) return;
@@ -1162,8 +1159,6 @@ public Action Timer_mortal(Handle hTimer, int userid)
 	SetEntProp(client, Prop_Data, "m_takedamage", 2, 1); // mortal
 }
 
-
-
 stock int TotalSurvivors() // total bots, including players
 {
 	int l = 0;
@@ -1176,8 +1171,6 @@ stock int TotalSurvivors() // total bots, including players
 	}
 	return l;
 }
-
-
 
 public Action Timer_KickNoNeededBot(Handle timer, any bot)
 {
@@ -1198,7 +1191,6 @@ public Action Timer_KickNoNeededBot(Handle timer, any bot)
 	
 	return Plugin_Handled;
 }
-
 
 stock int StripWeapons(int client) // strip all items from client
 {
@@ -1237,7 +1229,6 @@ stock bool HasIdlePlayer(int bot)
 	}
 	return false;
 }
-
 
 bool IsAlive(int client)
 {

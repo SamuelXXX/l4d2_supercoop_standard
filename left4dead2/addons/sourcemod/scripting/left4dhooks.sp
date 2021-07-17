@@ -18,7 +18,7 @@
 
 
 
-#define PLUGIN_VERSION		"1.47"
+#define PLUGIN_VERSION		"1.49"
 
 #define DEBUG				0
 // #define DEBUG			1	// Prints addresses + detour info (only use for debugging, slows server down)
@@ -41,6 +41,14 @@
 
 ========================================================================================
 	Change Log:
+
+1.49 (13-Jul-2021)
+	- L4D2: Fixed the "SpawnTimer" offset being wrong. Thanks to "Forgetest" for reporting.
+	- L4D2 GameData file updated.
+
+1.48 (13-Jul-2021)
+	- Fixed "Param is not a pointer" in the "L4D_OnVomitedUpon" forward. Thanks to "ddd123" for reporting.
+	- L4D2: Changed the way "ForceNextStage" address is read on Windows, hopefully future proof.
 
 1.47 (10-Jul-2021)
 	- Fixed "Trying to get value for null pointer" in the "L4D_OnVomitedUpon" forward. Thanks to "Shadowart" for reporting.
@@ -2781,15 +2789,21 @@ void LoadGameData()
 				LogError("Failed to create SDKCall: OnAdrenalineUsed");
 		}
 
+		/* Verify ForceNextStage addresses are equal (B will break in future updates, where A should remain intact)
+		Address aa = hGameData.GetAddress("ForceNextStageAddress");
+		Address bb = hGameData.GetAddress("ForceNextStage");
+		PrintToServer("ForceNextStage: A: %d B: %d", aa, bb);
+		*/
+
 		StartPrepSDKCall(SDKCall_Raw);
-		if( PrepSDKCall_SetFromConf(hGameData, SDKConf_Signature, "ForceNextStage") == false )
+		if( PrepSDKCall_SetFromConf(hGameData, SDKConf_Address, "ForceNextStageAddress") == false )
 		{
-			LogError("Failed to find signature: ForceNextStage");
+			LogError("Failed to find signature: ForceNextStageAddress");
 		} else {
 			PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
 			g_hSDK_Call_ForceNextStage = EndPrepSDKCall();
 			if( g_hSDK_Call_ForceNextStage == null )
-				LogError("Failed to create SDKCall: ForceNextStage");
+				LogError("Failed to create SDKCall: ForceNextStageAddress");
 		}
 
 		StartPrepSDKCall(SDKCall_Raw);
@@ -3788,7 +3802,7 @@ void LoadGameData()
 		ValidateOffset(VersusMaxCompletionScore, "VersusMaxCompletionScore");
 
 		m_iTankCount = hGameData.GetOffset("m_iTankCount");
-		ValidateOffset(SpawnTimer, "SpawnTimer");
+		ValidateOffset(m_iTankCount, "m_iTankCount");
 
 		m_iWitchCount = hGameData.GetOffset("m_iWitchCount");
 		ValidateOffset(m_iWitchCount, "m_iWitchCount");
@@ -7523,7 +7537,7 @@ public MRESReturn OnVomitedUpon(int client, Handle hReturn, Handle hParams)
 {
 	// PrintToServer("##### DTR OnVomitedUpon");
 
-	if( DHookIsNullParam(hParams, 1) || DHookIsNullParam(hParams, 2) ) return MRES_Ignored;
+	if( DHookIsNullParam(hParams, 1) ) return MRES_Ignored;
 
 	int a1 = DHookGetParam(hParams, 1);
 	int a2 = DHookGetParam(hParams, 2);

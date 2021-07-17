@@ -135,6 +135,9 @@ DirectorOptions <-
 						realConvertWeapon="weapon_pain_pills_spawn"
 					}
 					break;
+				case "magnum":
+					realConvertWeapon="weapon_pistol_magnum_spawn"
+					break;
 				default:
 					break;
 			}
